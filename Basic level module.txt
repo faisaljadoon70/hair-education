@@ -1,0 +1,208 @@
+Learning Objective 1: Understand the Basic Structure of a Hair Strand (Cuticle, Cortex, Medulla)
+
+Hair Strand Structure: Think of a hair strand like a pencil. The cuticle is the outer layer, like the paint on the pencil. It’s made of overlapping scales that protect the inner layers. If the cuticle is damaged, the hair becomes weak and prone to breakage.
+
+Cuticle Function: It acts as a barrier, protecting the inner layers from damage and moisture loss.
+
+Cortex: This is the middle layer, like the wood of the pencil. It contains the pigment (melanin) that gives hair its color and determines its strength and elasticity.
+
+Medulla: The innermost layer, like the lead in the pencil. It’s not always present in every hair strand and its function is still debated, but it may contribute to the hair’s overall structure.
+
+Visual Aid: Use an interactive 3D model where users can "zoom in" on each layer and see how they work together.
+
+Learning Objective 2: Identify Different Hair Growth Cycles
+
+Hair Growth Cycles: Hair doesn’t grow continuously; it goes through cycles:
+
+Anagen Phase (Growth Phase): This is when the hair is actively growing. It can last 2–7 years, depending on genetics.
+
+Catagen Phase (Transition Phase): The hair stops growing and detaches from the blood supply. This lasts about 2–3 weeks.
+
+Telogen Phase (Resting Phase): The hair is dormant and eventually falls out. This lasts about 3 months.
+
+Exogen Phase (Shedding Phase): The hair falls out, and a new hair begins to grow in its place.
+
+Visual Aid: Show an animated timeline of the hair growth cycle, highlighting each phase with simple explanations.
+
+Learning Objective 3: Recognize Common Scalp Conditions
+
+Scalp Health: A healthy scalp is essential for healthy hair. Common scalp conditions include:
+
+Dandruff: Flaky, itchy scalp caused by an overgrowth of yeast or dry skin.
+
+Psoriasis: Thick, red patches with silvery scales caused by an overactive immune system.
+
+Seborrheic Dermatitis: A more severe form of dandruff with oily, inflamed skin.
+
+Folliculitis: Inflammation of hair follicles, often caused by bacteria or fungi.
+
+Visual Aid: Use high-quality images of each condition with labels and descriptions.
+
+Learning Objective 4: Learn Basic Hair Terminology
+
+
+Hair Terminology: Here are some key terms every beginner should know:
+
+Porosity: How well hair absorbs and retains moisture.
+
+Elasticity: How much hair can stretch without breaking.
+
+Texture: The thickness of individual hair strands (fine, medium, coarse).
+
+Density: How many hair strands are on the scalp (low, medium, high).
+
+Visual Aid: Create an AI-powered glossary where users can click on a term and see a definition, example, and visual representation.
+
+Module 2: The Color Wheel
+Learning Objective 1: Identify Primary, Secondary, and Tertiary Colors
+
+Primary Colors: Red, blue, and yellow. These are the base colors that cannot be created by mixing other colors.
+
+Secondary Colors: Green, orange, and purple. These are created by mixing two primary colors (e.g., blue + yellow = green).
+
+Tertiary Colors: Colors like red-orange or blue-green. These are created by mixing a primary color with a secondary color.
+
+Visual Aid: Use an interactive color wheel where users can mix colors digitally and see the results.
+
+Learning Objective 2: Understand Color Relationships (Complementary, Analogous, etc.)
+
+Complementary Colors: Colors opposite each other on the color wheel (e.g., red and green). These create contrast and can neutralize each other.
+
+Analogous Colors: Colors next to each other on the wheel (e.g., blue, blue-green, and green). These create harmony and are often used in subtle color blends.
+
+Triadic Colors: Three colors evenly spaced on the wheel (e.g., red, yellow, and blue). These create vibrant, balanced looks.
+
+Visual Aid: Show visual examples of each relationship and how they apply to hair color.
+
+Learning Objective 3: Recognize the Importance of the Color Wheel in Hair Coloring
+
+Color Wheel in Hair: The color wheel helps stylists predict how colors will interact. For example:
+
+If a client’s hair has too much brassiness (yellow/orange), you can use a blue or purple toner to neutralize it.
+
+If you want to create a warm blonde, you might add a gold or orange tone.
+
+Visual Aid: Use before-and-after images of hair color corrections to show the color wheel in action.
+
+Learning Objective 4: Understand Color Bias
+Expert Explanation:
+
+Color Bias: Some colors have a warm or cool undertone. For example:
+
+A "cool" red has a blue undertone.
+
+A "warm" red has an orange undertone.
+
+This is important when mixing colors to achieve the desired result.
+
+Visual Aid: Show side-by-side comparisons of warm vs. cool versions of the same color.
+
+Module 3: Understanding Hair Levels
+Learning Objective 1: Explain the Hair Level System (1-10 or 1-12)
+
+Hair Levels: Hair levels range from 1 (black) to 10 (lightest blonde). Each number represents how light or dark the hair is.
+
+Level 1: Black
+
+Level 4: Dark brown
+
+Level 7: Medium blonde
+
+Level 10: Lightest blonde
+
+Visual Aid: Create an interactive chart with real hair examples for each level.
+
+Learning Objective 2: Identify Different Hair Levels in Pictures
+
+Identifying Levels: Train your eye to recognize levels by comparing hair to a level chart. For example:
+
+Level 6 is a dark blonde, while Level 8 is a light blonde.
+
+Visual Aid: Use a "Real Hair" gallery with labeled examples.
+
+Learning Objective 3: Understand Natural Level and Undertone
+
+Natural Level: The starting level of the hair before any color is applied.
+
+Undertone: The underlying pigment in the hair. For example:
+
+Level 6 hair has a red-orange undertone.
+
+Level 9 hair has a yellow undertone.
+
+Visual Aid: Show a cross-section of hair with labeled undertones.
+
+Learning Objective 4: Explain How Lift is Measured
+Expert Explanation:
+
+Lift: The process of lightening hair. Lift is measured by how many levels the hair is lightened. For example:
+
+20-volume developer lifts 1-2 levels.
+
+30-volume developer lifts 2-3 levels.
+
+Visual Aid: Use a visual chart showing developer volumes and their corresponding lift levels.
+
+Module 4: Introduction to Tones & Undertones
+Learning Objective 1: Explain Undertones in Different Hair Levels
+
+Undertones: Every hair level has a natural undertone. For example:
+
+Level 4: Red-orange
+
+Level 7: Orange-yellow
+
+Level 10: Pale yellow
+
+Visual Aid: Use an animated pigment microscope to show undertones at different levels.
+
+Learning Objective 2: Understand Warm vs. Cool Tones
+
+Warm Tones: Red, orange, and yellow. These add warmth and richness to hair.
+
+Cool Tones: Blue, green, and violet. These neutralize warmth and create cooler, ashier tones.
+
+Visual Aid: Show side-by-side comparisons of warm and cool tones.
+
+Learning Objective 3: Learn the Importance of Undertones in Hair Color
+
+Undertones Matter: They affect how the final color will look. For example:
+
+If you apply an ash blonde to hair with orange undertones, it may turn greenish.
+
+Visual Aid: Use before-and-after examples to show the impact of undertones.
+
+Module 5: Basic Hair Product Categories
+Learning Objective 1: Identify Basic Product Categories
+
+Permanent Color: Lifts and deposits color. Lasts until hair grows out.
+
+Demi-Permanent Color: Deposits color without lifting. Lasts 6-8 weeks.
+
+Toner: Neutralizes unwanted tones (e.g., brassiness).
+
+Bleach: Lightens hair by removing pigment.
+
+Visual Aid: Show product examples with labels and descriptions.
+
+Learning Objective 2: Explain the Role of Developers
+
+Developers: They activate the color and determine the level of lift. Common volumes:
+
+10-volume: Deposits color with no lift.
+
+20-volume: Lifts 1-2 levels.
+
+30-volume: Lifts 2-3 levels.
+
+Visual Aid: Use a chart to show developer volumes and their effects.
+
+Learning Objective 3: Understand the Purpose of Products
+
+Lift: Lightens the hair.
+
+Deposit: Adds color.
+
+Tone: Neutralizes unwanted tones.
+
+Visual Aid: Use before-and-after examples to show the purpose of each product.
