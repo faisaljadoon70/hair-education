@@ -3,11 +3,10 @@
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import HomeButton from '@/components/HomeButton';
-import { createClientSupabaseClient } from '@/utils/supabase-client';
+import { supabase } from '@/utils/supabase';
 
 export default function ExpertPage() {
   const router = useRouter();
-  const supabase = createClientSupabaseClient();
 
   useEffect(() => {
     const checkUser = async () => {
