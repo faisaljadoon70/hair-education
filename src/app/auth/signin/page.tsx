@@ -6,6 +6,8 @@ import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import { useRouter } from 'next/navigation'
 import { useEffect } from 'react'
 
+export const dynamic = 'force-dynamic'
+
 export default function SignIn() {
   const router = useRouter()
   const supabase = createClientComponentClient()

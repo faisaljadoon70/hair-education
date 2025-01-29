@@ -1,8 +1,19 @@
 'use client';
 
 import HomeButton from '@/components/HomeButton';
+import { createServerSupabaseClient } from '@/utils/supabase-server'
+import { redirect } from 'next/navigation'
 
-export default function ExpertPage() {
+export const dynamic = 'force-dynamic'
+
+export default async function ExpertPage() {
+  const supabase = createServerSupabaseClient()
+  const { data: { user } } = await supabase.auth.getUser()
+
+  if (!user) {
+    redirect('/auth/signin')
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-blue-100 p-8">
       <HomeButton />
