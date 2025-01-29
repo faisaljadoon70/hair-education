@@ -25,6 +25,7 @@ export default function AuthButton() {
   const handleSignOut = async () => {
     await supabase.auth.signOut()
     router.refresh()
+    router.push('/auth/signin')
   }
 
   const handleSignIn = () => {
@@ -32,11 +33,18 @@ export default function AuthButton() {
   }
 
   return (
-    <button
-      onClick={user ? handleSignOut : handleSignIn}
-      className="px-4 py-2 text-sm font-medium text-white bg-purple-600 rounded-md hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
-    >
-      {user ? 'Sign Out' : 'Sign In'}
-    </button>
+    <div className="flex items-center gap-4">
+      {user && (
+        <span className="text-sm text-gray-700">
+          Signed in as {user.email}
+        </span>
+      )}
+      <button
+        onClick={user ? handleSignOut : handleSignIn}
+        className="px-4 py-2 text-sm font-medium text-white bg-purple-600 rounded-md hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
+      >
+        {user ? 'Sign Out' : 'Sign In'}
+      </button>
+    </div>
   )
 }

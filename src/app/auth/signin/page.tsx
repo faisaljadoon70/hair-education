@@ -16,6 +16,24 @@ export default function SignIn() {
     setOrigin(window.location.origin)
   }, [])
 
+  useEffect(() => {
+    const checkUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser()
+      if (user) {
+        router.push('/')
+      }
+    }
+    checkUser()
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
+      if (event === 'SIGNED_IN') {
+        router.push('/')
+      }
+    })
+
+    return () => subscription.unsubscribe()
+  }, [router, supabase.auth])
+
   if (!origin) return null
 
   const handleForgotPassword = async (email: string) => {
