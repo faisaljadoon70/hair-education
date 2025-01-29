@@ -1,7 +1,7 @@
 'use client';
 
 import HomeButton from '@/components/HomeButton';
-import { createServerSupabaseClient } from '@/utils/supabase-server'
+import { createServerSupabaseClient } from '../supabase-server'
 import { redirect } from 'next/navigation'
 
 export const dynamic = 'force-dynamic'

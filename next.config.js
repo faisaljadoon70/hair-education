@@ -14,11 +14,6 @@ const nextConfig = {
     domains: ['cmvssothyxnkldrmxdcb.supabase.co'],
   },
 
-  // Enable experimental features
-  experimental: {
-    serverActions: true,
-  },
-
   // Environment variables that should be exposed to the client
   env: {
     NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,
