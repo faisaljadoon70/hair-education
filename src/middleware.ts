@@ -7,7 +7,7 @@ export async function middleware(request: NextRequest) {
   const supabase = createMiddlewareClient({ req: request, res })
 
   // Refresh session if expired
-  const { data: { session }, error } = await supabase.auth.getSession()
+  const { data: { session } } = await supabase.auth.getSession()
   
   // Check if user is authenticated
   const {
