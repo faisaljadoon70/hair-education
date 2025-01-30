@@ -39,6 +39,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       } catch (error) {
         console.error('[AuthContext] Error during auth initialization:', error)
       }
+      // Removed setIsAuthReady from here - will only set it in onAuthStateChange
     }
 
     // Set up auth state listener
@@ -46,7 +47,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       console.log('[AuthContext] Auth state changed:', event, session ? 'Session exists' : 'No session')
       if (isMounted) {
         setUser(session?.user ?? null)
-        setIsAuthReady(true) // Mark auth as ready after state change
+        setIsAuthReady(true) // Only place where we set isAuthReady
       }
     })
 
