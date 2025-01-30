@@ -16,53 +16,47 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [isAuthReady, setIsAuthReady] = useState(false)
 
   useEffect(() => {
-    let mounted = true
+    let isMounted = true // Track if the component is still mounted
 
     const initAuth = async () => {
       console.log('[AuthContext] Starting auth initialization...')
       try {
-        // First try to get the session
+        // Initial session check
         const { data: { session } } = await supabase.auth.getSession()
         console.log('[AuthContext] Initial session check:', session ? 'Session exists' : 'No session')
         
-        if (mounted) {
-          if (session?.user) {
-            console.log('[AuthContext] Setting initial user from session')
-            setUser(session.user)
-          } else {
-            // If no session, try to get user directly
-            const { data: { user: initialUser } } = await supabase.auth.getUser()
-            console.log('[AuthContext] User check result:', initialUser ? 'User found' : 'No user')
-            if (mounted) {
-              setUser(initialUser)
-            }
+        if (session?.user && isMounted) {
+          console.log('[AuthContext] Setting user from session')
+          setUser(session.user)
+        } else {
+          // Fallback to direct user check
+          const { data: { user: initialUser } } = await supabase.auth.getUser()
+          console.log('[AuthContext] User check result:', initialUser ? 'User found' : 'No user')
+          if (initialUser && isMounted) {
+            setUser(initialUser)
           }
         }
       } catch (error) {
-        console.error('[AuthContext] Error initializing auth:', error)
-      } finally {
-        if (mounted) {
-          console.log('[AuthContext] Auth initialization complete')
-          setIsAuthReady(true)
-        }
+        console.error('[AuthContext] Error during auth initialization:', error)
       }
     }
 
     // Set up auth state listener
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       console.log('[AuthContext] Auth state changed:', event, session ? 'Session exists' : 'No session')
-      if (mounted) {
+      if (isMounted) {
         setUser(session?.user ?? null)
-        // Ensure isAuthReady is true after any auth state change
-        setIsAuthReady(true)
+        setIsAuthReady(true) // Mark auth as ready after state change
       }
     })
 
+    // Initialize auth and wait for the first state change
     initAuth()
 
+    // Cleanup
     return () => {
       console.log('[AuthContext] Cleaning up auth subscriptions')
-      mounted = false
+      isMounted = false
       subscription.unsubscribe()
     }
   }, [])
