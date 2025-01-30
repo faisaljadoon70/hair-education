@@ -1,7 +1,7 @@
 'use client'
 
 import { createContext, useContext, useEffect, useState } from 'react'
-import { supabase } from '@/utils/supabase'
+import { supabase } from '@/utils/supabase-client'
 import { LoadingSpinner } from '@/components/LoadingSpinner'
 
 interface AuthContextType {
@@ -18,7 +18,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     let mounted = true
 
-    // Initialize auth state
     const initAuth = async () => {
       console.log('[AuthContext] Starting auth initialization...')
       try {
@@ -59,10 +58,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
     })
 
-    // Initialize immediately
     initAuth()
 
-    // Cleanup function
     return () => {
       console.log('[AuthContext] Cleaning up auth subscriptions')
       mounted = false
@@ -70,7 +67,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }, [])
 
-  // Provide more detailed loading state
   if (!isAuthReady) {
     console.log('[AuthContext] Still initializing, showing loading spinner')
     return <LoadingSpinner />
