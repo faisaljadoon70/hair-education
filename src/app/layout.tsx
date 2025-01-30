@@ -1,5 +1,6 @@
 import './globals.css';
 import AuthButton from '@/components/AuthButton';
+import { AuthProvider } from '@/context/AuthContext';
 
 export default function RootLayout({
   children,
@@ -9,12 +10,14 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <div className="relative min-h-screen">
-          <div className="absolute top-4 right-4">
-            <AuthButton />
+        <AuthProvider>
+          <div className="relative min-h-screen">
+            <div className="absolute top-4 right-4">
+              <AuthButton />
+            </div>
+            {children}
           </div>
-          {children}
-        </div>
+        </AuthProvider>
       </body>
     </html>
   );

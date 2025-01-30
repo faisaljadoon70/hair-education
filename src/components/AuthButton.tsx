@@ -2,25 +2,11 @@
 
 import { useRouter } from 'next/navigation'
 import { supabase } from '@/utils/supabase'
-import { useEffect, useState } from 'react'
+import { useAuth } from '@/context/AuthContext'
 
 export default function AuthButton() {
   const router = useRouter()
-  const [user, setUser] = useState<any>(null)
-
-  useEffect(() => {
-    const getUser = async () => {
-      const { data: { user } } = await supabase.auth.getUser()
-      setUser(user)
-    }
-    getUser()
-
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user ?? null)
-    })
-
-    return () => subscription.unsubscribe()
-  }, [])
+  const { user, isAuthReady } = useAuth()
 
   const handleSignOut = async () => {
     await supabase.auth.signOut()
@@ -32,6 +18,8 @@ export default function AuthButton() {
     router.push('/auth/signin')
   }
 
+  if (!isAuthReady) return null
+
   return (
     <div className="flex items-center gap-4">
       {user && (
@@ -41,7 +29,7 @@ export default function AuthButton() {
       )}
       <button
         onClick={user ? handleSignOut : handleSignIn}
-        className="px-4 py-2 text-sm font-medium text-white bg-purple-600 rounded-md hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
+        className="bg-pink-600 text-white px-4 py-2 rounded-md hover:bg-pink-700"
       >
         {user ? 'Sign Out' : 'Sign In'}
       </button>
