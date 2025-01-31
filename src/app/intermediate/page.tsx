@@ -80,59 +80,64 @@ export default function IntermediatePage() {
 
   return (
     <ProtectedRoute>
-      <div className="min-h-screen bg-pink-50">
-        <header className="bg-pink-500 text-white p-4 flex justify-between items-center">
-          <Link href="/" className="text-xl font-bold">
+      <div className="min-h-screen bg-gradient-to-br from-pink-50 to-pink-100">
+        <div className="bg-pink-600 text-white p-4 flex justify-between">
+          <a href="/" className="text-white text-lg font-semibold hover:underline">
             Home
-          </Link>
-          <div className="flex items-center gap-4">
-            <span>faisal.70@gmail.com</span>
-            <button className="text-white">Sign Out</button>
+          </a>
+          <div className="flex items-center space-x-4">
+            <button className="bg-pink-700 text-white px-4 py-2 rounded">
+              Sign Out
+            </button>
           </div>
-        </header>
+        </div>
 
         <main className="container mx-auto p-8">
-          <div className="bg-white rounded-lg shadow-md p-6 max-w-4xl mx-auto">
-            <h1 className="text-2xl text-pink-600 mb-6">Table of Contents</h1>
-            
-            <div className="mb-8">
-              <div className="flex justify-between items-center mb-2">
-                <span className="text-sm text-gray-600">Course Progress</span>
-                <button 
-                  onClick={handleReset}
-                  className="text-sm text-pink-600 hover:text-pink-700"
-                >
-                  Reset
-                </button>
-              </div>
-              <div className="bg-gray-200 rounded-full h-2">
-                <div
-                  className="bg-pink-500 rounded-full h-2 transition-all duration-500"
-                  style={{ width: `${progress}%` }}
-                />
-              </div>
-              <span className="text-sm text-gray-600 mt-1">{progress}% Complete</span>
-            </div>
+          <div className="max-w-4xl mx-auto p-8">
+            <div className="bg-white rounded-lg shadow-md p-6">
+              <h2 className="text-2xl font-semibold text-pink-600 mb-4">
+                Table of Contents
+              </h2>
 
-            <div className="space-y-4">
-              {chapters.map((chapter) => (
-                <div
-                  key={chapter.number}
-                  className="border rounded-lg p-4 hover:shadow-md transition-shadow"
-                >
-                  <Link href={chapter.path}>
-                    <div className="flex justify-between items-center">
+              <div className="mb-8">
+                <div className="flex justify-between items-center mb-2">
+                  <span className="text-sm text-gray-600">Course Progress</span>
+                  <button 
+                    onClick={handleReset}
+                    className="text-sm text-pink-600 hover:text-pink-700"
+                  >
+                    Reset
+                  </button>
+                </div>
+                <div className="h-2 bg-gray-200 rounded-full">
+                  <div
+                    className="h-full bg-pink-600 rounded-full transition-all duration-300"
+                    style={{ width: `${progress}%` }}
+                  />
+                </div>
+                <div className="text-right text-sm text-gray-600 mt-1">
+                  {progress}% Complete
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                {chapters.map((chapter) => (
+                  <div
+                    key={chapter.number}
+                    className="border rounded-lg p-4 hover:shadow-md transition-shadow"
+                  >
+                    <Link href={chapter.path}>
                       <div>
-                        <h2 className="text-lg text-pink-600 font-medium">
+                        <h3 className="text-lg font-semibold text-pink-600">
                           Chapter {chapter.number}: {chapter.title}
                           {completedChapters[`chapter${chapter.number}`] && ' ✓'}
-                        </h2>
+                        </h3>
                         <p className="text-gray-600 mt-1">{chapter.description}</p>
                       </div>
-                    </div>
-                  </Link>
-                </div>
-              ))}
+                    </Link>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </main>

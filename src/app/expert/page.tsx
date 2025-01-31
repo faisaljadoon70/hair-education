@@ -82,21 +82,22 @@ export default function ExpertPage() {
 
   return (
     <ProtectedRoute>
-      <div className="min-h-screen bg-pink-50">
-        <header className="bg-pink-500 text-white p-4 flex justify-between items-center">
-          <Link href="/" className="text-xl font-bold">
+      <div className="min-h-screen bg-gradient-to-br from-pink-50 to-pink-100">
+        <div className="bg-pink-600 text-white p-4 flex items-center justify-between">
+          <a href="/" className="text-white text-lg font-semibold hover:underline">
             Home
-          </Link>
+          </a>
           <div className="flex items-center gap-4">
-            <span>faisal.70@gmail.com</span>
             <button className="text-white">Sign Out</button>
           </div>
-        </header>
+        </div>
 
-        <main className="container mx-auto p-8">
-          <div className="bg-white rounded-lg shadow-md p-6 max-w-4xl mx-auto">
-            <h1 className="text-2xl text-pink-600 mb-6">Table of Contents</h1>
-            
+        <div className="max-w-4xl mx-auto p-8">
+          <div className="bg-white rounded-lg shadow-md p-6">
+            <h2 className="text-2xl font-semibold text-pink-600 mb-4">
+              Table of Contents
+            </h2>
+
             <div className="mb-8">
               <div className="flex justify-between items-center mb-2">
                 <span className="text-sm text-gray-600">Course Progress</span>
@@ -107,13 +108,15 @@ export default function ExpertPage() {
                   Reset
                 </button>
               </div>
-              <div className="bg-gray-200 rounded-full h-2">
+              <div className="h-2 bg-gray-200 rounded-full">
                 <div
-                  className="bg-pink-500 rounded-full h-2 transition-all duration-500"
+                  className="h-full bg-pink-600 rounded-full transition-all duration-300"
                   style={{ width: `${calculateProgress()}%` }}
                 />
               </div>
-              <span className="text-sm text-gray-600 mt-1">{calculateProgress()}% Complete</span>
+              <div className="text-right text-sm text-gray-600 mt-1">
+                {calculateProgress()}% Complete
+              </div>
             </div>
 
             <div className="space-y-4">
@@ -123,21 +126,19 @@ export default function ExpertPage() {
                   className="border rounded-lg p-4 hover:shadow-md transition-shadow"
                 >
                   <Link href={chapter.path}>
-                    <div className="flex justify-between items-center">
-                      <div>
-                        <h2 className="text-lg text-pink-600 font-medium">
-                          Chapter {chapter.number}: {chapter.title}
-                          {completedChapters[`chapter${chapter.number}`] && ' ✓'}
-                        </h2>
-                        <p className="text-gray-600 mt-1">{chapter.description}</p>
-                      </div>
+                    <div>
+                      <h3 className="text-lg font-semibold text-pink-600">
+                        Chapter {chapter.number}: {chapter.title}
+                        {completedChapters[`chapter${chapter.number}`] && ' ✓'}
+                      </h3>
+                      <p className="text-gray-600 mt-1">{chapter.description}</p>
                     </div>
                   </Link>
                 </div>
               ))}
             </div>
           </div>
-        </main>
+        </div>
       </div>
     </ProtectedRoute>
   );
