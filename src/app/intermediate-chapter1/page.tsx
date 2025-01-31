@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 interface ModuleItem {
   text: string;
@@ -12,7 +12,33 @@ export default function IntermediateChapter1() {
   const [selectedContent, setSelectedContent] = useState<string | null>(null);
   const [completedModules, setCompletedModules] = useState<Record<string, boolean>>({});
 
+  // Only load completedModules from localStorage on initial load
+  useEffect(() => {
+    const savedModules = localStorage.getItem('completedModulesIntermediateChapter1');
+    if (savedModules) {
+      setCompletedModules(JSON.parse(savedModules));
+    }
+  }, []);
+
+  // Save to localStorage when state changes
+  useEffect(() => {
+    if (Object.keys(completedModules).length > 0) {
+      localStorage.setItem(
+        'completedModulesIntermediateChapter1',
+        JSON.stringify(completedModules)
+      );
+    } else {
+      localStorage.removeItem('completedModulesIntermediateChapter1');
+    }
+  }, [completedModules]);
+
   const handleModuleComplete = (module: string) => {
+    setCompletedModules((prev) => ({ ...prev, [module]: true }));
+  };
+
+  const handleContentClick = (content: string, module: string) => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    setSelectedContent(content);
     setCompletedModules((prev) => ({ ...prev, [module]: true }));
   };
 
@@ -137,8 +163,7 @@ export default function IntermediateChapter1() {
               <button
                 onClick={() => {
                   if (!item.subItems) {
-                    handleModuleComplete(item.text);
-                    setSelectedContent(item.content);
+                    handleContentClick(item.content, item.text);
                   }
                 }}
                 className={`text-left hover:text-pink-600 ${
@@ -193,7 +218,11 @@ export default function IntermediateChapter1() {
                 <div className="flex justify-between items-center mb-2">
                   <span className="text-sm text-gray-600">Chapter Progress</span>
                   <button 
-                    onClick={() => setCompletedModules({})}
+                    onClick={() => {
+                      setCompletedModules({});
+                      setSelectedContent(null);
+                      localStorage.removeItem('completedModulesIntermediateChapter1');
+                    }}
                     className="text-sm text-pink-600 hover:text-pink-700"
                   >
                     Reset
@@ -235,7 +264,11 @@ export default function IntermediateChapter1() {
                 <div className="flex justify-between items-center mb-2">
                   <span className="text-sm text-gray-600">Chapter Progress</span>
                   <button 
-                    onClick={() => setCompletedModules({})}
+                    onClick={() => {
+                      setCompletedModules({});
+                      setSelectedContent(null);
+                      localStorage.removeItem('completedModulesIntermediateChapter1');
+                    }}
                     className="text-sm text-pink-600 hover:text-pink-700"
                   >
                     Reset

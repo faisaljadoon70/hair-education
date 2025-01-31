@@ -1,24 +1,58 @@
 'use client';
 
+import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import { ProtectedRoute } from '@/components/ProtectedRoute';
 
-interface ModuleItem {
-  text: string;
-  content: string;
-  preview?: string;
-  subItems?: ModuleItem[];
+interface Chapter {
+  number: number;
+  title: string;
+  description: string;
+  path: string;
 }
 
 export default function ExpertPage() {
-  const [selectedContent, setSelectedContent] = useState<string | null>(null);
-  const [completedChapters, setCompletedChapters] = useState<Record<string, boolean>>({});
+  const [completedChapters, setCompletedChapters] = useState<{[key: string]: boolean}>({});
+
+  // Array of chapters - easy to add more chapters later
+  const chapters: Chapter[] = [
+    {
+      number: 1,
+      title: "Advanced Hair Techniques",
+      description: "Master color formulation, business management, and advanced coloring techniques.",
+      path: "/expert-chapter1"
+    },
+    {
+      number: 2,
+      title: "Chapter 2",
+      description: "Coming soon...",
+      path: "#"
+    },
+    {
+      number: 3,
+      title: "Chapter 3",
+      description: "Coming soon...",
+      path: "#"
+    },
+    {
+      number: 4,
+      title: "Chapter 4",
+      description: "Coming soon...",
+      path: "#"
+    },
+    {
+      number: 5,
+      title: "Chapter 5",
+      description: "Coming soon...",
+      path: "#"
+    }
+  ];
 
   // Load completed chapters from localStorage
   useEffect(() => {
-    const stored = localStorage.getItem('completedExpertChapters');
-    if (stored) {
-      setCompletedChapters(JSON.parse(stored));
+    const savedProgress = localStorage.getItem('completedExpertChapters');
+    if (savedProgress) {
+      setCompletedChapters(JSON.parse(savedProgress));
     }
   }, []);
 
@@ -29,115 +63,81 @@ export default function ExpertPage() {
     }
   }, [completedChapters]);
 
-  const chapters = [
-    {
-      id: 'chapter1',
-      title: 'Chapter 1: Advanced Hair Techniques',
-      description: 'Master color formulation, business management, and advanced coloring techniques.',
-      link: '/expert-chapter1'
-    },
-    {
-      id: 'chapter2',
-      title: 'Chapter 2: Chapter 2',
-      description: 'Coming soon...',
-      link: '#'
-    },
-    {
-      id: 'chapter3',
-      title: 'Chapter 3: Chapter 3',
-      description: 'Coming soon...',
-      link: '#'
-    },
-    {
-      id: 'chapter4',
-      title: 'Chapter 4: Chapter 4',
-      description: 'Coming soon...',
-      link: '#'
-    },
-    {
-      id: 'chapter5',
-      title: 'Chapter 5: Chapter 5',
-      description: 'Coming soon...',
-      link: '#'
-    }
-  ];
-
+  // Calculate progress based on completed chapters
   const calculateProgress = () => {
-    const completed = Object.values(completedChapters).filter(Boolean).length;
-    return Math.round((completed / chapters.length) * 100);
+    const completedCount = Object.values(completedChapters).filter(Boolean).length;
+    return Math.round((completedCount / chapters.length) * 100);
   };
 
-  const handleContentClick = (content: string, chapterId: string, link: string) => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-    setSelectedContent(content);
-    setCompletedChapters((prev) => ({ ...prev, [chapterId]: true }));
+  // Reset progress
+  const handleReset = () => {
+    setCompletedChapters({});
+    localStorage.setItem('completedExpertChapters', JSON.stringify({}));
+    localStorage.removeItem('completedModulesExpertChapter1');
+    localStorage.removeItem('completedModulesExpertChapter2');
+    localStorage.removeItem('completedModulesExpertChapter3');
+    localStorage.removeItem('completedModulesExpertChapter4');
+    localStorage.removeItem('completedModulesExpertChapter5');
   };
 
   return (
     <ProtectedRoute>
-      <div className="min-h-screen bg-gradient-to-br from-pink-50 to-pink-100">
-        <div className="bg-pink-600 text-white p-4 flex justify-between items-center">
-          <a href="/" className="text-white text-lg font-semibold hover:underline">
+      <div className="min-h-screen bg-pink-50">
+        <header className="bg-pink-500 text-white p-4 flex justify-between items-center">
+          <Link href="/" className="text-xl font-bold">
             Home
-          </a>
-          <button className="bg-pink-700 text-white px-4 py-2 rounded">
-            Sign Out
-          </button>
-        </div>
+          </Link>
+          <div className="flex items-center gap-4">
+            <span>faisal.70@gmail.com</span>
+            <button className="text-white">Sign Out</button>
+          </div>
+        </header>
 
-        <div className="max-w-4xl mx-auto p-8">
-          <div className="bg-white rounded-lg shadow-md p-6">
-            <h1 className="text-2xl font-semibold text-pink-600 mb-4">Table of Contents</h1>
+        <main className="container mx-auto p-8">
+          <div className="bg-white rounded-lg shadow-md p-6 max-w-4xl mx-auto">
+            <h1 className="text-2xl text-pink-600 mb-6">Table of Contents</h1>
             
-            {/* Progress Bar */}
             <div className="mb-8">
               <div className="flex justify-between items-center mb-2">
                 <span className="text-sm text-gray-600">Course Progress</span>
                 <button 
+                  onClick={handleReset}
                   className="text-sm text-pink-600 hover:text-pink-700"
-                  onClick={() => setCompletedChapters({})}
                 >
                   Reset
                 </button>
               </div>
-              <div className="h-2 bg-gray-200 rounded-full">
+              <div className="bg-gray-200 rounded-full h-2">
                 <div
-                  className="h-full bg-pink-600 rounded-full transition-all duration-300"
+                  className="bg-pink-500 rounded-full h-2 transition-all duration-500"
                   style={{ width: `${calculateProgress()}%` }}
                 />
               </div>
-              <div className="text-right text-sm text-gray-600 mt-1">
-                {calculateProgress()}% Complete
-              </div>
+              <span className="text-sm text-gray-600 mt-1">{calculateProgress()}% Complete</span>
             </div>
 
-            {/* Chapter Links */}
             <div className="space-y-4">
               {chapters.map((chapter) => (
-                <a
-                  key={chapter.id}
-                  href={chapter.link}
-                  className={`block p-4 rounded-lg border hover:shadow-md transition-all ${
-                    chapter.link === '#' 
-                      ? 'border-gray-200 cursor-not-allowed' 
-                      : 'border-gray-200 hover:border-pink-400'
-                  }`}
-                  onClick={() => handleContentClick(chapter.description, chapter.id, chapter.link)}
+                <div
+                  key={chapter.number}
+                  className="border rounded-lg p-4 hover:shadow-md transition-shadow"
                 >
-                  <div className="flex justify-between items-center">
-                    <div>
-                      <h3 className="text-lg font-semibold text-pink-600">{chapter.title}</h3>
-                      <p className="text-gray-600 mt-1">{chapter.description}</p>
+                  <Link href={chapter.path}>
+                    <div className="flex justify-between items-center">
+                      <div>
+                        <h2 className="text-lg text-pink-600 font-medium">
+                          Chapter {chapter.number}: {chapter.title}
+                          {completedChapters[`chapter${chapter.number}`] && ' ✓'}
+                        </h2>
+                        <p className="text-gray-600 mt-1">{chapter.description}</p>
+                      </div>
                     </div>
-                    {completedChapters[chapter.id] && (
-                      <span className="text-green-500">✓</span>
-                    )}
-                  </div>
-                </a>
+                  </Link>
+                </div>
               ))}
             </div>
           </div>
-        </div>
+        </main>
       </div>
     </ProtectedRoute>
   );

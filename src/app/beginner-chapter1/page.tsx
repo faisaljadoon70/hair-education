@@ -6,6 +6,7 @@ import { ProtectedRoute } from '@/components/ProtectedRoute';
 interface ModuleItem {
   text: string;
   content: string;
+  isCategory?: boolean;
   subItems?: ModuleItem[]; // New field for nested subtopics
 }
 
@@ -95,125 +96,79 @@ export default function BeginnerChapter1Page() {
         },
         {
           text: 'Hair Structure',
-          content: 'Hair Structure Content',
+          content: '',
+          isCategory: true,
           subItems: [
-            {
-              text: 'Cuticle',
-              content: 'Cuticle Content',
-            },
-            {
-              text: 'Cortex',
-              content: 'Cortex Content',
-            },
-            {
-              text: 'Medulla',
-              content: 'Medulla Content',
-            },
-          ],
+            { text: 'Cuticle', content: 'Cuticle Content' },
+            { text: 'Cortex', content: 'Cortex Content' },
+            { text: 'Medulla', content: 'Medulla Content' }
+          ]
         },
         {
           text: 'Natural Hair Color',
-          content: 'Natural Hair Color Content',
+          content: '',
+          isCategory: true,
           subItems: [
-            {
-              text: 'Eumelanin',
-              content: 'Eumelanin Content',
-            },
-            {
-              text: 'Trichosiderin',
-              content: 'Trichosiderin Content',
-            },
-            {
-              text: 'Pheomelanin',
-              content: 'Pheomelanin Content',
-            },
-          ],
-        },
-        {
-          text: 'Hair Root',
-          content: 'Hair Root Content',
+            { text: 'Eumelanin', content: 'Eumelanin Content' },
+            { text: 'Trichosiderin', content: 'Trichosiderin Content' },
+            { text: 'Pheomelanin', content: 'Pheomelanin Content' }
+          ]
         },
         {
           text: 'Characteristics of Hair',
-          content: 'Characteristics of Hair Content',
+          content: '',
+          isCategory: true,
           subItems: [
-            {
-              text: 'Texture',
-              content: 'Texture Content',
-            },
-            {
-              text: 'Porosity',
-              content: 'Porosity Content',
-              subItems: [
-                {
-                  text: 'Low Porosity',
-                  content: 'Low Porosity Content',
-                },
-                {
-                  text: 'Average Porosity',
-                  content: 'Average Porosity Content',
-                },
-                {
-                  text: 'High Porosity',
-                  content: 'High Porosity Content',
-                },
-              ],
-            },
-            {
-              text: 'Porosity Test',
-              content: 'Porosity Test Content',
-            },
-            {
-              text: 'Elasticity',
-              content: 'Elasticity Content',
-            },
-            {
-              text: 'Density',
-              content: 'Density Content',
-            },
-          ],
+            { text: 'Texture', content: 'Texture Content' },
+            { text: 'Porosity', content: 'Porosity Content' },
+            { text: 'Elasticity', content: 'Elasticity Content' },
+            { text: 'Density', content: 'Density Content' }
+          ]
         },
         {
           text: 'Chemical Structure of Hair',
-          content: 'Chemical Structure of Hair Content',
+          content: '',
+          isCategory: true,
           subItems: [
-            {
-              text: 'Building Blocks of Protein',
-              content: 'Building Blocks of Protein Content',
-            },
-            {
-              text: 'Peptide Bonds',
-              content: 'Peptide Bonds Content',
-            },
-            {
-              text: 'Disulphide Bonds',
-              content: 'Disulphide Bonds Content',
-            },
-            {
-              text: 'Hydrogen Bonds',
-              content: 'Hydrogen Bonds Content',
-            },
-            {
-              text: 'Salt Bonds',
-              content: 'Salt Bonds Content',
-            },
-            {
-              text: 'Sugar Bonds',
-              content: 'Sugar Bonds Content',
-            },
-          ],
-        },
-        {
-          text: 'How is Hair Made (Bonds)?',
-          content: 'How is Hair Made Content',
-        },
-        {
-          text: 'Hair Growth Cycles',
-          content: 'Hair Growth Cycles Content',
-        },
-      ],
-    },
+            { text: 'Building Blocks of Protein', content: 'Building Blocks Content' },
+            { text: 'Peptide Bonds', content: 'Peptide Bonds Content' },
+            { text: 'Disulphide Bonds', content: 'Disulphide Bonds Content' },
+            { text: 'Hydrogen Bonds', content: 'Hydrogen Bonds Content' }
+          ]
+        }
+      ]
+    }
   ];
+
+  // Render module items with checkmarks on leaf nodes only
+  const renderModuleItems = (items: ModuleItem[], depth: number = 0) => {
+    return (
+      <ul className={`space-y-2 ${depth > 0 ? 'ml-6' : ''}`}>
+        {items.map((item, index) => (
+          <li key={index} className="flex items-center justify-between">
+            <div className="flex-1">
+              {item.isCategory ? (
+                <div className="text-gray-700 font-semibold">{item.text}</div>
+              ) : (
+                <button
+                  onClick={() => handleContentClick(item.content, item.text)}
+                  className="text-left hover:text-pink-600 cursor-pointer"
+                >
+                  {item.text}
+                </button>
+              )}
+              {item.subItems && renderModuleItems(item.subItems, depth + 1)}
+            </div>
+            {!item.isCategory && !item.subItems && (
+              <span className="text-green-500">
+                {completedModules[item.text] && '✓'}
+              </span>
+            )}
+          </li>
+        ))}
+      </ul>
+    );
+  };
 
   // Calculate progress percentage using formula
   const calculateProgress = () => {
@@ -253,29 +208,6 @@ export default function BeginnerChapter1Page() {
     }
 
     return { percentage };
-  };
-
-  // Render module items with checkmarks on leaf nodes only
-  const renderModuleItems = (items: ModuleItem[]) => {
-    return items.map((item) => (
-      <div key={item.text}>
-        <div
-          className="flex items-center justify-between cursor-pointer py-1 hover:bg-pink-50 rounded px-2 -ml-2"
-          onClick={() => handleContentClick(item.content, item.text)}
-        >
-          <span className="font-medium text-gray-800">{item.text}</span>
-          <span>
-            {!item.subItems && (completedModules[item.text] ? '✔' : '○')}
-          </span>
-        </div>
-        {/* Render nested items if they exist */}
-        {item.subItems && (
-          <div className="ml-4">
-            {renderModuleItems(item.subItems)} {/* Recursive call */}
-          </div>
-        )}
-      </div>
-    ));
   };
 
   return (
