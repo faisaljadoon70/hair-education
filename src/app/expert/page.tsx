@@ -12,138 +12,71 @@ interface ModuleItem {
 
 export default function ExpertPage() {
   const [selectedContent, setSelectedContent] = useState<string | null>(null);
-  const [completedModules, setCompletedModules] = useState<{
-    [key: string]: boolean;
-  }>({});
+  const [completedChapters, setCompletedChapters] = useState<Record<string, boolean>>({});
 
-  // Load completed modules from localStorage
+  // Load completed chapters from localStorage
   useEffect(() => {
-    const savedModules = localStorage.getItem('completedModulesExpert');
-    if (savedModules) {
-      setCompletedModules(JSON.parse(savedModules));
+    const stored = localStorage.getItem('completedExpertChapters');
+    if (stored) {
+      setCompletedChapters(JSON.parse(stored));
     }
   }, []);
 
-  // Save completed modules to localStorage
+  // Save completed chapters to localStorage
   useEffect(() => {
-    if (Object.keys(completedModules).length > 0) {
-      localStorage.setItem(
-        'completedModulesExpert',
-        JSON.stringify(completedModules)
-      );
+    if (Object.keys(completedChapters).length > 0) {
+      localStorage.setItem('completedExpertChapters', JSON.stringify(completedChapters));
     }
-  }, [completedModules]);
+  }, [completedChapters]);
 
-  // Calculate progress percentage using formula
-  const calculateProgress = () => {
-    let totalWeight = 0;
-    let completedWeight = 0;
-
-    const calculateItemWeight = (items: ModuleItem[], depth: number = 0) => {
-      const weightMultiplier = Math.pow(0.8, depth);
-      
-      items.forEach(item => {
-        const currentWeight = weightMultiplier;
-        totalWeight += currentWeight;
-        
-        if (completedModules[item.text]) {
-          completedWeight += currentWeight;
-        }
-
-        if (item.subItems) {
-          calculateItemWeight(item.subItems, depth + 1);
-        }
-      });
-    };
-
-    modules.forEach(module => {
-      calculateItemWeight(module.items);
-    });
-
-    return {
-      percentage: Math.round((completedWeight / totalWeight) * 100) || 0
-    };
-  };
-
-  const modules = [
+  const chapters = [
     {
-      title: 'Module 1: Advanced Color Formulation',
-      items: [
-        {
-          text: 'Custom Color Mixing',
-          content: 'Learn to create unique color formulations for any client need.',
-          preview: 'Learn to create unique color formulations for any client need.'
-        },
-        {
-          text: 'Color Correction',
-          content: 'Master complex color correction techniques.',
-          preview: 'Master complex color correction techniques.'
-        }
-      ]
+      id: 'chapter1',
+      title: 'Chapter 1: Advanced Hair Techniques',
+      description: 'Master color formulation, business management, and advanced coloring techniques.',
+      link: '/expert-chapter1'
     },
     {
-      title: 'Module 2: Business Management',
-      items: [
-        {
-          text: 'Salon Operations',
-          content: 'Learn effective salon management strategies.',
-          preview: 'Learn effective salon management strategies.'
-        },
-        {
-          text: 'Client Relations',
-          content: 'Build and maintain a loyal client base.',
-          preview: 'Build and maintain a loyal client base.'
-        }
-      ]
+      id: 'chapter2',
+      title: 'Chapter 2: Chapter 2',
+      description: 'Coming soon...',
+      link: '#'
     },
     {
-      title: 'Module 3: Advanced Techniques',
-      items: [
-        {
-          text: 'Balayage Mastery',
-          content: 'Perfect your freehand coloring techniques.',
-          preview: 'Perfect your freehand coloring techniques.'
-        },
-        {
-          text: 'Creative Color Design',
-          content: 'Create stunning, unique color patterns and designs.',
-          preview: 'Create stunning, unique color patterns and designs.'
-        }
-      ]
+      id: 'chapter3',
+      title: 'Chapter 3: Chapter 3',
+      description: 'Coming soon...',
+      link: '#'
+    },
+    {
+      id: 'chapter4',
+      title: 'Chapter 4: Chapter 4',
+      description: 'Coming soon...',
+      link: '#'
+    },
+    {
+      id: 'chapter5',
+      title: 'Chapter 5: Chapter 5',
+      description: 'Coming soon...',
+      link: '#'
     }
   ];
 
-  const handleContentClick = (content: string, module: string) => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-    setSelectedContent(content);
-    setCompletedModules((prev) => ({ ...prev, [module]: true }));
+  const calculateProgress = () => {
+    const completed = Object.values(completedChapters).filter(Boolean).length;
+    return Math.round((completed / chapters.length) * 100);
   };
 
-  const renderModuleItems = (items: ModuleItem[]) => {
-    return items.map((item) => (
-      <div key={item.text}>
-        <div
-          className="flex items-center justify-between cursor-pointer py-1 hover:bg-pink-50 rounded px-2"
-          onClick={() => handleContentClick(item.content, item.text)}
-        >
-          <span className="font-medium text-gray-800">{item.text}</span>
-          <span>
-            {!item.subItems && (completedModules[item.text] ? '✔' : '○')}
-          </span>
-        </div>
-        {item.subItems && (
-          <div className="ml-4">
-            {renderModuleItems(item.subItems)}
-          </div>
-        )}
-      </div>
-    ));
+  const handleContentClick = (content: string, chapterId: string, link: string) => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    setSelectedContent(content);
+    setCompletedChapters((prev) => ({ ...prev, [chapterId]: true }));
   };
 
   return (
     <ProtectedRoute>
       <div className="min-h-screen bg-gradient-to-br from-pink-50 to-pink-100">
-        <div className="bg-pink-600 text-white p-4 flex items-center justify-between">
+        <div className="bg-pink-600 text-white p-4 flex justify-between items-center">
           <a href="/" className="text-white text-lg font-semibold hover:underline">
             Home
           </a>
@@ -152,111 +85,58 @@ export default function ExpertPage() {
           </button>
         </div>
 
-        <div className="max-w-[95%] mx-auto p-8">
-          {!selectedContent && (
-            <div className="flex justify-center items-center">
-              <div className="w-2/3 bg-white rounded-lg shadow-md px-4 py-6">
-                <h2 className="text-2xl font-semibold text-pink-600 mb-4">
-                  Table of Contents
-                </h2>
-                {/* Progress Bar */}
-                <div className="mb-6">
-                  <div className="flex justify-between items-center text-sm">
-                    <span>Course Progress</span>
-                    <span 
-                      onClick={() => setCompletedModules({})}
-                      className="text-pink-600 hover:text-pink-700 cursor-pointer"
-                    >
-                      Reset
-                    </span>
-                  </div>
-                  <div className="relative pt-1">
-                    <div className="w-full h-2 bg-gray-200 rounded-full">
-                      <div 
-                        className="h-full bg-pink-600 rounded-full transition-all duration-300"
-                        style={{ width: `${calculateProgress().percentage}%` }}
-                      />
-                    </div>
-                  </div>
-                  <div className="flex justify-end mt-1">
-                    <span className="text-sm">
-                      {calculateProgress().percentage}% Complete
-                    </span>
-                  </div>
-                </div>
-                <div className="space-y-4">
-                  {modules.map((module) => (
-                    <div key={module.title}>
-                      <h3 className="text-xl font-medium text-gray-800 mb-3">
-                        {module.title}
-                      </h3>
-                      <div className="space-y-2 text-gray-700">
-                        {renderModuleItems(module.items)}
-                      </div>
-                    </div>
-                  ))}
-                </div>
+        <div className="max-w-4xl mx-auto p-8">
+          <div className="bg-white rounded-lg shadow-md p-6">
+            <h1 className="text-2xl font-semibold text-pink-600 mb-4">Table of Contents</h1>
+            
+            {/* Progress Bar */}
+            <div className="mb-8">
+              <div className="flex justify-between items-center mb-2">
+                <span className="text-sm text-gray-600">Course Progress</span>
+                <button 
+                  className="text-sm text-pink-600 hover:text-pink-700"
+                  onClick={() => setCompletedChapters({})}
+                >
+                  Reset
+                </button>
+              </div>
+              <div className="h-2 bg-gray-200 rounded-full">
+                <div
+                  className="h-full bg-pink-600 rounded-full transition-all duration-300"
+                  style={{ width: `${calculateProgress()}%` }}
+                />
+              </div>
+              <div className="text-right text-sm text-gray-600 mt-1">
+                {calculateProgress()}% Complete
               </div>
             </div>
-          )}
 
-          {selectedContent && (
-            <div className="flex gap-6">
-              {/* Sidebar */}
-              <div className="w-1/5 bg-white rounded-lg shadow-md pl-4 pr-2 py-6">
-                <h2 className="text-2xl font-semibold text-pink-600 mb-4">
-                  Table of Contents
-                </h2>
-                {/* Progress Bar */}
-                <div className="mb-6">
-                  <div className="flex justify-between items-center text-sm">
-                    <span>Course Progress</span>
-                    <span 
-                      onClick={() => setCompletedModules({})}
-                      className="text-pink-600 hover:text-pink-700 cursor-pointer"
-                    >
-                      Reset
-                    </span>
-                  </div>
-                  <div className="relative pt-1">
-                    <div className="w-full h-2 bg-gray-200 rounded-full">
-                      <div 
-                        className="h-full bg-pink-600 rounded-full transition-all duration-300"
-                        style={{ width: `${calculateProgress().percentage}%` }}
-                      />
+            {/* Chapter Links */}
+            <div className="space-y-4">
+              {chapters.map((chapter) => (
+                <a
+                  key={chapter.id}
+                  href={chapter.link}
+                  className={`block p-4 rounded-lg border hover:shadow-md transition-all ${
+                    chapter.link === '#' 
+                      ? 'border-gray-200 cursor-not-allowed' 
+                      : 'border-gray-200 hover:border-pink-400'
+                  }`}
+                  onClick={() => handleContentClick(chapter.description, chapter.id, chapter.link)}
+                >
+                  <div className="flex justify-between items-center">
+                    <div>
+                      <h3 className="text-lg font-semibold text-pink-600">{chapter.title}</h3>
+                      <p className="text-gray-600 mt-1">{chapter.description}</p>
                     </div>
+                    {completedChapters[chapter.id] && (
+                      <span className="text-green-500">✓</span>
+                    )}
                   </div>
-                  <div className="flex justify-end mt-1">
-                    <span className="text-sm">
-                      {calculateProgress().percentage}% Complete
-                    </span>
-                  </div>
-                </div>
-                <div className="space-y-4">
-                  {modules.map((module) => (
-                    <div key={module.title}>
-                      <h3 className="text-xl font-medium text-gray-800 mb-3">
-                        {module.title}
-                      </h3>
-                      <div className="space-y-2 text-gray-700">
-                        {renderModuleItems(module.items)}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Content Area */}
-              <div className="w-4/5 bg-white rounded-lg shadow-md px-8 py-6">
-                <h2 className="text-2xl font-semibold text-pink-600 mb-4">
-                  {selectedContent}
-                </h2>
-                <p className="text-gray-600">
-                  {selectedContent}
-                </p>
-              </div>
+                </a>
+              ))}
             </div>
-          )}
+          </div>
         </div>
       </div>
     </ProtectedRoute>

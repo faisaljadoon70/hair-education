@@ -19,24 +19,24 @@ export default function Home() {
 
       {/* Navigation Cards */}
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pb-24">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <Link href="/beginner" className="bg-white p-8 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300">
-            <h2 className="text-2xl font-bold text-pink-600 mb-3">Beginner Level</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-12">
+          <Link href="/beginner" className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
+            <h2 className="text-2xl font-bold text-pink-600 mb-2">Beginner Level</h2>
             <p className="text-gray-600">Start your journey with fundamental concepts and basic techniques.</p>
           </Link>
 
-          <Link href="/intermediate" className="bg-white p-8 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300">
-            <h2 className="text-2xl font-bold text-pink-600 mb-3">Intermediate Level</h2>
+          <Link href="/intermediate" className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
+            <h2 className="text-2xl font-bold text-pink-600 mb-2">Intermediate Level</h2>
             <p className="text-gray-600">Advance your skills with professional techniques and client consultation.</p>
           </Link>
 
-          <Link href="/expert" className="bg-white p-8 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300">
-            <h2 className="text-2xl font-bold text-pink-600 mb-3">Expert Level</h2>
+          <Link href="/expert" className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
+            <h2 className="text-2xl font-bold text-pink-600 mb-2">Expert Level</h2>
             <p className="text-gray-600">Master advanced techniques and business management skills.</p>
           </Link>
 
-          <Link href="/contact" className="bg-white p-8 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300">
-            <h2 className="text-2xl font-bold text-pink-600 mb-3">Contact Us</h2>
+          <Link href="/contact" className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
+            <h2 className="text-2xl font-bold text-pink-600 mb-2">Contact Us</h2>
             <p className="text-gray-600">Get in touch with our team for support and inquiries.</p>
           </Link>
         </div>
