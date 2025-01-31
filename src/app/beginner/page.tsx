@@ -171,6 +171,37 @@ export default function BeginnerPage() {
     },
   ];
 
+  // Calculate progress percentage using formula
+  const calculateProgress = () => {
+    let totalWeight = 0;
+    let completedWeight = 0;
+
+    const calculateItemWeight = (items: ModuleItem[], depth: number = 0) => {
+      const weightMultiplier = Math.pow(0.8, depth); // Decrease weight for deeper levels
+      
+      items.forEach(item => {
+        const currentWeight = weightMultiplier;
+        totalWeight += currentWeight;
+        
+        if (completedModules[item.text]) {
+          completedWeight += currentWeight;
+        }
+
+        if (item.subItems) {
+          calculateItemWeight(item.subItems, depth + 1);
+        }
+      });
+    };
+
+    modules.forEach(module => {
+      calculateItemWeight(module.items);
+    });
+
+    return {
+      percentage: Math.round((completedWeight / totalWeight) * 100) || 0
+    };
+  };
+
   // Render module items with checkmarks on leaf nodes only
   const renderModuleItems = (items: ModuleItem[]) => {
     return items.map((item) => (
@@ -212,21 +243,44 @@ export default function BeginnerPage() {
         </div>
 
         {/* Main content layout */}
-        <div className="max-w-7xl mx-auto p-8">
+        <div className="max-w-[95%] mx-auto p-8">
           {/* Table of Contents Centered on initial load */}
           {!selectedContent && (
-            <div className="flex justify-center">
-              <div className="w-full max-w-4xl bg-white rounded-lg shadow-md p-6">
+            <div className="flex justify-center items-center">
+              <div className="w-2/3 bg-white rounded-lg shadow-md px-4 py-6">
                 <h2 className="text-2xl font-semibold text-pink-600 mb-4">
                   Table of Contents
                 </h2>
-                <div className="space-y-4">
+                {/* Progress Bar */}
+                <div className="mb-6">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-sm text-gray-600">Course Progress</span>
+                    <button 
+                      onClick={() => setCompletedModules({})}
+                      className="text-sm text-pink-600 hover:text-pink-700"
+                    >
+                      Reset
+                    </button>
+                  </div>
+                  <div className="w-full h-2 bg-gray-200 rounded-full">
+                    <div 
+                      className="h-full bg-pink-600 rounded-full transition-all duration-300"
+                      style={{ width: `${calculateProgress().percentage}%` }}
+                    />
+                  </div>
+                  <div className="flex justify-end mt-1">
+                    <span className="text-sm font-medium text-gray-700">
+                      {calculateProgress().percentage}% Complete
+                    </span>
+                  </div>
+                </div>
+                <div className="space-y-4 pl-2">
                   {modules.map((module) => (
                     <div key={module.title}>
-                      <h3 className="text-xl font-medium text-gray-800 mb-2">
+                      <h3 className="text-xl font-medium text-gray-800 mb-3">
                         {module.title}
                       </h3>
-                      <div className="space-y-2 text-gray-700 ml-4">
+                      <div className="space-y-2 text-gray-700">
                         {renderModuleItems(module.items)}
                       </div>
                     </div>
@@ -237,19 +291,42 @@ export default function BeginnerPage() {
           )}
           {/* Content Display */}
           {selectedContent && (
-            <div className="flex max-w-7xl mx-auto p-8">
+            <div className="flex gap-6">
               {/* Sidebar */}
-              <div className="w-1/4 bg-white rounded-lg shadow-md p-6 mr-6">
+              <div className="w-1/5 bg-white rounded-lg shadow-md pl-4 pr-2 py-6">
                 <h2 className="text-2xl font-semibold text-pink-600 mb-4">
                   Table of Contents
                 </h2>
+                {/* Progress Bar */}
+                <div className="mb-6">
+                  <div className="flex justify-between items-center mb-2">
+                    <span className="text-sm text-gray-600">Course Progress</span>
+                    <button 
+                      onClick={() => setCompletedModules({})}
+                      className="text-sm text-pink-600 hover:text-pink-700"
+                    >
+                      Reset
+                    </button>
+                  </div>
+                  <div className="w-full h-2 bg-gray-200 rounded-full">
+                    <div 
+                      className="h-full bg-pink-600 rounded-full transition-all duration-300"
+                      style={{ width: `${calculateProgress().percentage}%` }}
+                    />
+                  </div>
+                  <div className="flex justify-end mt-1">
+                    <span className="text-sm font-medium text-gray-700">
+                      {calculateProgress().percentage}% Complete
+                    </span>
+                  </div>
+                </div>
                 <div className="space-y-4">
                   {modules.map((module) => (
                     <div key={module.title}>
-                      <h3 className="text-xl font-medium text-gray-800 mb-2">
+                      <h3 className="text-xl font-medium text-gray-800 mb-3">
                         {module.title}
                       </h3>
-                      <div className="space-y-2 text-gray-700 ml-4">
+                      <div className="space-y-2 text-gray-700">
                         {renderModuleItems(module.items)}
                       </div>
                     </div>
@@ -258,7 +335,7 @@ export default function BeginnerPage() {
               </div>
 
               {/* Content Area */}
-              <div className="w-3/4 bg-white rounded-lg shadow-md p-6">
+              <div className="w-4/5 bg-white rounded-lg shadow-md px-8 py-6">
                 <h2 className="text-2xl font-semibold text-pink-600 mb-4">
                   {selectedContent}
                 </h2>

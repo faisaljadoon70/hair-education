@@ -24,7 +24,7 @@ export default function AuthButton() {
     <div className="flex items-center gap-4">
       {user && (
         <span className="text-sm text-gray-700">
-          Signed in as {user.email}
+          {user.email}
         </span>
       )}
       <button
