@@ -5,16 +5,13 @@ import { ProtectedRoute } from '@/components/ProtectedRoute';
 
 interface ModuleItem {
   text: string;
-  content: JSX.Element | string;
+  content: string;
   isCategory?: boolean;
   subItems?: ModuleItem[];
 }
 
 export default function BeginnerChapter2Page() {
-  // Store both selected content and its title
-  const [selectedContent, setSelectedContent] = useState<
-    JSX.Element | string | null
-  >(null);
+  const [selectedContent, setSelectedContent] = useState<string | null>(null);
   const [selectedTitle, setSelectedTitle] = useState<string>('');
   const [completedModules, setCompletedModules] = useState<{
     [key: string]: boolean;
@@ -39,7 +36,7 @@ export default function BeginnerChapter2Page() {
   }, [completedModules]);
 
   // Update the click handler to accept both content and title
-  const handleContentClick = (content: JSX.Element | string, title: string) => {
+  const handleContentClick = (content: string, title: string) => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
     setSelectedContent(content);
     setSelectedTitle(title);
@@ -52,42 +49,20 @@ export default function BeginnerChapter2Page() {
       items: [
         {
           text: 'Identifying Natural Hair Level and Tone',
-          content: (
-            <div>
-              <p>
-                Learning to identify a client’s natural hair colour is the most
-                important step in becoming a good colourist. Natural hair colour
-                ranges from black to dark brown to red, and from dark blond to
-                light blond. Hair colour is unique to everyone; no two people
-                have exactly the same colour.
-              </p>
-              <p className="mt-4">
-                The kinds of melanin determining natural hair colour are:
-              </p>
-              <ul className="list-disc list-inside ml-4">
-                <li>
-                  <strong style={{ color: '#D7D7BF' }}>EUMELANIN</strong>{' '}
-                  (brown-black)
-                </li>
-                <li>
-                  <strong style={{ color: '#FF4B4B' }}>TRICHOSIDERIN</strong>{' '}
-                  (red)
-                </li>
-                <li>
-                  <strong style={{ color: '#814D00' }}>PHEOMELANIN</strong>{' '}
-                  (yellow)
-                </li>
-              </ul>
-              <p className="mt-4">
-                <strong style={{ color: '#FF9A98' }}>
-                  Contributing pigment
-                </strong>
-                , also known as <strong>undertone</strong>, is the varying
-                degrees of warmth exposed during a permanent colour or
-                lightening process.
-              </p>
-            </div>
-          ),
+          content: `
+            <p>
+              Learning to identify a client’s natural hair colour is the most important step in becoming a good colourist. Natural hair colour ranges from black to dark brown to red, and from dark blond to light blond. Hair colour is unique to everyone; no two people have exactly the same colour.
+            </p>
+            <p class="mt-4">The kinds of melanin determining natural hair colour are:</p>
+            <ul class="list-disc list-inside ml-4">
+              <li><strong style="color: #D7D7BF;">EUMELANIN</strong> (brown-black)</li>
+              <li><strong style="color: #FF4B4B;">TRICHOSIDERIN</strong> (red)</li>
+              <li><strong style="color: #814D00;">PHEOMELANIN</strong> (yellow)</li>
+            </ul>
+            <p class="mt-4">
+              Contributing pigment, also known as undertone, is the varying degrees of warmth exposed during a permanent colour or lightening process.
+            </p>
+          `,
         },
         {
           text: 'The Level System',
@@ -111,8 +86,13 @@ export default function BeginnerChapter2Page() {
         },
         {
           text: 'Identifying Natural Level',
-          content:
-            'To identify natural level: 1) Take a ½-inch square section in the crown area and hold it up from the scalp. 2) Use natural level-finder swatches provided by manufacturers to match the hair. 3) Move the swatch along the strand to ensure accuracy. 4) Determine the depth of the natural-hair color level.',
+          content: `<p>To identify natural level:</p>
+            <ol>
+                <li>Take a ½-inch square section in the crown area and hold it up from the scalp.</li>
+                <li>Use natural level-finder swatches provided by manufacturers to match the hair.</li>
+                <li>Move the swatch along the strand to ensure accuracy.</li>
+                <li>Determine the depth of the natural-hair color level.</li>
+            </ol>`,
         },
         {
           text: 'Grey Hair',
@@ -122,7 +102,7 @@ export default function BeginnerChapter2Page() {
         {
           text: 'Roots, Length, and Points',
           content:
-            'Hair presents different structural characteristics at roots, lengths, and points. ROOTS: Not fully keratinized, easy absorption, dyeing influenced by body heat. LENGTH: Fully keratinized, uniform color, less influenced by body heat. POINTS: More porous, higher absorption, potential for uneven color.',
+            'Hair presents different structural characteristics at roots, lengths, and points. <strong>ROOTS:</strong> Not fully keratinized, easy absorption, dyeing influenced by body heat. <strong>LENGTH:</strong> Fully keratinized, uniform color, less influenced by body heat. <strong>POINTS:</strong> More porous, higher absorption, potential for uneven color.',
         },
         {
           text: 'Exercise',
@@ -169,10 +149,9 @@ export default function BeginnerChapter2Page() {
     const calculateItemWeight = (items: ModuleItem[], depth: number = 0) => {
       const weightMultiplier = Math.pow(0.8, depth);
       items.forEach((item) => {
-        const currentWeight = weightMultiplier;
-        totalWeight += currentWeight;
+        totalWeight += weightMultiplier;
         if (completedModules[item.text]) {
-          completedWeight += currentWeight;
+          completedWeight += weightMultiplier;
         }
         if (item.subItems) {
           calculateItemWeight(item.subItems, depth + 1);
@@ -319,7 +298,15 @@ export default function BeginnerChapter2Page() {
                     <h2 className="text-3xl font-semibold text-pink-600 mb-6 text-center">
                       {selectedTitle}
                     </h2>
-                    <div className="text-gray-600">{selectedContent}</div>
+                    <div>
+                      {typeof selectedContent === 'string' ? (
+                        <div
+                          dangerouslySetInnerHTML={{ __html: selectedContent }}
+                        />
+                      ) : (
+                        selectedContent
+                      )}
+                    </div>
                   </div>
                 </div>
               </div>
