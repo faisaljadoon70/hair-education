@@ -25,25 +25,25 @@ export default function BeginnerPage() {
       number: 1,
       title: 'Hair and Scalp',
       description: 'Learn about hair structure, types, and characteristics.',
-      path: '/beginner-chapter1',
+      path: '/beginner-chapter1-overview',
     },
     {
       number: 2,
-      title: 'Chapter 2',
-      description: 'Coming soon...',
-      path: '/beginner-chapter2',
+      title: 'Level System',
+      description: 'Learn about hair color levels, natural tones, and the level system.',
+      path: '/beginner-chapter2-overview',
     },
     {
       number: 3,
-      title: 'Chapter 3',
-      description: 'Coming soon...',
-      path: '/beginner-chapter3',
+      title: 'Color Theory',
+      description: 'Master the fundamentals of color theory and its application in hair coloring.',
+      path: '/beginner-chapter3-overview',
     },
     {
       number: 4,
-      title: 'Chapter 4',
-      description: 'Coming soon...',
-      path: '/beginner-chapter4',
+      title: 'Hair Coloring',
+      description: 'Learn about different types of hair colors, application techniques, and proper color formulation.',
+      path: '/beginner-chapter4-overview',
     },
     {
       number: 5,
@@ -105,67 +105,67 @@ export default function BeginnerPage() {
 
       <div className="min-h-screen bg-gray-50">
         {/* Navigation */}
-        <nav className="bg-pink-600 text-white shadow-lg">
-          <div className="max-w-7xl mx-auto px-4">
-            <div className="flex justify-between items-center h-16">
-              <div className="flex items-center space-x-14">
-                <Link href="/" className="text-2xl font-bold hover:scale-110 transition-transform">
-                  🏠
-                </Link>
-                <div className="hidden md:flex space-x-14">
-                  <Link href="/" className="text-white/90 hover:text-white py-1 transition-all duration-200 text-base hover:-translate-y-0.5">
-                    Home
-                  </Link>
-                  <span className="text-white py-1 px-4 text-base font-bold relative after:absolute after:bottom-0 after:left-0 after:w-full after:h-0.5 after:bg-white after:rounded-full bg-white/15 rounded-md">
-                    Beginner
-                  </span>
-                  <Link href="/intermediate" className="text-white/90 hover:text-white py-1 transition-all duration-200 text-base hover:-translate-y-0.5">
-                    Intermediate
-                  </Link>
-                  <Link href="/expert" className="text-white/90 hover:text-white py-1 transition-all duration-200 text-base hover:-translate-y-0.5">
-                    Expert
-                  </Link>
-                  <Link href="/contact" className="text-white/90 hover:text-white py-1 transition-all duration-200 text-base hover:-translate-y-0.5">
-                    Contact
-                  </Link>
-                </div>
-              </div>
+        <header className="bg-gradient-to-r from-pink-600 to-pink-500 text-white h-20 shadow-md relative">
+          <div className="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-white via-transparent to-transparent pointer-events-none"></div>
+          <div className="flex items-center justify-between px-4 h-full relative">
+            <a
+              href="/"
+              className="group text-2xl font-semibold transition-transform duration-200 flex items-center space-x-2 focus:outline-none focus:ring-2 focus:ring-white/50 focus:ring-offset-2 focus:ring-offset-pink-600 rounded-lg p-1"
+              aria-label="Go to home page"
+            >
+              <span className="transform group-hover:scale-110 transition-transform duration-200 inline-block">🏠</span>
+              <span className="text-lg">Home</span>
+            </a>
 
-              <div className="flex items-center space-x-4">
-                <span className="text-white/90">faisal_70@yahoo.com</span>
-                <button
-                  onClick={async () => {
-                    await supabase.auth.signOut();
-                  }}
-                  className="bg-white/25 px-4 py-1 rounded-md shadow-md hover:-translate-y-0.5 hover:bg-white/30 transition-all duration-200"
-                >
-                  Sign Out
-                </button>
-              </div>
+            <div className="hidden md:flex space-x-14 items-center">
+              <span className="text-white py-1 px-4 text-base font-bold relative after:absolute after:bottom-0 after:left-0 after:w-full after:h-0.5 after:bg-white after:rounded-full bg-white/15 rounded-md">
+                Beginner
+              </span>
+              <Link href="/intermediate" className="text-white/90 hover:text-white py-1 transition-all duration-200 text-base font-medium hover:-translate-y-0.5">
+                Intermediate
+              </Link>
+              <Link href="/expert" className="text-white/90 hover:text-white py-1 transition-all duration-200 text-base font-medium hover:-translate-y-0.5">
+                Expert
+              </Link>
+              <Link href="/contact" className="text-white/90 hover:text-white py-1 transition-all duration-200 text-base font-medium hover:-translate-y-0.5">
+                Contact
+              </Link>
+            </div>
 
-              {/* Mobile menu button */}
-              <div className="md:hidden">
-                <button
-                  onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                  className="text-white p-2"
+            <div className="flex items-center space-x-4">
+              <span className="text-white/90">faisal_70@yahoo.com</span>
+              <button
+                onClick={async () => {
+                  await supabase.auth.signOut();
+                }}
+                className="bg-white/25 px-4 py-1 rounded-md shadow-md hover:-translate-y-0.5 hover:bg-white/30 transition-all duration-200"
+              >
+                Sign Out
+              </button>
+            </div>
+
+            {/* Mobile menu button */}
+            <div className="md:hidden">
+              <button
+                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                className="text-white p-2"
+              >
+                <svg
+                  className="h-6 w-6"
+                  fill="none"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
                 >
-                  <svg
-                    className="h-6 w-6"
-                    fill="none"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    {isMobileMenuOpen ? (
-                      <path d="M6 18L18 6M6 6l12 12" />
-                    ) : (
-                      <path d="M4 6h16M4 12h16m-7 6h7" />
-                    )}
-                  </svg>
-                </button>
-              </div>
+                  {isMobileMenuOpen ? (
+                    <path d="M6 18L18 6M6 6l12 12" />
+                  ) : (
+                    <path d="M4 6h16M4 12h16m-7 6h7" />
+                  )}
+                </svg>
+              </button>
             </div>
           </div>
 
@@ -191,7 +191,7 @@ export default function BeginnerPage() {
               </div>
             </div>
           )}
-        </nav>
+        </header>
 
         {/* Breadcrumb */}
         <div className="bg-white shadow-sm">
@@ -237,40 +237,40 @@ export default function BeginnerPage() {
             {/* Chapters Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {chapters.map((chapter) => (
-                <div
-                  key={chapter.number}
-                  className={`rounded-lg border border-gray-100 shadow-sm hover:shadow-md transition-all duration-200 ${
-                    chapter.description === 'Coming soon...'
-                      ? 'opacity-75 cursor-not-allowed'
-                      : 'cursor-pointer hover:-translate-y-1'
-                  }`}
-                  onClick={() => chapter.description !== 'Coming soon...' && handleNavigation(chapter.path)}
-                >
-                  <div className="p-6">
-                    <h3 className="text-xl font-semibold text-pink-600 mb-2">
-                      Chapter {chapter.number}: {chapter.title}
-                    </h3>
-                    <p className="text-gray-600">{chapter.description}</p>
-                    
-                    {/* Status Indicator */}
-                    <div className="mt-4 flex items-center justify-between">
-                      <span className="text-sm text-gray-500">
-                        {chapter.description === 'Coming soon...' ? (
-                          <span className="inline-flex items-center">
-                            🔒 Coming Soon
-                          </span>
-                        ) : (
-                          <span className="inline-flex items-center">
-                            📖 Available
-                          </span>
+                <Link key={chapter.number} href={chapter.path} className="block">
+                  <div
+                    className={`rounded-lg border border-gray-100 shadow-sm hover:shadow-md transition-all duration-200 ${
+                      chapter.description === 'Coming soon...'
+                        ? 'opacity-75 cursor-not-allowed'
+                        : 'cursor-pointer hover:-translate-y-1'
+                    }`}
+                  >
+                    <div className="p-6">
+                      <h3 className="text-xl font-semibold text-pink-600 mb-2">
+                        Chapter {chapter.number}: {chapter.title}
+                      </h3>
+                      <p className="text-gray-600">{chapter.description}</p>
+                      
+                      {/* Status Indicator */}
+                      <div className="mt-4 flex items-center justify-between">
+                        <span className="text-sm text-gray-500">
+                          {chapter.description === 'Coming soon...' ? (
+                            <span className="inline-flex items-center">
+                              🔒 Coming Soon
+                            </span>
+                          ) : (
+                            <span className="inline-flex items-center">
+                              📖 Available
+                            </span>
+                          )}
+                        </span>
+                        {completedChapters[`chapter${chapter.number}`] && (
+                          <span className="text-green-500">✓ Completed</span>
                         )}
-                      </span>
-                      {completedChapters[`chapter${chapter.number}`] && (
-                        <span className="text-green-500">✓ Completed</span>
-                      )}
+                      </div>
                     </div>
                   </div>
-                </div>
+                </Link>
               ))}
             </div>
           </div>

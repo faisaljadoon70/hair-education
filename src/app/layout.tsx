@@ -2,7 +2,6 @@ import { headers } from 'next/headers';
 import './globals.css';
 import { AuthProvider } from '@/context/AuthContext';
 import { TutorialProvider } from '@/context/TutorialContext';
-import { ResponsiveLayout } from '@/components/responsive/ResponsiveLayout';
 import Script from 'next/script';
 
 export const metadata = {
@@ -39,9 +38,9 @@ export default function RootLayout({
       <body className="antialiased">
         <AuthProvider>
           <TutorialProvider>
-            <ResponsiveLayout>
+            <div className="min-h-screen bg-gray-50">
               {children}
-            </ResponsiveLayout>
+            </div>
           </TutorialProvider>
         </AuthProvider>
         <Script

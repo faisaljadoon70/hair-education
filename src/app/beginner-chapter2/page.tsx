@@ -2,7 +2,10 @@
 
 import { useState, useEffect } from 'react';
 import { ProtectedRoute } from '@/components/ProtectedRoute';
-import { DeviceCapabilitiesTest } from '@/components/DeviceCapabilitiesTest'
+import { DeviceCapabilitiesTest } from '@/components/DeviceCapabilitiesTest';
+import Link from 'next/link';
+import { useAuth } from '@/context/AuthContext';
+import { supabase } from '@/utils/supabase';
 
 interface ModuleItem {
   text: string;
@@ -19,6 +22,7 @@ export default function BeginnerChapter2Page() {
   }>({});
   const [isLoading, setIsLoading] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const { user } = useAuth();
 
   const handleNavigation = (path: string) => {
     setIsLoading(true);
@@ -53,6 +57,16 @@ export default function BeginnerChapter2Page() {
     setCompletedModules((prev) => ({ ...prev, [title]: true }));
   };
 
+  // Section icons mapping
+  const sectionIcons: { [key: string]: string } = {
+    'Level System': '📏',
+    'Identifying Natural Hair Level and Tone': '🔍',
+    'The Level System': '📊',
+    'Natural Levels of Hair': '🎨',
+    'Categories of Colour': '🌈'
+  };
+
+  // Define modules outside of calculateProgress
   const modules: { title: string; items: ModuleItem[] }[] = [
     {
       title: 'Level System',
@@ -123,6 +137,34 @@ export default function BeginnerChapter2Page() {
     },
   ];
 
+  // Calculate progress percentage using formula
+  const calculateProgress = () => {
+    let totalClickableItems = 0;
+    let completedClickableItems = 0;
+
+    const countClickableItems = (items: ModuleItem[]) => {
+      items.forEach((item) => {
+        if (item.content) {
+          totalClickableItems++;
+          if (completedModules[item.text]) {
+            completedClickableItems++;
+          }
+        }
+        if (item.subItems) {
+          countClickableItems(item.subItems);
+        }
+      });
+    };
+
+    modules.forEach((module) => {
+      countClickableItems(module.items);
+    });
+
+    return totalClickableItems === 0
+      ? 0
+      : Math.round((completedClickableItems / totalClickableItems) * 100);
+  };
+
   const renderModuleItems = (items: ModuleItem[], depth: number = 0) => {
     return (
       <ul className={`space-y-2 ${depth > 0 ? 'ml-6' : ''}`}>
@@ -152,278 +194,224 @@ export default function BeginnerChapter2Page() {
     );
   };
 
-  const calculateProgress = () => {
-    let totalWeight = 0;
-    let completedWeight = 0;
-
-    const calculateItemWeight = (items: ModuleItem[], depth: number = 0) => {
-      const weightMultiplier = Math.pow(0.8, depth);
-      items.forEach((item) => {
-        totalWeight += weightMultiplier;
-        if (completedModules[item.text]) {
-          completedWeight += weightMultiplier;
-        }
-        if (item.subItems) {
-          calculateItemWeight(item.subItems, depth + 1);
-        }
-      });
-    };
-
-    modules.forEach((module) => calculateItemWeight(module.items));
-    const percentage = Math.round((completedWeight / totalWeight) * 100) || 0;
-
-    if (percentage === 100) {
-      const beginnerProgress = JSON.parse(
-        localStorage.getItem('completedBeginnerChapters') || '{}'
-      );
-      if (!beginnerProgress.chapter2) {
-        beginnerProgress.chapter2 = true;
-        localStorage.setItem(
-          'completedBeginnerChapters',
-          JSON.stringify(beginnerProgress)
-        );
-      }
-    }
-    return { percentage };
-  };
-
   return (
     <ProtectedRoute>
-      <header className="bg-gradient-to-r from-pink-600 to-pink-500 text-white h-20 shadow-md relative">
-        <div className="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-white via-transparent to-transparent pointer-events-none"></div>
-        <div className="flex items-center justify-between px-4 h-full relative">
-          <a
-            href="/"
-            className="group text-2xl font-semibold transition-transform duration-200 flex items-center space-x-2 focus:outline-none focus:ring-2 focus:ring-white/50 focus:ring-offset-2 focus:ring-offset-pink-600 rounded-lg p-1"
-            aria-label="Go to home page"
-          >
-            <span className="transform group-hover:scale-110 transition-transform duration-200 inline-block">🏠</span>
-            <span className="text-lg">Home</span>
-          </a>
-
-          {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center space-x-14" role="navigation" aria-label="Main navigation">
-            <div className="h-4 w-px bg-white/20 transform -skew-x-12"></div>
-            <a 
-              href="/" 
-              onClick={(e) => { e.preventDefault(); handleNavigation('/'); }}
-              className="text-white/90 hover:text-white py-1 transition-all duration-200 text-base font-medium hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-white/50 rounded-md px-2"
-              aria-label="Home page"
-            >
-              Home
-            </a>
-            <div className="h-4 w-px bg-white/20 transform -skew-x-12"></div>
-            <a 
-              href="/beginner"
-              onClick={(e) => { e.preventDefault(); handleNavigation('/beginner'); }}
-              className="text-white py-1 px-4 text-base font-bold relative after:absolute after:bottom-0 after:left-0 after:w-full after:h-0.5 after:bg-white after:rounded-full bg-white/15 rounded-md"
-              aria-current="page"
-            >
-              Beginner
-            </a>
-            <div className="h-4 w-px bg-white/20 transform -skew-x-12"></div>
-            <a 
-              href="/intermediate"
-              onClick={(e) => { e.preventDefault(); handleNavigation('/intermediate'); }}
-              className="text-white/90 hover:text-white py-1 transition-all duration-200 text-base font-medium hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-white/50 rounded-md px-2"
-              aria-label="Intermediate courses"
-            >
-              Intermediate
-            </a>
-            <div className="h-4 w-px bg-white/20 transform -skew-x-12"></div>
-            <a 
-              href="/expert"
-              onClick={(e) => { e.preventDefault(); handleNavigation('/expert'); }}
-              className="text-white/90 hover:text-white py-1 transition-all duration-200 text-base font-medium hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-white/50 rounded-md px-2"
-              aria-label="Expert courses"
-            >
-              Expert
-            </a>
-            <div className="h-4 w-px bg-white/20 transform -skew-x-12"></div>
-            <a 
-              href="/contact"
-              onClick={(e) => { e.preventDefault(); handleNavigation('/contact'); }}
-              className="text-white/90 hover:text-white py-1 transition-all duration-200 text-base font-medium hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-white/50 rounded-md px-2"
-              aria-label="Contact page"
-            >
-              Contact
-            </a>
-          </nav>
-
-          {/* Mobile Menu Button */}
-          <button 
-            className="md:hidden p-2 hover:bg-white/10 rounded-lg transition-colors"
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
-          >
-            <div className="w-6 h-0.5 bg-white mb-1.5 transition-transform duration-200 transform origin-center" 
-                 style={{ transform: isMobileMenuOpen ? 'rotate(45deg) translate(2px, 8px)' : 'none' }}></div>
-            <div className="w-6 h-0.5 bg-white mb-1.5 transition-opacity duration-200"
-                 style={{ opacity: isMobileMenuOpen ? '0' : '1' }}></div>
-            <div className="w-6 h-0.5 bg-white transition-transform duration-200 transform origin-center"
-                 style={{ transform: isMobileMenuOpen ? 'rotate(-45deg) translate(2px, -8px)' : 'none' }}></div>
-          </button>
-
-          <div className="hidden md:flex items-center space-x-4">
-            <div className="relative">
-              <span className="text-white/90">faisal_70@yahoo.com</span>
-              <span className="absolute -top-1 -right-2 w-2 h-2 bg-white rounded-full animate-ping"></span>
-            </div>
-            <button 
-              className="text-white bg-gradient-to-r from-white/25 to-white/20 hover:from-white/30 hover:to-white/25 py-2 px-4 rounded-md shadow-md hover:shadow-lg transition-all duration-200 hover:-translate-y-0.5 font-medium focus:outline-none focus:ring-2 focus:ring-white/50 focus:ring-offset-2 focus:ring-offset-pink-600"
-              aria-label="Sign out of your account"
-            >
-              Sign Out
-            </button>
-          </div>
+      {isLoading && (
+        <div className="fixed inset-0 bg-pink-600/20 backdrop-blur-sm z-50 flex items-center justify-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-4 border-white border-t-transparent"></div>
         </div>
+      )}
+      <div className="min-h-screen bg-gray-50">
+        {/* Navigation */}
+        <header className="bg-gradient-to-r from-pink-600 to-pink-500 text-white h-20 shadow-md relative">
+          <div className="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-white via-transparent to-transparent pointer-events-none"></div>
+          <div className="flex items-center justify-between px-4 h-full relative">
+            <a
+              href="/"
+              className="group text-2xl font-semibold transition-transform duration-200 flex items-center space-x-2 focus:outline-none focus:ring-2 focus:ring-white/50 focus:ring-offset-2 focus:ring-offset-pink-600 rounded-lg p-1"
+              aria-label="Go to home page"
+            >
+              <span className="transform group-hover:scale-110 transition-transform duration-200 inline-block">🏠</span>
+              <span className="text-lg">Home</span>
+            </a>
 
-        {/* Mobile Menu */}
-        <div 
-          className={`md:hidden absolute top-full left-0 right-0 bg-pink-600 shadow-lg transform transition-transform duration-200 ease-in-out ${
-            isMobileMenuOpen ? 'translate-y-0' : '-translate-y-full'
-          }`}
-        >
-          <nav className="px-4 py-3 space-y-2">
-            <a href="/" className="block py-2 px-4 text-white/90 hover:bg-white/10 rounded-md">Home</a>
-            <a href="/beginner" className="block py-2 px-4 text-white bg-white/15 rounded-md">Beginner</a>
-            <a href="/intermediate" className="block py-2 px-4 text-white/90 hover:bg-white/10 rounded-md">Intermediate</a>
-            <a href="/expert" className="block py-2 px-4 text-white/90 hover:bg-white/10 rounded-md">Expert</a>
-            <a href="/contact" className="block py-2 px-4 text-white/90 hover:bg-white/10 rounded-md">Contact</a>
-            <div className="pt-2 mt-2 border-t border-white/10">
-              <span className="block px-4 py-2 text-white/90 text-sm">faisal_70@yahoo.com</span>
-              <button className="w-full mt-2 px-4 py-2 bg-white/20 text-white rounded-md hover:bg-white/30 transition-colors">
+            <div className="hidden md:flex space-x-14 items-center">
+              <span className="text-white py-1 px-4 text-base font-bold relative after:absolute after:bottom-0 after:left-0 after:w-full after:h-0.5 after:bg-white after:rounded-full bg-white/15 rounded-md">
+                Beginner
+              </span>
+              <Link href="/intermediate" className="text-white/90 hover:text-white py-1 transition-all duration-200 text-base font-medium hover:-translate-y-0.5">
+                Intermediate
+              </Link>
+              <Link href="/expert" className="text-white/90 hover:text-white py-1 transition-all duration-200 text-base font-medium hover:-translate-y-0.5">
+                Expert
+              </Link>
+              <Link href="/contact" className="text-white/90 hover:text-white py-1 transition-all duration-200 text-base font-medium hover:-translate-y-0.5">
+                Contact
+              </Link>
+            </div>
+
+            <div className="flex items-center space-x-4">
+              <span className="text-white/90">{user?.email}</span>
+              <button
+                onClick={async () => {
+                  await supabase.auth.signOut();
+                }}
+                className="bg-white/25 px-4 py-1 rounded-md shadow-md hover:-translate-y-0.5 hover:bg-white/30 transition-all duration-200"
+              >
                 Sign Out
               </button>
             </div>
-          </nav>
+
+            {/* Mobile menu button */}
+            <div className="md:hidden">
+              <button
+                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                className="text-white p-2"
+              >
+                <svg
+                  className="h-6 w-6"
+                  fill="none"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  {isMobileMenuOpen ? (
+                    <path d="M6 18L18 6M6 6l12 12" />
+                  ) : (
+                    <path d="M4 6h16M4 12h16m-7 6h7" />
+                  )}
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          {/* Mobile menu */}
+          {isMobileMenuOpen && (
+            <div className="md:hidden bg-pink-700">
+              <div className="px-2 pt-2 pb-3 space-y-1">
+                <Link href="/" className="block text-white/90 hover:text-white px-3 py-2 w-full text-left">
+                  Home
+                </Link>
+                <span className="block text-white bg-white/15 px-3 py-2 w-full text-left">
+                  Beginner
+                </span>
+                <Link href="/intermediate" className="block text-white/90 hover:text-white px-3 py-2 w-full text-left">
+                  Intermediate
+                </Link>
+                <Link href="/expert" className="block text-white/90 hover:text-white px-3 py-2 w-full text-left">
+                  Expert
+                </Link>
+                <Link href="/contact" className="block text-white/90 hover:text-white px-3 py-2 w-full text-left">
+                  Contact
+                </Link>
+              </div>
+            </div>
+          )}
+        </header>
+
+        {/* Breadcrumb */}
+        <div className="bg-white shadow-sm">
+          <div className="max-w-7xl mx-auto px-4">
+            <div className="py-2 text-sm">
+              <span className="text-gray-500">Your path: </span>
+              <Link href="/" className="text-pink-600 hover:text-pink-700">
+                Home
+              </Link>
+              <span className="text-gray-500"> / </span>
+              <Link href="/beginner" className="text-pink-600 hover:text-pink-700">
+                Beginner
+              </Link>
+              <span className="text-gray-500"> / </span>
+              <Link href="/beginner-chapter2-overview" className="text-pink-600 hover:text-pink-700">
+                Chapter 2
+              </Link>
+            </div>
+          </div>
         </div>
-      </header>
 
-      <div className="bg-pink-50/50 py-2 px-4 text-sm text-pink-700">
-        <span>Your path: </span>
-        <a href="/" onClick={(e) => { e.preventDefault(); handleNavigation('/'); }} className="hover:underline">Home</a>
-        <span className="mx-2">/</span>
-        <a href="/beginner" onClick={(e) => { e.preventDefault(); handleNavigation('/beginner'); }} className="hover:underline">Beginner</a>
-        <span className="mx-2">/</span>
-        <span>Chapter 2</span>
-      </div>
-
-      <div className="container mx-auto px-4 py-8">
-        {/* Main content layout */}
-        <div className="max-w-[95%] mx-auto p-8">
-          {!selectedContent && (
-            <div className="flex justify-center items-center">
-              <div className="w-2/3 bg-white rounded-lg shadow-md px-4 py-6">
-                <h2 className="text-2xl font-semibold text-pink-600 mb-4">
-                  Table of Contents
-                </h2>
-                {/* Progress Bar */}
-                <div className="mb-6">
-                  <div className="flex justify-between items-center mb-2">
-                    <span className="text-sm text-gray-600">
-                      Chapter Progress
-                    </span>
-                    <button
-                      onClick={() => setCompletedModules({})}
-                      className="text-sm text-pink-600 hover:text-pink-700"
-                    >
-                      Reset
-                    </button>
-                  </div>
-                  <div className="w-full h-2 bg-gray-200 rounded-full">
-                    <div
-                      className="h-full bg-pink-600 rounded-full transition-all duration-300"
-                      style={{ width: `${calculateProgress().percentage}%` }}
-                    />
-                  </div>
-                  <div className="flex justify-end mt-1">
-                    <span className="text-sm font-medium text-gray-700">
-                      {calculateProgress().percentage}% Complete
-                    </span>
-                  </div>
+        {/* Main Content */}
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+          <div className="flex gap-8">
+            {/* Left Sidebar - Table of Contents */}
+            <div className="w-1/4 bg-white rounded-xl shadow-lg p-6">
+              <h2 className="text-xl font-bold text-gray-900 mb-6">Table of Contents</h2>
+              
+              {/* Progress Section */}
+              <div className="mb-8">
+                <div className="flex justify-between items-center mb-2">
+                  <span className="text-sm text-gray-600">Chapter Progress</span>
+                  <button
+                    onClick={() => {
+                      setCompletedModules({});
+                      localStorage.removeItem('completedModulesChapter2');
+                    }}
+                    className="text-sm text-pink-600 hover:text-pink-700"
+                  >
+                    Reset
+                  </button>
                 </div>
-                <div className="space-y-4 pl-2">
-                  {modules.map((module) => (
-                    <div key={module.title}>
-                      <h3 className="text-xl font-medium text-gray-800 mb-3">
-                        {module.title}
-                      </h3>
-                      <div className="space-y-2 text-gray-700">
-                        {renderModuleItems(module.items)}
-                      </div>
+                <div className="w-full h-2 bg-gray-200 rounded-full">
+                  <div
+                    className="bg-gradient-to-r from-pink-500 to-pink-600 h-2 rounded-full transition-all duration-300 ease-out"
+                    style={{ width: `${calculateProgress()}%` }}
+                  ></div>
+                </div>
+                <div className="text-right text-sm text-gray-500 mt-1">
+                  {calculateProgress()}% Complete
+                </div>
+              </div>
+
+              {/* Navigation Items */}
+              <div className="space-y-4">
+                {modules.map((module) => (
+                  <div key={module.title}>
+                    <h3 className="text-lg font-medium text-gray-800 mb-3">
+                      {module.title} {sectionIcons[module.title]}
+                    </h3>
+                    <div className="space-y-2 text-gray-700">
+                      {renderModuleItems(module.items)}
                     </div>
-                  ))}
-                </div>
+                  </div>
+                ))}
               </div>
             </div>
-          )}
-          {selectedContent && (
-            <div className="flex gap-6">
-              {/* Sidebar */}
-              <div className="w-1/5 bg-white rounded-lg shadow-md pl-4 pr-2 py-6">
-                <h2 className="text-2xl font-semibold text-pink-600 mb-4">
-                  Table of Contents
-                </h2>
-                <div className="mb-6">
-                  <div className="flex justify-between items-center mb-2">
-                    <span className="text-sm text-gray-600">
-                      Chapter Progress
-                    </span>
-                    <button
-                      onClick={() => setCompletedModules({})}
-                      className="text-sm text-pink-600 hover:text-pink-700"
+
+            {/* Right Content Area */}
+            <div className="w-3/4 bg-white rounded-xl shadow-lg p-8">
+              {selectedContent && (
+                <div className="bg-white rounded-xl shadow-lg p-6">
+                  <h2 className="text-2xl font-bold mb-4">{selectedTitle}</h2>
+                  <div 
+                    className="prose max-w-none"
+                    dangerouslySetInnerHTML={{ __html: selectedContent }}
+                  />
+                  
+                  {/* Navigation buttons */}
+                  <div className="mt-8 flex justify-between items-center">
+                    <Link
+                      href="/beginner"
+                      className="text-pink-600 hover:text-pink-700 flex items-center"
                     >
-                      Reset
+                      <span className="mr-2">←</span>
+                      Back to Chapters
+                    </Link>
+                    <button
+                      onClick={() => {
+                        const currentModule = modules.find(m =>
+                          m.items.some(i => i.text === selectedTitle)
+                        );
+                        if (currentModule) {
+                          const currentIndex = currentModule.items.findIndex(
+                            i => i.text === selectedTitle
+                          );
+                          if (currentIndex < currentModule.items.length - 1) {
+                            handleContentClick(currentModule.items[currentIndex + 1].content, currentModule.items[currentIndex + 1].text);
+                          } else {
+                            const nextModuleIndex = modules.findIndex(m => m === currentModule) + 1;
+                            if (nextModuleIndex < modules.length) {
+                              handleContentClick(modules[nextModuleIndex].items[0].content, modules[nextModuleIndex].items[0].text);
+                            }
+                          }
+                        }
+                      }}
+                      className="text-pink-600 hover:text-pink-700 flex items-center"
+                      disabled={!selectedTitle}
+                    >
+                      Next Topic
+                      <span className="ml-2">→</span>
                     </button>
                   </div>
-                  <div className="w-full h-2 bg-gray-200 rounded-full">
-                    <div
-                      className="h-full bg-pink-600 rounded-full transition-all duration-300"
-                      style={{ width: `${calculateProgress().percentage}%` }}
-                    />
-                  </div>
-                  <div className="flex justify-end mt-1">
-                    <span className="text-sm font-medium text-gray-700">
-                      {calculateProgress().percentage}% Complete
-                    </span>
-                  </div>
                 </div>
-                <div className="space-y-4">
-                  {modules.map((module) => (
-                    <div key={module.title}>
-                      <h3 className="text-xl font-medium text-gray-800 mb-3">
-                        {module.title}
-                      </h3>
-                      <div className="space-y-2 text-gray-700">
-                        {renderModuleItems(module.items)}
-                      </div>
-                    </div>
-                  ))}
+              )}
+              {!selectedContent && (
+                <div className="text-center text-gray-500">
+                  <p className="text-xl">Select a topic from the table of contents to begin learning.</p>
                 </div>
-              </div>
-
-              {/* Content Area */}
-              <div className="w-4/5 bg-white rounded-lg shadow-md px-8 py-6">
-                <div className="min-h-[calc(100vh-16rem)] flex flex-col">
-                  <div className="flex-grow">
-                    <h2 className="text-3xl font-semibold text-pink-600 mb-6 text-center">
-                      {selectedTitle}
-                    </h2>
-                    <div>
-                      {typeof selectedContent === 'string' ? (
-                        <div
-                          dangerouslySetInnerHTML={{ __html: selectedContent }}
-                        />
-                      ) : (
-                        selectedContent
-                      )}
-                    </div>
-                  </div>
-                </div>
-              </div>
+              )}
             </div>
-          )}
+          </div>
         </div>
       </div>
     </ProtectedRoute>

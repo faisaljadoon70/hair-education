@@ -11,6 +11,78 @@ interface ModuleItem {
   subItems?: ModuleItem[];
 }
 
+const modules = [
+  {
+    title: 'Basic Principles of Color',
+    items: [
+      { 
+        text: 'Understanding Color Basics',
+        content: 'Content about basic principles of color...'
+      },
+      {
+        text: 'Translucent vs Opaque Colors',
+        content: 'Content about the difference between translucent and opaque colors...'
+      },
+      {
+        text: 'Laws of Color',
+        content: 'Content about the fundamental laws of color...'
+      }
+    ]
+  },
+  {
+    title: 'Color Classifications',
+    items: [
+      {
+        text: 'Primary Colors',
+        content: 'Content about primary colors...'
+      },
+      {
+        text: 'Secondary Colors',
+        content: 'Content about secondary colors...'
+      },
+      {
+        text: 'Tertiary/Complementary Colors',
+        content: 'Content about tertiary and complementary colors...'
+      }
+    ]
+  },
+  {
+    title: 'Color Theory Applications',
+    items: [
+      {
+        text: 'The Color Wheel',
+        content: 'Content about the color wheel and its use...'
+      },
+      {
+        text: 'Light Effects on Color',
+        content: 'Content about how light affects color perception...'
+      },
+      {
+        text: 'Tone and Hue',
+        content: 'Content about understanding tone and hue in colors...'
+      }
+    ]
+  },
+  {
+    title: 'Color Systems',
+    items: [
+      {
+        text: 'The Shade System',
+        content: 'Content about the shade system in hair coloring...'
+      }
+    ]
+  },
+  {
+    title: 'Exercise',
+    items: [
+      {
+        text: 'Practice Questions',
+        content: 'Interactive practice questions about color theory...'
+      }
+    ]
+  }
+];
+
 export default function BeginnerChapter3Page() {
   const [selectedContent, setSelectedContent] = useState<string | null>(null);
   const [completedModules, setCompletedModules] = useState<{
@@ -167,20 +239,117 @@ export default function BeginnerChapter3Page() {
       <div className="container mx-auto px-4 py-8">
         {/* Main content layout */}
         <div className="max-w-[95%] mx-auto p-8">
-          {!selectedContent && (
-            <div className="space-y-6">
-              <h1 className="text-3xl font-bold text-gray-800">Chapter 3</h1>
-              <div className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow p-6">
-                <h2 className="text-xl font-semibold mb-4">Table of Contents</h2>
-                {/* Add your table of contents here */}
+          <div className="flex flex-col md:flex-row gap-8 p-8">
+            {/* Left Sidebar - Table of Contents */}
+            <div className="md:w-1/4">
+              <div className="bg-white rounded-xl shadow-lg p-6">
+                <h2 className="text-2xl font-bold mb-6">Table of Contents</h2>
+                
+                <div className="mb-6">
+                  <div className="flex justify-between items-center mb-2">
+                    <span className="text-sm font-medium">Chapter Progress</span>
+                    <button
+                      onClick={() => {
+                        setCompletedModules({});
+                        localStorage.removeItem('completedModulesBeginnerChapter3');
+                      }}
+                      className="text-pink-600 text-sm hover:text-pink-700"
+                    >
+                      Reset
+                    </button>
+                  </div>
+                  <div className="bg-gray-200 rounded-full h-2">
+                    <div
+                      className="bg-gradient-to-r from-pink-500 to-pink-600 h-2 rounded-full transition-all duration-300 ease-out"
+                      style={{ 
+                        width: `${Math.round(
+                          (Object.values(completedModules).filter(Boolean).length /
+                            modules.reduce((sum, module) => sum + module.items.length, 0)) *
+                            100
+                        )}%` 
+                      }}
+                    />
+                  </div>
+                  <div className="text-right text-sm text-gray-500 mt-1">
+                    {Math.round(
+                      (Object.values(completedModules).filter(Boolean).length /
+                        modules.reduce((sum, module) => sum + module.items.length, 0)) *
+                        100
+                    )}% Complete
+                  </div>
+                </div>
+
+                {modules.map((module, moduleIndex) => (
+                  <div key={moduleIndex} className="mb-6">
+                    <h3 className="font-medium mb-2">{module.title}</h3>
+                    <ul className="space-y-2">
+                      {module.items.map((item, itemIndex) => (
+                        <li
+                          key={itemIndex}
+                          className={`cursor-pointer text-sm hover:text-pink-600 ${
+                            completedModules[item.text] ? 'text-pink-600 bg-pink-50 rounded-md pl-2' : ''
+                          }`}
+                          onClick={() => {
+                            setSelectedContent(item.content);
+                            setCompletedModules(prev => ({ ...prev, [item.text]: true }));
+                          }}
+                        >
+                          <div className="flex items-center">
+                            <span>{item.text}</span>
+                            {completedModules[item.text] && (
+                              <span className="ml-2">✓</span>
+                            )}
+                          </div>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
               </div>
             </div>
-          )}
-          {selectedContent && (
-            <div className="bg-white rounded-xl shadow-lg p-6">
-              {/* Add your content display here */}
+
+            {/* Right Content Area */}
+            <div className="md:w-3/4">
+              {selectedContent ? (
+                <div className="bg-white rounded-xl shadow-lg p-6">
+                  <div className="prose max-w-none">
+                    {selectedContent}
+                  </div>
+                  
+                  {/* Navigation buttons */}
+                  <div className="mt-8 flex justify-between items-center">
+                    <a
+                      href="/beginner"
+                      className="text-pink-600 hover:text-pink-700 flex items-center"
+                    >
+                      <span className="mr-2">←</span>
+                      Back to Chapters
+                    </a>
+                    <button
+                      onClick={() => {
+                        const allItems = modules.flatMap(m => m.items);
+                        const currentIndex = allItems.findIndex(item => item.content === selectedContent);
+                        if (currentIndex < allItems.length - 1) {
+                          const nextItem = allItems[currentIndex + 1];
+                          setSelectedContent(nextItem.content);
+                          setCompletedModules(prev => ({ ...prev, [nextItem.text]: true }));
+                        }
+                      }}
+                      className="text-pink-600 hover:text-pink-700 flex items-center"
+                      disabled={!selectedContent}
+                    >
+                      Next Topic
+                      <span className="ml-2">→</span>
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <div className="bg-white rounded-xl shadow-lg p-6 flex items-center justify-center text-gray-500">
+                  <p className="text-xl">Select a topic from the table of contents to begin learning.</p>
+                </div>
+              )}
             </div>
-          )}
+          </div>
         </div>
       </div>
     </ProtectedRoute>
