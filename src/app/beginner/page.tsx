@@ -9,9 +9,12 @@ interface Chapter {
   title: string;
   description: string;
   path: string;
+  status?: string;
 }
 
 export default function BeginnerPage() {
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [completedChapters, setCompletedChapters] = useState<{
     [key: string]: boolean;
   }>({});
@@ -20,30 +23,35 @@ export default function BeginnerPage() {
   const chapters: Chapter[] = [
     {
       number: 1,
-      title: 'Hair',
-      description:
-        'Understanding hair structure, characteristics, chemical structure, and growth cycles.',
+      title: 'Hair and Scalp',
+      description: 'Learn about hair structure, types, and characteristics.',
       path: '/beginner-chapter1',
     },
     {
       number: 2,
       title: 'Level System',
-      description: 'Learn to identify natural hair levels and tones.',
+      description: 'Understanding hair levels, tones, and color systems.',
       path: '/beginner-chapter2',
     },
     {
       number: 3,
-      title: 'Colour Theory',
-      description:
-        'Explore the basics of colour, the colour wheel, and complementary colours.',
+      title: 'Color Theory',
+      description: 'Learn about color principles, the color wheel, and how colors interact in hair coloring.',
       path: '/beginner-chapter3',
+      status: 'available'
     },
     {
       number: 4,
-      title: 'Hair Colouring',
-      description:
-        'Discover different hair colour classifications and application techniques.',
+      title: "Hair Colouring",
+      description: "Learn about different types of hair colors, hydrogen peroxide, color formulation, and application techniques.",
       path: '/beginner-chapter4',
+      status: 'available'
+    },
+    {
+      number: 5,
+      title: 'Chapter 5',
+      description: 'Coming soon...',
+      path: '/beginner-chapter5',
     },
   ];
 
@@ -64,46 +72,153 @@ export default function BeginnerPage() {
   }, [completedChapters]);
 
   const calculateProgress = () => {
-    const completedCount =
-      Object.values(completedChapters).filter(Boolean).length;
+    const completedCount = Object.values(completedChapters).filter(Boolean).length;
     return Math.round((completedCount / chapters.length) * 100);
   };
 
   const handleReset = () => {
+    // Reset main beginner progress
     setCompletedChapters({});
     localStorage.setItem('completedBeginnerChapters', JSON.stringify({}));
+    
+    // Reset chapter-specific progress
+    localStorage.removeItem('chapter1Progress');
+    localStorage.removeItem('chapter2Progress');
+    localStorage.removeItem('chapter3Progress');
+    localStorage.removeItem('chapter4Progress');
+    localStorage.removeItem('chapter5Progress');
+  };
+
+  // Handle page transitions
+  const handleNavigation = (path: string) => {
+    setIsLoading(true);
+    setTimeout(() => {
+      window.location.href = path;
+    }, 300);
   };
 
   return (
     <ProtectedRoute>
-      <div className="min-h-screen bg-gradient-to-br from-pink-50 to-pink-100">
-        <div className="bg-pink-600 text-white p-4 flex items-center justify-between">
-          <a
-            href="/"
-            className="text-white text-lg font-semibold hover:underline"
-          >
-            Home
-          </a>
-          <div className="flex items-center gap-4">
-            <span>{/* User email will go here */}</span>
-            <button className="bg-pink-700 text-white px-4 py-2 rounded">
-              Sign Out
-            </button>
+      {isLoading && (
+        <div className="fixed inset-0 bg-pink-600/20 backdrop-blur-sm z-50 flex items-center justify-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-4 border-white border-t-transparent"></div>
+        </div>
+      )}
+
+      <div className="min-h-screen bg-gray-50">
+        {/* Navigation */}
+        <nav className="bg-pink-600 text-white shadow-lg">
+          <div className="max-w-7xl mx-auto px-4">
+            <div className="flex justify-between items-center h-16">
+              <div className="flex items-center space-x-14">
+                <Link href="/" className="text-2xl font-bold hover:scale-110 transition-transform">
+                  🏠
+                </Link>
+                <div className="hidden md:flex space-x-14">
+                  <Link href="/" className="text-white/90 hover:text-white py-1 transition-all duration-200 text-base hover:-translate-y-0.5">
+                    Home
+                  </Link>
+                  <span className="text-white py-1 px-4 text-base font-bold relative after:absolute after:bottom-0 after:left-0 after:w-full after:h-0.5 after:bg-white after:rounded-full bg-white/15 rounded-md">
+                    Beginner
+                  </span>
+                  <Link href="/intermediate" className="text-white/90 hover:text-white py-1 transition-all duration-200 text-base hover:-translate-y-0.5">
+                    Intermediate
+                  </Link>
+                  <Link href="/expert" className="text-white/90 hover:text-white py-1 transition-all duration-200 text-base hover:-translate-y-0.5">
+                    Expert
+                  </Link>
+                  <Link href="/contact" className="text-white/90 hover:text-white py-1 transition-all duration-200 text-base hover:-translate-y-0.5">
+                    Contact
+                  </Link>
+                </div>
+              </div>
+
+              <div className="flex items-center space-x-4">
+                <span className="text-white/90">faisal_70@yahoo.com</span>
+                <button
+                  onClick={() => handleNavigation('/auth/signout')}
+                  className="bg-white/25 px-4 py-1 rounded-md shadow-md hover:-translate-y-0.5 hover:bg-white/30 transition-all duration-200"
+                >
+                  Sign Out
+                </button>
+              </div>
+
+              {/* Mobile menu button */}
+              <div className="md:hidden">
+                <button
+                  onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                  className="text-white p-2"
+                >
+                  <svg
+                    className="h-6 w-6"
+                    fill="none"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    {isMobileMenuOpen ? (
+                      <path d="M6 18L18 6M6 6l12 12" />
+                    ) : (
+                      <path d="M4 6h16M4 12h16m-7 6h7" />
+                    )}
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* Mobile menu */}
+          {isMobileMenuOpen && (
+            <div className="md:hidden bg-pink-700">
+              <div className="px-2 pt-2 pb-3 space-y-1">
+                <Link href="/" className="block text-white/90 hover:text-white px-3 py-2 w-full text-left">
+                  Home
+                </Link>
+                <span className="block text-white bg-white/15 px-3 py-2 w-full text-left">
+                  Beginner
+                </span>
+                <Link href="/intermediate" className="block text-white/90 hover:text-white px-3 py-2 w-full text-left">
+                  Intermediate
+                </Link>
+                <Link href="/expert" className="block text-white/90 hover:text-white px-3 py-2 w-full text-left">
+                  Expert
+                </Link>
+                <Link href="/contact" className="block text-white/90 hover:text-white px-3 py-2 w-full text-left">
+                  Contact
+                </Link>
+              </div>
+            </div>
+          )}
+        </nav>
+
+        {/* Breadcrumb */}
+        <div className="bg-white shadow-sm">
+          <div className="max-w-7xl mx-auto px-4">
+            <div className="py-2 text-sm">
+              <span className="text-gray-500">You are here: </span>
+              <Link href="/" className="text-pink-600 hover:text-pink-700">
+                Home
+              </Link>
+              <span className="text-gray-500 mx-2">/</span>
+              <span className="text-gray-700">Beginner</span>
+            </div>
           </div>
         </div>
 
-        <div className="max-w-4xl mx-auto p-8">
-          <div className="bg-white rounded-lg shadow-md p-6">
-            <h2 className="text-2xl font-semibold text-pink-600 mb-4">
-              Table of Contents
-            </h2>
+        {/* Main Content */}
+        <div className="max-w-7xl mx-auto p-6">
+          <div className="bg-white rounded-xl shadow-lg p-8">
+            <h1 className="text-3xl font-bold text-gray-800 mb-8">Table of Contents</h1>
 
-            <div className="mb-6">
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-sm text-gray-600">Course Progress</span>
+            {/* Course Progress Section */}
+            <div className="mb-10 bg-gray-50 rounded-lg p-6">
+              <div className="flex justify-between items-center mb-2">
+                <span className="text-lg font-semibold text-gray-700">Course Progress</span>
                 <button
                   onClick={handleReset}
-                  className="text-sm text-pink-600 hover:text-pink-700"
+                  className="text-sm text-pink-600 hover:text-pink-700 font-medium"
                 >
                   Reset
                 </button>
@@ -115,29 +230,51 @@ export default function BeginnerPage() {
                 />
               </div>
               <div className="flex justify-end mt-1">
-                <span className="text-sm font-medium text-gray-700">
-                  {calculateProgress()}% Complete
-                </span>
+                <span className="text-sm text-gray-600">{calculateProgress()}% Complete</span>
               </div>
             </div>
 
-            <div className="space-y-4">
+            {/* Chapters Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {chapters.map((chapter) => (
-                <Link
+                <div
                   key={chapter.number}
-                  href={chapter.path}
-                  className="block p-6 bg-white border border-gray-200 rounded-lg shadow hover:bg-pink-50 transition-colors"
+                  className={`rounded-lg border border-gray-100 shadow-sm hover:shadow-md transition-all duration-200 ${
+                    chapter.description === 'Coming soon...' || chapter.status === 'coming-soon'
+                      ? 'opacity-75 cursor-not-allowed'
+                      : 'cursor-pointer hover:-translate-y-1'
+                  }`}
+                  onClick={() => chapter.description !== 'Coming soon...' && chapter.status !== 'coming-soon' && handleNavigation(chapter.path)}
                 >
-                  <div className="flex justify-between items-center">
-                    <h3 className="text-xl font-bold text-pink-600 mb-2">
+                  <div className="p-6">
+                    <h3 className="text-xl font-semibold text-pink-600 mb-2">
                       Chapter {chapter.number}: {chapter.title}
                     </h3>
-                    <span className="text-gray-600">
-                      {completedChapters[`chapter${chapter.number}`] ? '✓' : ''}
-                    </span>
+                    <p className="text-gray-600">{chapter.description}</p>
+                    
+                    {/* Status Indicator */}
+                    <div className="mt-4 flex items-center justify-between">
+                      <span className="text-sm text-gray-500">
+                        {chapter.status === 'coming-soon' ? (
+                          <span className="inline-flex items-center">
+                            🔒 Coming Soon
+                          </span>
+                        ) : chapter.status === 'available' ? (
+                          <span className="inline-flex items-center">
+                            📖 Available
+                          </span>
+                        ) : chapter.status === 'completed' ? (
+                          <span className="inline-flex items-center text-green-500">
+                            ✓ Completed
+                          </span>
+                        ) : null}
+                      </span>
+                      {completedChapters[`chapter${chapter.number}`] && (
+                        <span className="text-green-500">✓ Completed</span>
+                      )}
+                    </div>
                   </div>
-                  <p className="text-gray-600">{chapter.description}</p>
-                </Link>
+                </div>
               ))}
             </div>
           </div>
