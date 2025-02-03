@@ -9,7 +9,6 @@ interface Chapter {
   title: string;
   description: string;
   path: string;
-  status?: string;
 }
 
 export default function BeginnerPage() {
@@ -29,23 +28,21 @@ export default function BeginnerPage() {
     },
     {
       number: 2,
-      title: 'Level System',
-      description: 'Understanding hair levels, tones, and color systems.',
+      title: 'Chapter 2',
+      description: 'Coming soon...',
       path: '/beginner-chapter2',
     },
     {
       number: 3,
-      title: 'Color Theory',
-      description: 'Learn about color principles, the color wheel, and how colors interact in hair coloring.',
+      title: 'Chapter 3',
+      description: 'Coming soon...',
       path: '/beginner-chapter3',
-      status: 'available'
     },
     {
       number: 4,
-      title: "Hair Colouring",
-      description: "Learn about different types of hair colors, hydrogen peroxide, color formulation, and application techniques.",
+      title: 'Chapter 4',
+      description: 'Coming soon...',
       path: '/beginner-chapter4',
-      status: 'available'
     },
     {
       number: 5,
@@ -240,11 +237,11 @@ export default function BeginnerPage() {
                 <div
                   key={chapter.number}
                   className={`rounded-lg border border-gray-100 shadow-sm hover:shadow-md transition-all duration-200 ${
-                    chapter.description === 'Coming soon...' || chapter.status === 'coming-soon'
+                    chapter.description === 'Coming soon...'
                       ? 'opacity-75 cursor-not-allowed'
                       : 'cursor-pointer hover:-translate-y-1'
                   }`}
-                  onClick={() => chapter.description !== 'Coming soon...' && chapter.status !== 'coming-soon' && handleNavigation(chapter.path)}
+                  onClick={() => chapter.description !== 'Coming soon...' && handleNavigation(chapter.path)}
                 >
                   <div className="p-6">
                     <h3 className="text-xl font-semibold text-pink-600 mb-2">
@@ -255,19 +252,15 @@ export default function BeginnerPage() {
                     {/* Status Indicator */}
                     <div className="mt-4 flex items-center justify-between">
                       <span className="text-sm text-gray-500">
-                        {chapter.status === 'coming-soon' ? (
+                        {chapter.description === 'Coming soon...' ? (
                           <span className="inline-flex items-center">
                             🔒 Coming Soon
                           </span>
-                        ) : chapter.status === 'available' ? (
+                        ) : (
                           <span className="inline-flex items-center">
                             📖 Available
                           </span>
-                        ) : chapter.status === 'completed' ? (
-                          <span className="inline-flex items-center text-green-500">
-                            ✓ Completed
-                          </span>
-                        ) : null}
+                        )}
                       </span>
                       {completedChapters[`chapter${chapter.number}`] && (
                         <span className="text-green-500">✓ Completed</span>

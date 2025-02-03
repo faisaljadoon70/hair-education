@@ -479,7 +479,7 @@ export default function BeginnerChapter1Page() {
                 </div>
 
                 {/* Content Sections */}
-                <div className="space-y-6">
+                <div className="space-y-4">
                   {modules.map((module) => (
                     <div key={module.title} className="border border-gray-100 rounded-lg shadow-sm">
                       {/* Section Header */}
@@ -491,33 +491,33 @@ export default function BeginnerChapter1Page() {
                       </div>
 
                       {/* Section Content */}
-                      <div className="p-4">
+                      <div className="p-4 space-y-2">
                         {module.items.map((item) => (
-                          <div key={item.text} className="mb-2">
+                          <div key={item.text}>
                             <div 
-                              className={`flex items-center justify-between ${
-                                !item.isCategory 
-                                  ? 'pl-4 py-1.5 cursor-pointer hover:bg-pink-50 rounded-md text-[15px] text-gray-600 hover:text-gray-900' 
-                                  : 'pl-4 py-1.5 text-[15px] font-medium text-gray-800'
+                              className={`pl-4 py-2 flex items-center justify-between ${
+                                !item.isCategory ? 'cursor-pointer hover:bg-pink-50 rounded-md' : ''
                               }`}
                               onClick={() => !item.isCategory && handleContentClick(item.content, item.text)}
                             >
-                              <span>{item.text}</span>
+                              <div className="flex items-center">
+                                <span className="text-gray-800">{item.text}</span>
+                              </div>
                               {!item.isCategory && completedModules[item.text] && (
                                 <span className="text-green-500 mr-2">✓</span>
                               )}
                             </div>
                             {item.subItems && (
-                              <div className="ml-6">
+                              <div className="ml-6 space-y-2 mt-1">
                                 {item.subItems.map((subItem) => (
                                   <div
                                     key={subItem.text}
-                                    className="flex items-center justify-between py-1.5 pl-4 cursor-pointer hover:bg-pink-50 rounded-md text-[15px] text-gray-600 hover:text-gray-900"
+                                    className="flex items-center justify-between py-1 px-3 cursor-pointer hover:bg-pink-50 rounded-md"
                                     onClick={() => handleContentClick(subItem.content, subItem.text)}
                                   >
-                                    <span>{subItem.text}</span>
+                                    <span className="text-gray-700">{subItem.text}</span>
                                     {completedModules[subItem.text] && (
-                                      <span className="text-green-500 mr-2">✓</span>
+                                      <span className="text-green-500">✓</span>
                                     )}
                                   </div>
                                 ))}
