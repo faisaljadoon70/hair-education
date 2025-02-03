@@ -5,6 +5,7 @@ import { useDevice } from '@/hooks/useDevice';
 import { useAuth } from '@/context/AuthContext';
 import { useTutorial } from '@/context/TutorialContext';
 import Link from 'next/link';
+import { supabase } from '@/utils/supabase-client';
 
 interface NavItem {
   label: string;
@@ -99,8 +100,18 @@ export function ResponsiveNavigation() {
 
           <div className="flex items-center">
             {user ? (
-              <div className="text-sm text-gray-600">
-                {user.email}
+              <div className="flex items-center space-x-4">
+                <div className="text-sm text-gray-600">
+                  {user.email}
+                </div>
+                <button
+                  onClick={async () => {
+                    await supabase.auth.signOut();
+                  }}
+                  className="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium bg-gray-100 hover:bg-gray-200"
+                >
+                  Sign Out
+                </button>
               </div>
             ) : (
               <Link

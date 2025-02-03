@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import { ProtectedRoute } from '@/components/ProtectedRoute';
+import { supabase } from '@/utils/supabase-client';
 
 interface Chapter {
   number: number;
@@ -133,7 +134,9 @@ export default function BeginnerPage() {
               <div className="flex items-center space-x-4">
                 <span className="text-white/90">faisal_70@yahoo.com</span>
                 <button
-                  onClick={() => handleNavigation('/auth/signout')}
+                  onClick={async () => {
+                    await supabase.auth.signOut();
+                  }}
                   className="bg-white/25 px-4 py-1 rounded-md shadow-md hover:-translate-y-0.5 hover:bg-white/30 transition-all duration-200"
                 >
                   Sign Out
