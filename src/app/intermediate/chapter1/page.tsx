@@ -85,6 +85,34 @@ export default function IntermediateChapter1Page() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const router = useRouter();
 
+  // Load progress from localStorage on mount
+  useEffect(() => {
+    const savedProgress = localStorage.getItem('intermediateChapter1Progress');
+    if (savedProgress) {
+      setProgress(JSON.parse(savedProgress));
+    }
+  }, []);
+
+  // Save progress to localStorage and update completedIntermediateChapters
+  useEffect(() => {
+    if (Object.keys(progress).length > 0) {
+      // Save chapter specific progress
+      localStorage.setItem('intermediateChapter1Progress', JSON.stringify(progress));
+      
+      // Check if all items are completed
+      const totalItems = modules.reduce((sum, module) => sum + module.items.length, 0);
+      const completedItems = Object.values(progress).filter(Boolean).length;
+      
+      // If all items are completed, update completedIntermediateChapters
+      if (completedItems === totalItems) {
+        const savedProgress = localStorage.getItem('completedIntermediateChapters');
+        const intermediateProgress = savedProgress ? JSON.parse(savedProgress) : {};
+        intermediateProgress['Chapter 1'] = true;
+        localStorage.setItem('completedIntermediateChapters', JSON.stringify(intermediateProgress));
+      }
+    }
+  }, [progress]);
+
   const calculateProgress = () => {
     const totalItems = modules.reduce((sum, module) => sum + module.items.length, 0);
     const completedItems = Object.values(progress).filter(Boolean).length;
@@ -99,6 +127,17 @@ export default function IntermediateChapter1Page() {
   const handleReset = () => {
     setProgress({});
     setSelectedItem(null);
+    
+    // Clear chapter specific progress
+    localStorage.removeItem('intermediateChapter1Progress');
+    
+    // Update completedIntermediateChapters
+    const savedProgress = localStorage.getItem('completedIntermediateChapters');
+    if (savedProgress) {
+      const intermediateProgress = JSON.parse(savedProgress);
+      delete intermediateProgress['Chapter 1'];
+      localStorage.setItem('completedIntermediateChapters', JSON.stringify(intermediateProgress));
+    }
   };
 
   return (
