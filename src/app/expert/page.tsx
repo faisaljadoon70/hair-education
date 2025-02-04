@@ -29,29 +29,29 @@ export default function ExpertPage() {
       number: 1,
       title: "Advanced Hair Techniques",
       description: "Master color formulation, business management, and advanced coloring techniques.",
-      path: "/expert-chapter1"
+      path: "/expert-chapter1-overview"
     },
     {
       number: 2,
-      title: "Chapter 2",
+      title: "Salon Management",
       description: "Coming soon...",
       path: "#"
     },
     {
       number: 3,
-      title: "Chapter 3",
+      title: "Advanced Color Theory",
       description: "Coming soon...",
       path: "#"
     },
     {
       number: 4,
-      title: "Chapter 4",
+      title: "Business Development",
       description: "Coming soon...",
       path: "#"
     },
     {
       number: 5,
-      title: "Chapter 5",
+      title: "Marketing & Client Relations",
       description: "Coming soon...",
       path: "#"
     }
@@ -104,50 +104,19 @@ export default function ExpertPage() {
           </a>
 
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center space-x-14" role="navigation" aria-label="Main navigation">
-            <div className="h-4 w-px bg-white/20 transform -skew-x-12"></div>
-            <a 
-              href="/" 
-              onClick={(e) => { e.preventDefault(); handleNavigation('/'); }}
-              className="text-white/90 hover:text-white py-1 transition-all duration-200 text-base font-medium hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-white/50 rounded-md px-2"
-              aria-label="Home page"
-            >
-              Home
-            </a>
-            <div className="h-4 w-px bg-white/20 transform -skew-x-12"></div>
-            <a 
-              href="/beginner"
-              onClick={(e) => { e.preventDefault(); handleNavigation('/beginner'); }}
-              className="text-white/90 hover:text-white py-1 transition-all duration-200 text-base font-medium hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-white/50 rounded-md px-2"
-            >
+          <nav className="hidden md:flex space-x-14 items-center" role="navigation" aria-label="Main navigation">
+            <Link href="/beginner" className="text-white/90 hover:text-white py-1 transition-all duration-200 text-base font-medium hover:-translate-y-0.5">
               Beginner
-            </a>
-            <div className="h-4 w-px bg-white/20 transform -skew-x-12"></div>
-            <a 
-              href="/intermediate"
-              onClick={(e) => { e.preventDefault(); handleNavigation('/intermediate'); }}
-              className="text-white/90 hover:text-white py-1 transition-all duration-200 text-base font-medium hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-white/50 rounded-md px-2"
-            >
+            </Link>
+            <Link href="/intermediate" className="text-white/90 hover:text-white py-1 transition-all duration-200 text-base font-medium hover:-translate-y-0.5">
               Intermediate
-            </a>
-            <div className="h-4 w-px bg-white/20 transform -skew-x-12"></div>
-            <a 
-              href="/expert"
-              onClick={(e) => { e.preventDefault(); handleNavigation('/expert'); }}
-              className="text-white py-1 px-4 text-base font-bold relative after:absolute after:bottom-0 after:left-0 after:w-full after:h-0.5 after:bg-white after:rounded-full bg-white/15 rounded-md"
-              aria-current="page"
-            >
+            </Link>
+            <span className="text-white py-1 px-4 text-base font-bold relative after:absolute after:bottom-0 after:left-0 after:w-full after:h-0.5 after:bg-white after:rounded-full bg-white/15 rounded-md">
               Expert
-            </a>
-            <div className="h-4 w-px bg-white/20 transform -skew-x-12"></div>
-            <a 
-              href="/contact"
-              onClick={(e) => { e.preventDefault(); handleNavigation('/contact'); }}
-              className="text-white/90 hover:text-white py-1 transition-all duration-200 text-base font-medium hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-white/50 rounded-md px-2"
-              aria-label="Contact page"
-            >
+            </span>
+            <Link href="/contact" className="text-white/90 hover:text-white py-1 transition-all duration-200 text-base font-medium hover:-translate-y-0.5">
               Contact
-            </a>
+            </Link>
           </nav>
 
           {/* Mobile Menu Button */}
@@ -208,49 +177,69 @@ export default function ExpertPage() {
       </div>
 
       <div className="container mx-auto px-4 py-2">
-        <div className="max-w-4xl mx-auto p-4">
-          <div className="bg-white rounded-lg shadow-md p-6">
-            <h2 className="text-2xl font-semibold text-pink-600 mb-4">
-              Table of Contents
-            </h2>
+        <div className="max-w-7xl mx-auto p-6">
+          <div className="bg-white rounded-xl shadow-lg p-8">
+            <h1 className="text-3xl font-bold text-gray-800 mb-8">Table of Contents</h1>
 
-            <div className="mb-8">
+            {/* Course Progress Section */}
+            <div className="mb-10 bg-gray-50 rounded-lg p-6">
               <div className="flex justify-between items-center mb-2">
-                <span className="text-sm text-gray-600">Course Progress</span>
-                <button 
+                <span className="text-lg font-semibold text-gray-700">Course Progress</span>
+                <button
                   onClick={handleReset}
-                  className="text-sm text-pink-600 hover:text-pink-700"
+                  className="text-sm text-pink-600 hover:text-pink-700 font-medium"
                 >
                   Reset
                 </button>
               </div>
-              <div className="h-2 bg-gray-200 rounded-full">
+              <div className="w-full h-2 bg-gray-200 rounded-full">
                 <div
-                  className="h-full bg-pink-600 rounded-full transition-all duration-300"
+                  className="h-full bg-gradient-to-r from-pink-500 to-pink-600 rounded-full transition-all duration-300"
                   style={{ width: `${calculateProgress()}%` }}
                 />
               </div>
-              <div className="text-right text-sm text-gray-600 mt-1">
-                {calculateProgress()}% Complete
+              <div className="flex justify-end mt-1">
+                <span className="text-sm text-gray-600">{calculateProgress()}% Complete</span>
               </div>
             </div>
 
-            <div className="space-y-4">
+            {/* Chapters Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {chapters.map((chapter) => (
-                <div
-                  key={chapter.number}
-                  className="border rounded-lg p-4 hover:shadow-md transition-shadow"
-                >
-                  <Link href={chapter.path}>
-                    <div>
-                      <h3 className="text-lg font-semibold text-pink-600">
+                <Link key={chapter.number} href={chapter.path} className="block">
+                  <div
+                    className={`rounded-lg border border-gray-100 shadow-sm hover:shadow-md transition-all duration-200 ${
+                      chapter.description === 'Coming soon...'
+                        ? 'opacity-75 cursor-not-allowed'
+                        : 'cursor-pointer hover:-translate-y-1'
+                    }`}
+                  >
+                    <div className="p-6">
+                      <h3 className="text-xl font-semibold text-pink-600 mb-2">
                         Chapter {chapter.number}: {chapter.title}
-                        {completedChapters[`chapter${chapter.number}`] && ' ✓'}
                       </h3>
-                      <p className="text-gray-600 mt-1">{chapter.description}</p>
+                      <p className="text-gray-600">{chapter.description}</p>
+                      
+                      {/* Status Indicator */}
+                      <div className="mt-4 flex items-center justify-between">
+                        <span className="text-sm text-gray-500">
+                          {chapter.description === 'Coming soon...' ? (
+                            <span className="inline-flex items-center">
+                              🔒 <span className="ml-1 animate-pulse">Coming Soon</span>
+                            </span>
+                          ) : (
+                            <span className="inline-flex items-center">
+                              📖 Available
+                            </span>
+                          )}
+                        </span>
+                        {completedChapters[`chapter${chapter.number}`] && (
+                          <span className="text-green-500">✓ Completed</span>
+                        )}
+                      </div>
                     </div>
-                  </Link>
-                </div>
+                  </div>
+                </Link>
               ))}
             </div>
           </div>

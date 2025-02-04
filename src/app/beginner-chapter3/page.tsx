@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { ProtectedRoute } from '@/components/ProtectedRoute';
 import { DeviceCapabilitiesTest } from '@/components/DeviceCapabilitiesTest'
+import Link from 'next/link';
 
 interface ModuleItem {
   text: string;
@@ -100,7 +101,7 @@ export default function BeginnerChapter3Page() {
 
   // Only load completedModules from localStorage on initial load
   useEffect(() => {
-    const savedProgress = localStorage.getItem('completedModulesBeginnerChapter3');
+    const savedProgress = localStorage.getItem('chapter3Progress');
     if (savedProgress) {
       setCompletedModules(JSON.parse(savedProgress));
     }
@@ -108,73 +109,106 @@ export default function BeginnerChapter3Page() {
 
   // Save completedModules to localStorage whenever it changes
   useEffect(() => {
-    localStorage.setItem(
-      'completedModulesBeginnerChapter3',
-      JSON.stringify(completedModules)
-    );
+    if (Object.keys(completedModules).length > 0) {
+      // Save chapter 3 specific progress
+      localStorage.setItem('chapter3Progress', JSON.stringify(completedModules));
+      
+      // Check if all items are completed
+      const totalItems = modules.reduce((sum, module) => sum + module.items.length, 0);
+      const completedItems = Object.values(completedModules).filter(Boolean).length;
+      
+      // If all items are completed, update completedBeginnerChapters
+      if (completedItems === totalItems) {
+        const savedBeginnerProgress = localStorage.getItem('completedBeginnerChapters');
+        const beginnerProgress = savedBeginnerProgress ? JSON.parse(savedBeginnerProgress) : {};
+        beginnerProgress['Chapter 3'] = true;
+        localStorage.setItem('completedBeginnerChapters', JSON.stringify(beginnerProgress));
+      }
+    }
   }, [completedModules]);
+
+  const handleReset = () => {
+    setCompletedModules({});
+    setSelectedContent(null);
+    
+    // Clear chapter 3 progress
+    localStorage.removeItem('chapter3Progress');
+    
+    // Update completedBeginnerChapters
+    const savedBeginnerProgress = localStorage.getItem('completedBeginnerChapters');
+    if (savedBeginnerProgress) {
+      const beginnerProgress = JSON.parse(savedBeginnerProgress);
+      delete beginnerProgress['Chapter 3'];
+      localStorage.setItem('completedBeginnerChapters', JSON.stringify(beginnerProgress));
+    }
+  };
+
+  const handleContentClick = (content: string, text: string) => {
+    setSelectedContent(content);
+    setCompletedModules(prev => ({ ...prev, [text]: true }));
+  };
 
   return (
     <ProtectedRoute>
       <header className="bg-gradient-to-r from-pink-600 to-pink-500 text-white h-20 shadow-md relative">
         <div className="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-white via-transparent to-transparent pointer-events-none"></div>
         <div className="flex items-center justify-between px-4 h-full relative">
-          <a
+          <Link
             href="/"
             className="group text-2xl font-semibold transition-transform duration-200 flex items-center space-x-2 focus:outline-none focus:ring-2 focus:ring-white/50 focus:ring-offset-2 focus:ring-offset-pink-600 rounded-lg p-1"
             aria-label="Go to home page"
           >
             <span className="transform group-hover:scale-110 transition-transform duration-200 inline-block">🏠</span>
             <span className="text-lg">Home</span>
-          </a>
+          </Link>
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-14" role="navigation" aria-label="Main navigation">
             <div className="h-4 w-px bg-white/20 transform -skew-x-12"></div>
-            <a 
+            <Link 
               href="/" 
               onClick={(e) => { e.preventDefault(); handleNavigation('/'); }}
               className="text-white/90 hover:text-white py-1 transition-all duration-200 text-base font-medium hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-white/50 rounded-md px-2"
               aria-label="Home page"
             >
               Home
-            </a>
+            </Link>
             <div className="h-4 w-px bg-white/20 transform -skew-x-12"></div>
-            <a 
+            <Link 
               href="/beginner"
               onClick={(e) => { e.preventDefault(); handleNavigation('/beginner'); }}
               className="text-white py-1 px-4 text-base font-bold relative after:absolute after:bottom-0 after:left-0 after:w-full after:h-0.5 after:bg-white after:rounded-full bg-white/15 rounded-md"
               aria-current="page"
             >
               Beginner
-            </a>
+            </Link>
             <div className="h-4 w-px bg-white/20 transform -skew-x-12"></div>
-            <a 
+            <Link 
               href="/intermediate"
               onClick={(e) => { e.preventDefault(); handleNavigation('/intermediate'); }}
               className="text-white/90 hover:text-white py-1 transition-all duration-200 text-base font-medium hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-white/50 rounded-md px-2"
               aria-label="Intermediate courses"
             >
               Intermediate
-            </a>
+            </Link>
             <div className="h-4 w-px bg-white/20 transform -skew-x-12"></div>
-            <a 
+            <Link 
               href="/expert"
               onClick={(e) => { e.preventDefault(); handleNavigation('/expert'); }}
               className="text-white/90 hover:text-white py-1 transition-all duration-200 text-base font-medium hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-white/50 rounded-md px-2"
               aria-label="Expert courses"
             >
               Expert
-            </a>
+            </Link>
             <div className="h-4 w-px bg-white/20 transform -skew-x-12"></div>
-            <a 
+            <Link 
               href="/contact"
               onClick={(e) => { e.preventDefault(); handleNavigation('/contact'); }}
               className="text-white/90 hover:text-white py-1 transition-all duration-200 text-base font-medium hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-white/50 rounded-md px-2"
               aria-label="Contact page"
             >
               Contact
-            </a>
+            </Link>
           </nav>
 
           {/* Mobile Menu Button */}
@@ -212,11 +246,11 @@ export default function BeginnerChapter3Page() {
           }`}
         >
           <nav className="px-4 py-3 space-y-2">
-            <a href="/" className="block py-2 px-4 text-white/90 hover:bg-white/10 rounded-md">Home</a>
-            <a href="/beginner" className="block py-2 px-4 text-white bg-white/15 rounded-md">Beginner</a>
-            <a href="/intermediate" className="block py-2 px-4 text-white/90 hover:bg-white/10 rounded-md">Intermediate</a>
-            <a href="/expert" className="block py-2 px-4 text-white/90 hover:bg-white/10 rounded-md">Expert</a>
-            <a href="/contact" className="block py-2 px-4 text-white/90 hover:bg-white/10 rounded-md">Contact</a>
+            <Link href="/" className="block py-2 px-4 text-white/90 hover:bg-white/10 rounded-md">Home</Link>
+            <Link href="/beginner" className="block py-2 px-4 text-white bg-white/15 rounded-md">Beginner</Link>
+            <Link href="/intermediate" className="block py-2 px-4 text-white/90 hover:bg-white/10 rounded-md">Intermediate</Link>
+            <Link href="/expert" className="block py-2 px-4 text-white/90 hover:bg-white/10 rounded-md">Expert</Link>
+            <Link href="/contact" className="block py-2 px-4 text-white/90 hover:bg-white/10 rounded-md">Contact</Link>
             <div className="pt-2 mt-2 border-t border-white/10">
               <span className="block px-4 py-2 text-white/90 text-sm">faisal_70@yahoo.com</span>
               <button className="w-full mt-2 px-4 py-2 bg-white/20 text-white rounded-md hover:bg-white/30 transition-colors">
@@ -229,9 +263,9 @@ export default function BeginnerChapter3Page() {
 
       <div className="bg-pink-50/50 py-2 px-4 text-sm text-pink-700">
         <span>Your path: </span>
-        <a href="/" onClick={(e) => { e.preventDefault(); handleNavigation('/'); }} className="hover:underline">Home</a>
+        <Link href="/" onClick={(e) => { e.preventDefault(); handleNavigation('/'); }} className="hover:underline">Home</Link>
         <span className="mx-2">/</span>
-        <a href="/beginner" onClick={(e) => { e.preventDefault(); handleNavigation('/beginner'); }} className="hover:underline">Beginner</a>
+        <Link href="/beginner" onClick={(e) => { e.preventDefault(); handleNavigation('/beginner'); }} className="hover:underline">Beginner</Link>
         <span className="mx-2">/</span>
         <span>Chapter 3</span>
       </div>
@@ -249,10 +283,7 @@ export default function BeginnerChapter3Page() {
                   <div className="flex justify-between items-center mb-2">
                     <span className="text-sm font-medium">Chapter Progress</span>
                     <button
-                      onClick={() => {
-                        setCompletedModules({});
-                        localStorage.removeItem('completedModulesBeginnerChapter3');
-                      }}
+                      onClick={handleReset}
                       className="text-pink-600 text-sm hover:text-pink-700"
                     >
                       Reset
@@ -289,10 +320,7 @@ export default function BeginnerChapter3Page() {
                           className={`cursor-pointer text-sm hover:text-pink-600 ${
                             completedModules[item.text] ? 'text-pink-600 bg-pink-50 rounded-md pl-2' : ''
                           }`}
-                          onClick={() => {
-                            setSelectedContent(item.content);
-                            setCompletedModules(prev => ({ ...prev, [item.text]: true }));
-                          }}
+                          onClick={() => handleContentClick(item.content, item.text)}
                         >
                           <div className="flex items-center">
                             <span>{item.text}</span>
@@ -318,21 +346,20 @@ export default function BeginnerChapter3Page() {
                   
                   {/* Navigation buttons */}
                   <div className="mt-8 flex justify-between items-center">
-                    <a
+                    <Link
                       href="/beginner"
                       className="text-pink-600 hover:text-pink-700 flex items-center"
                     >
                       <span className="mr-2">←</span>
                       Back to Chapters
-                    </a>
+                    </Link>
                     <button
                       onClick={() => {
                         const allItems = modules.flatMap(m => m.items);
                         const currentIndex = allItems.findIndex(item => item.content === selectedContent);
                         if (currentIndex < allItems.length - 1) {
                           const nextItem = allItems[currentIndex + 1];
-                          setSelectedContent(nextItem.content);
-                          setCompletedModules(prev => ({ ...prev, [nextItem.text]: true }));
+                          handleContentClick(nextItem.content, nextItem.text);
                         }
                       }}
                       className="text-pink-600 hover:text-pink-700 flex items-center"

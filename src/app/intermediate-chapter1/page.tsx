@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Link from 'next/link';
 
 interface ModuleItem {
   text: string;
@@ -191,9 +192,12 @@ export default function IntermediateChapter1() {
       <div className="bg-pink-600 text-white p-4 flex items-center justify-between">
         {/* Left side navigation */}
         <div className="flex items-center space-x-6">
-          <a href="/" className="text-white text-lg font-semibold hover:underline">
-            Home
-          </a>
+          <Link
+            href="/"
+            className="text-white text-lg font-semibold hover:underline"
+          >
+            🏠 Home
+          </Link>
         </div>
         {/* Right side */}
         <div className="flex items-center gap-4">

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Link from 'next/link';
 
 interface ModuleItem {
   text: string;
@@ -82,6 +83,16 @@ export default function ExpertChapter1() {
     }
   };
 
+  const handleReset = () => {
+    setCompletedModules({});
+    setSelectedContent(null);
+    localStorage.removeItem('completedModulesExpertChapter1');
+  };
+
+  const handleItemClick = (item: ModuleItem) => {
+    handleContentClick(item.content, item.text);
+  };
+
   const modules: { title: string; items: ModuleItem[] }[] = [
     {
       title: 'Module 1: Advanced Color Formulation',
@@ -142,217 +153,149 @@ export default function ExpertChapter1() {
       }
     }
 
-    return { percentage };
-  };
-
-  // Render module items with checkmarks on leaf nodes only
-  const renderModuleItems = (items: ModuleItem[], depth: number = 0) => {
-    return (
-      <ul className={`space-y-2 ${depth > 0 ? 'ml-6' : ''}`}>
-        {items.map((item, index) => (
-          <li key={index} className="flex items-center justify-between">
-            <div className="flex-1">
-              <button
-                onClick={() => {
-                  if (!item.subItems) {
-                    handleContentClick(item.content, item.text);
-                  }
-                }}
-                className={`text-left hover:text-pink-600 ${
-                  item.subItems ? 'cursor-default hover:text-current' : 'cursor-pointer'
-                }`}
-              >
-                {item.text}
-              </button>
-              {item.subItems && renderModuleItems(item.subItems, depth + 1)}
-            </div>
-            {!item.subItems && (
-              <span className="text-green-500">
-                {completedModules[item.text] && '✓'}
-              </span>
-            )}
-          </li>
-        ))}
-      </ul>
-    );
+    return percentage;
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-pink-50 to-pink-100">
-      {/* Navbar */}
-      <div className="bg-pink-600 text-white p-4 flex items-center justify-between">
-        {/* Left side navigation */}
-        <div className="flex items-center space-x-6">
-          <a href="/" className="text-white text-lg font-semibold hover:underline">
-            Home
-          </a>
-        </div>
-        {/* Right side */}
-        <div className="flex items-center gap-4">
-          <span>{/* User email will go here */}</span>
-          <button className="bg-pink-700 text-white px-4 py-2 rounded">
-            Sign Out
-          </button>
-        </div>
-      </div>
+    <div className="min-h-screen bg-white">
+      {/* Header */}
+      <header className="bg-gradient-to-r from-pink-600 to-pink-500 text-white h-20 shadow-md relative">
+        <div className="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-white via-transparent to-transparent pointer-events-none"></div>
+        <div className="flex items-center justify-between px-4 h-full relative">
+          <Link
+            href="/"
+            className="group text-2xl font-semibold transition-transform duration-200 flex items-center space-x-2 focus:outline-none focus:ring-2 focus:ring-white/50 focus:ring-offset-2 focus:ring-offset-pink-600 rounded-lg p-1"
+            aria-label="Go to home page"
+          >
+            <span className="transform group-hover:scale-110 transition-transform duration-200 inline-block">🏠</span>
+            <span className="text-lg">Home</span>
+          </Link>
 
-      {/* Main content layout */}
-      <div className="max-w-[95%] mx-auto p-8">
-        {/* Table of Contents Centered on initial load */}
-        {!selectedContent && (
-          <div className="flex justify-center items-center">
-            <div className="w-2/3 bg-white rounded-lg shadow-md px-4 py-6">
-              <h2 className="text-2xl font-semibold text-pink-600 mb-4">
-                Table of Contents
-              </h2>
-              {/* Progress Bar */}
-              <div className="mb-6">
-                <div className="flex justify-between items-center mb-2">
-                  <span className="text-sm text-gray-600">Chapter Progress</span>
-                  <button 
-                    onClick={() => {
-                      setCompletedModules({});
-                      setSelectedContent(null);
-                      localStorage.removeItem('completedModulesExpertChapter1');
-                    }}
-                    className="text-sm text-pink-600 hover:text-pink-700"
-                  >
-                    Reset
-                  </button>
-                </div>
-                <div className="h-2 bg-gray-200 rounded-full">
-                  <div
-                    className="h-full bg-pink-600 rounded-full transition-all duration-300"
-                    style={{ width: `${calculateProgress().percentage}%` }}
-                  />
-                </div>
-                <div className="text-right text-sm text-gray-600 mt-1">
-                  {calculateProgress().percentage}% Complete
-                </div>
-              </div>
-              {/* Module List */}
-              {modules.map((module, index) => (
-                <div key={index} className="mb-6">
-                  <h3 className="text-lg font-semibold text-gray-700 mb-2">
-                    {module.title}
-                  </h3>
-                  {renderModuleItems(module.items)}
-                </div>
-              ))}
-            </div>
+          <div className="hidden md:flex space-x-14 items-center">
+            <Link href="/beginner" className="text-white/90 hover:text-white py-1 transition-all duration-200 text-base font-medium hover:-translate-y-0.5">
+              Beginner
+            </Link>
+            <Link href="/intermediate" className="text-white/90 hover:text-white py-1 transition-all duration-200 text-base font-medium hover:-translate-y-0.5">
+              Intermediate
+            </Link>
+            <span className="text-white py-1 px-4 text-base font-bold relative after:absolute after:bottom-0 after:left-0 after:w-full after:h-0.5 after:bg-white after:rounded-full bg-white/15 rounded-md">
+              Expert
+            </span>
+            <Link href="/contact" className="text-white/90 hover:text-white py-1 transition-all duration-200 text-base font-medium hover:-translate-y-0.5">
+              Contact
+            </Link>
           </div>
-        )}
 
-        {/* Content Layout with Sidebar */}
-        {selectedContent && (
-          <div className="flex gap-6">
-            {/* Sidebar */}
-            <div className="w-1/5 bg-white rounded-lg shadow-md pl-4 pr-2 py-6">
-              <h2 className="text-2xl font-semibold text-pink-600 mb-4">
-                Table of Contents
-              </h2>
-              {/* Progress Bar */}
-              <div className="mb-6">
-                <div className="flex justify-between items-center mb-2">
-                  <span className="text-sm text-gray-600">Chapter Progress</span>
-                  <button 
-                    onClick={() => {
-                      setCompletedModules({});
-                      setSelectedContent(null);
-                      localStorage.removeItem('completedModulesExpertChapter1');
-                    }}
-                    className="text-sm text-pink-600 hover:text-pink-700"
-                  >
-                    Reset
-                  </button>
-                </div>
-                <div className="h-2 bg-gray-200 rounded-full">
-                  <div
-                    className="h-full bg-pink-600 rounded-full transition-all duration-300"
-                    style={{ width: `${calculateProgress().percentage}%` }}
-                  />
-                </div>
-                <div className="text-right text-sm text-gray-600 mt-1">
-                  {calculateProgress().percentage}% Complete
-                </div>
+          <div className="flex items-center space-x-4">
+            <span className="text-white/90">faisal_70@yahoo.com</span>
+            <button
+              onClick={async () => {
+                await supabase.auth.signOut();
+              }}
+              className="bg-white/25 px-4 py-1 rounded-md shadow-md hover:-translate-y-0.5 hover:bg-white/30 transition-all duration-200"
+            >
+              Sign Out
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="flex items-center space-x-2 text-sm text-gray-500 mb-8">
+          <Link href="/" className="hover:text-pink-600">Home</Link>
+          <span>/</span>
+          <Link href="/expert" className="hover:text-pink-600">Expert</Link>
+          <span>/</span>
+          <span className="text-gray-900">Chapter 1</span>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          {/* Table of Contents */}
+          <div className="md:col-span-1 bg-white rounded-xl shadow-lg p-6">
+            <h2 className="text-2xl font-bold mb-6">Table of Contents</h2>
+            
+            <div className="mb-6">
+              <div className="flex justify-between items-center mb-2">
+                <span className="text-sm font-medium">Chapter Progress</span>
+                <button
+                  onClick={handleReset}
+                  className="text-pink-600 text-sm hover:text-pink-700"
+                >
+                  Reset
+                </button>
               </div>
-              {/* Module List */}
-              {modules.map((module, index) => (
-                <div key={index} className="mb-6">
-                  <h3 className="text-lg font-semibold text-gray-700 mb-2">
-                    {module.title}
-                  </h3>
-                  {renderModuleItems(module.items)}
-                </div>
-              ))}
+              <div className="bg-gray-200 rounded-full h-2">
+                <div
+                  className="bg-gradient-to-r from-pink-500 to-pink-600 h-2 rounded-full transition-all duration-300 ease-out"
+                  style={{ width: `${calculateProgress()}%` }}
+                />
+              </div>
+              <div className="text-right text-sm text-gray-500 mt-1">
+                {calculateProgress()}% Complete
+              </div>
             </div>
 
-            {/* Content Area */}
-            <div className="w-4/5 bg-white rounded-lg shadow-md px-8 py-6">
-              <div className="min-h-[calc(100vh-16rem)] flex flex-col">
-                {/* Content */}
-                <div className="flex-grow">
-                  <h2 className="text-2xl font-semibold text-pink-600 mb-4">
-                    {selectedContent}
-                  </h2>
-                  <p className="text-gray-600">
-                    Detailed content for {selectedContent}.
-                  </p>
-                </div>
+            {modules.map((module, moduleIndex) => (
+              <div key={moduleIndex} className="mb-6">
+                <h3 className="font-medium mb-2">{module.title}</h3>
+                <ul className="space-y-2">
+                  {module.items.map((item, itemIndex) => (
+                    <li
+                      key={itemIndex}
+                      className={`cursor-pointer text-sm hover:text-pink-600 ${
+                        completedModules[item.text] ? 'text-pink-600 bg-pink-50 rounded-md pl-2' : ''
+                      }`}
+                      onClick={() => handleItemClick(item)}
+                    >
+                      <div className="flex items-center">
+                        <span>{item.text}</span>
+                        {completedModules[item.text] && (
+                          <span className="ml-2">✓</span>
+                        )}
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
 
-                {/* Navigation Bar */}
-                <div className="mt-8 pt-4 border-t border-gray-200">
-                  <div className="flex justify-between items-center">
-                    <a
-                      href="/expert"
-                      className="inline-flex items-center px-4 py-2 text-pink-600 hover:text-pink-700 font-semibold"
-                    >
-                      <svg 
-                        className="w-5 h-5 mr-2" 
-                        fill="none" 
-                        stroke="currentColor" 
-                        viewBox="0 0 24 24"
-                      >
-                        <path 
-                          strokeLinecap="round" 
-                          strokeLinejoin="round" 
-                          strokeWidth={2} 
-                          d="M15 19l-7-7 7-7" 
-                        />
-                      </svg>
-                      Back to Chapters
-                    </a>
-                    
-                    <button
-                      onClick={handleNextTopic}
-                      disabled={!findNextTopic(selectedContent)}
-                      className={`inline-flex items-center px-4 py-2 font-semibold rounded-md transition-colors
-                        ${findNextTopic(selectedContent)
-                          ? 'text-pink-600 hover:text-pink-700'
-                          : 'text-gray-400 cursor-not-allowed'
-                        }`}
-                    >
-                      Next Topic
-                      <svg 
-                        className="w-5 h-5 ml-2" 
-                        fill="none" 
-                        stroke="currentColor" 
-                        viewBox="0 0 24 24"
-                      >
-                        <path 
-                          strokeLinecap="round" 
-                          strokeLinejoin="round" 
-                          strokeWidth={2} 
-                          d="M9 5l7 7-7 7" 
-                        />
-                      </svg>
-                    </button>
+          {/* Content Area */}
+          <div className="md:col-span-2">
+            {selectedContent ? (
+              <div className="bg-white rounded-xl shadow-lg p-6">
+                <h2 className="text-2xl font-bold mb-4">{selectedContent}</h2>
+                <div className="prose max-w-none">
+                  <div className="mb-8">
+                    Content about {selectedContent.toLowerCase()}...
                   </div>
                 </div>
+
+                <div className="mt-8 pt-4 border-t border-gray-200 flex justify-between items-center">
+                  <Link
+                    href="/expert"
+                    className="text-pink-600 hover:text-pink-700"
+                  >
+                    ← Back to Chapters
+                  </Link>
+                  
+                  {findNextTopic(selectedContent) && (
+                    <button
+                      onClick={handleNextTopic}
+                      className="text-pink-600 hover:text-pink-700"
+                    >
+                      Next Topic →
+                    </button>
+                  )}
+                </div>
               </div>
-            </div>
+            ) : (
+              <div className="text-center text-gray-600 bg-white rounded-xl shadow-lg p-6">
+                Select a topic from the table of contents to begin learning.
+              </div>
+            )}
           </div>
-        )}
+        </div>
       </div>
     </div>
   );

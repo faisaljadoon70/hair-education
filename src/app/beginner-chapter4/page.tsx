@@ -138,7 +138,7 @@ export default function BeginnerChapter4Page() {
 
   // Load completed modules from localStorage on initial load
   useEffect(() => {
-    const savedProgress = localStorage.getItem('completedModulesChapter4');
+    const savedProgress = localStorage.getItem('chapter4Progress');
     if (savedProgress) {
       setCompletedModules(JSON.parse(savedProgress));
     }
@@ -146,11 +146,40 @@ export default function BeginnerChapter4Page() {
 
   // Save completed modules to localStorage whenever it changes
   useEffect(() => {
-    localStorage.setItem(
-      'completedModulesChapter4',
-      JSON.stringify(completedModules)
-    );
+    if (Object.keys(completedModules).length > 0) {
+      // Save chapter 4 specific progress
+      localStorage.setItem('chapter4Progress', JSON.stringify(completedModules));
+      
+      // Check if all items are completed
+      const totalItems = modules.reduce((sum, module) => sum + module.items.length, 0);
+      const completedItems = Object.values(completedModules).filter(Boolean).length;
+      
+      // If all items are completed, update completedBeginnerChapters
+      if (completedItems === totalItems) {
+        const savedBeginnerProgress = localStorage.getItem('completedBeginnerChapters');
+        const beginnerProgress = savedBeginnerProgress ? JSON.parse(savedBeginnerProgress) : {};
+        beginnerProgress['Chapter 4'] = true;
+        localStorage.setItem('completedBeginnerChapters', JSON.stringify(beginnerProgress));
+      }
+    }
   }, [completedModules]);
+
+  const handleReset = () => {
+    setCompletedModules({});
+    setSelectedContent(null);
+    setSelectedTitle(null);
+    
+    // Clear chapter 4 progress
+    localStorage.removeItem('chapter4Progress');
+    
+    // Update completedBeginnerChapters
+    const savedBeginnerProgress = localStorage.getItem('completedBeginnerChapters');
+    if (savedBeginnerProgress) {
+      const beginnerProgress = JSON.parse(savedBeginnerProgress);
+      delete beginnerProgress['Chapter 4'];
+      localStorage.setItem('completedBeginnerChapters', JSON.stringify(beginnerProgress));
+    }
+  };
 
   const handleContentClick = (content: string, title: string) => {
     setSelectedContent(content);
@@ -232,10 +261,7 @@ export default function BeginnerChapter4Page() {
                   <div className="flex justify-between items-center mb-2">
                     <span className="text-sm font-medium">Chapter Progress</span>
                     <button
-                      onClick={() => {
-                        setCompletedModules({});
-                        localStorage.removeItem('completedModulesChapter4');
-                      }}
+                      onClick={handleReset}
                       className="text-pink-600 text-sm hover:text-pink-700"
                     >
                       Reset

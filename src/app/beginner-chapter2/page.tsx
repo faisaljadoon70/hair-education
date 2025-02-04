@@ -33,7 +33,7 @@ export default function BeginnerChapter2Page() {
 
   // Only load completedModules from localStorage on initial load
   useEffect(() => {
-    const savedModules = localStorage.getItem('completedModulesChapter2');
+    const savedModules = localStorage.getItem('chapter2Progress');
     if (savedModules) {
       setCompletedModules(JSON.parse(savedModules));
     }
@@ -42,19 +42,45 @@ export default function BeginnerChapter2Page() {
   // Whenever completedModules state changes, update localStorage
   useEffect(() => {
     if (Object.keys(completedModules).length > 0) {
-      localStorage.setItem(
-        'completedModulesChapter2',
-        JSON.stringify(completedModules)
-      );
+      // Save chapter 2 specific progress
+      localStorage.setItem('chapter2Progress', JSON.stringify(completedModules));
+      
+      // Check if all items are completed
+      const totalItems = modules.reduce((sum, module) => sum + module.items.length, 0);
+      const completedItems = Object.values(completedModules).filter(Boolean).length;
+      
+      // If all items are completed, update completedBeginnerChapters
+      if (completedItems === totalItems) {
+        const savedBeginnerProgress = localStorage.getItem('completedBeginnerChapters');
+        const beginnerProgress = savedBeginnerProgress ? JSON.parse(savedBeginnerProgress) : {};
+        beginnerProgress['Chapter 2'] = true;
+        localStorage.setItem('completedBeginnerChapters', JSON.stringify(beginnerProgress));
+      }
     }
   }, [completedModules]);
 
-  // Update the click handler to accept both content and title
   const handleContentClick = (content: string, title: string) => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
     setSelectedContent(content);
     setSelectedTitle(title);
     setCompletedModules((prev) => ({ ...prev, [title]: true }));
+  };
+
+  const handleReset = () => {
+    setCompletedModules({});
+    setSelectedContent(null);
+    setSelectedTitle('');
+    
+    // Clear chapter 2 progress
+    localStorage.removeItem('chapter2Progress');
+    
+    // Update completedBeginnerChapters
+    const savedBeginnerProgress = localStorage.getItem('completedBeginnerChapters');
+    if (savedBeginnerProgress) {
+      const beginnerProgress = JSON.parse(savedBeginnerProgress);
+      delete beginnerProgress['Chapter 2'];
+      localStorage.setItem('completedBeginnerChapters', JSON.stringify(beginnerProgress));
+    }
   };
 
   // Section icons mapping
@@ -323,10 +349,7 @@ export default function BeginnerChapter2Page() {
                 <div className="flex justify-between items-center mb-2">
                   <span className="text-sm text-gray-600">Chapter Progress</span>
                   <button
-                    onClick={() => {
-                      setCompletedModules({});
-                      localStorage.removeItem('completedModulesChapter2');
-                    }}
+                    onClick={handleReset}
                     className="text-sm text-pink-600 hover:text-pink-700"
                   >
                     Reset
