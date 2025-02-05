@@ -1,14 +1,10 @@
 'use client';
 
 import { ColorWheel } from '@/components/colorwheel/ColorWheel';
-import Link from 'next/link';
-import { useAuth } from '@/context/AuthContext';
-import { supabase } from '@/lib/supabaseClient';
 import { useState } from 'react';
 import DisclaimerSystem from '@/components/legal/DisclaimerSystem';
 
 export default function ColorWheelPage() {
-  const { user } = useAuth();
   const [hasAcceptedDisclaimer, setHasAcceptedDisclaimer] = useState(false);
   const [showDisclaimer, setShowDisclaimer] = useState(true);
 
