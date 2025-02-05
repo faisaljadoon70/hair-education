@@ -40,6 +40,24 @@ function HomeNavigation() {
                 <span className="text-lg">Home</span>
               </a>
 
+              <div className="hidden md:flex space-x-14 items-center">
+                <Link href="/beginner" className="text-white/90 hover:text-white py-1 transition-all duration-200 text-base font-medium hover:-translate-y-0.5">
+                  Beginner
+                </Link>
+                <Link href="/intermediate" className="text-white/90 hover:text-white py-1 transition-all duration-200 text-base font-medium hover:-translate-y-0.5">
+                  Intermediate
+                </Link>
+                <Link href="/expert" className="text-white/90 hover:text-white py-1 transition-all duration-200 text-base font-medium hover:-translate-y-0.5">
+                  Expert
+                </Link>
+                <Link href="/contact" className="text-white/90 hover:text-white py-1 transition-all duration-200 text-base font-medium hover:-translate-y-0.5">
+                  Contact
+                </Link>
+                <Link href="/color-wheel" className="text-white/90 hover:text-white py-1 transition-all duration-200 text-base font-medium hover:-translate-y-0.5">
+                  Color Wheel
+                </Link>
+              </div>
+
               <div className="flex items-center space-x-4">
                 <span className="text-white/90">{user.email}</span>
                 <button
