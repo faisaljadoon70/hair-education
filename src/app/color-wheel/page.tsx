@@ -1,13 +1,8 @@
 'use client';
 
 import { ColorWheel } from '@/components/colorwheel/ColorWheel';
-import { useState } from 'react';
-import DisclaimerSystem from '@/components/legal/DisclaimerSystem';
 
 export default function ColorWheelPage() {
-  const [hasAcceptedDisclaimer, setHasAcceptedDisclaimer] = useState(false);
-  const [showDisclaimer, setShowDisclaimer] = useState(true);
-
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="bg-gradient-to-r from-pink-600 to-pink-500 p-4">
@@ -21,22 +16,9 @@ export default function ColorWheelPage() {
         </a>
       </div>
 
-      {/* Show disclaimer if not accepted */}
-      {showDisclaimer && (
-        <DisclaimerSystem
-          onAccept={() => {
-            setHasAcceptedDisclaimer(true);
-            setShowDisclaimer(false);
-          }}
-        />
-      )}
-
-      {/* Main content - only shown after disclaimer acceptance */}
-      {!showDisclaimer && (
-        <div className="container mx-auto p-4">
-          <ColorWheel />
-        </div>
-      )}
+      <div className="container mx-auto p-4">
+        <ColorWheel />
+      </div>
     </div>
   );
 }
