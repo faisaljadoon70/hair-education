@@ -82,33 +82,6 @@ export default function BeginnerChapter1Page() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const router = useRouter();
 
-  // Load progress when component mounts
-  useEffect(() => {
-    const savedProgress = localStorage.getItem('chapter1Progress');
-    if (savedProgress) {
-      setProgress(JSON.parse(savedProgress));
-    }
-  }, []);
-
-  // Save progress whenever it changes
-  useEffect(() => {
-    if (Object.keys(progress).length > 0) {
-      localStorage.setItem('chapter1Progress', JSON.stringify(progress));
-      
-      // Check if all items are completed
-      const totalItems = modules.reduce((sum, module) => sum + module.items.length, 0);
-      const completedItems = Object.values(progress).filter(Boolean).length;
-      
-      // If all items are completed, update completedBeginnerChapters
-      if (completedItems === totalItems) {
-        const savedBeginnerProgress = localStorage.getItem('completedBeginnerChapters');
-        const beginnerProgress = savedBeginnerProgress ? JSON.parse(savedBeginnerProgress) : {};
-        beginnerProgress['Chapter 1'] = true;
-        localStorage.setItem('completedBeginnerChapters', JSON.stringify(beginnerProgress));
-      }
-    }
-  }, [progress]);
-
   const calculateProgress = () => {
     const totalItems = modules.reduce((sum, module) => sum + module.items.length, 0);
     const completedItems = Object.values(progress).filter(Boolean).length;
@@ -123,15 +96,6 @@ export default function BeginnerChapter1Page() {
   const handleReset = () => {
     setProgress({});
     setSelectedItem(null);
-    localStorage.removeItem('chapter1Progress');
-    
-    // Also update completedBeginnerChapters
-    const savedBeginnerProgress = localStorage.getItem('completedBeginnerChapters');
-    if (savedBeginnerProgress) {
-      const beginnerProgress = JSON.parse(savedBeginnerProgress);
-      delete beginnerProgress['Chapter 1'];
-      localStorage.setItem('completedBeginnerChapters', JSON.stringify(beginnerProgress));
-    }
   };
 
   return (
@@ -224,7 +188,7 @@ export default function BeginnerChapter1Page() {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="flex items-center space-x-2 text-sm text-gray-500 mb-8">
-          <Link href="/" className="hover:text-pink-600">Home</Link>
+          <Link href="/Home" className="hover:text-pink-600">Home</Link>
           <span>/</span>
           <Link href="/beginner" className="hover:text-pink-600">Beginner</Link>
           <span>/</span>
