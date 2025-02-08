@@ -61,6 +61,15 @@ export default function MobileHomeNavigation() {
         </Link>
 
         <Link
+          href="/level-wheel"
+          className={`flex flex-col items-center space-y-1 ${
+            isActive('/level-wheel') ? 'text-pink-600' : 'text-gray-600'}`}
+        >
+          <span className="text-2xl">🎨</span>
+          <span className="text-xs">Level System</span>
+        </Link>
+
+        <Link
           href="/color-wheel"
           className={`flex flex-col items-center p-2 rounded-lg touch-feedback
             ${isActive('/color-wheel') ? 'text-pink-600' : 'text-gray-600'}`}

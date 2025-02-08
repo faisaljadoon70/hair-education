@@ -9,6 +9,14 @@ import { AiOutlineMail } from 'react-icons/ai';
 import { useAuth } from '@/context/AuthContext';
 import { usePathname } from 'next/navigation';
 import { supabase } from '@/utils/supabase';
+import dynamic from 'next/dynamic';
+import useDeviceDetection from '@/hooks/useDeviceDetection';
+
+// Dynamically import mobile page to avoid loading mobile code on desktop
+const MobileHomePage = dynamic(
+  () => import('@/components/mobile/pages/MobileHomePage'),
+  { ssr: false }
+);
 
 function HomeNavigation() {
   const { user } = useAuth();
@@ -53,8 +61,8 @@ function HomeNavigation() {
                 <Link href="/contact" className="text-white/90 hover:text-white py-1 transition-all duration-200 text-base font-medium hover:-translate-y-0.5">
                   Contact
                 </Link>
-                <Link href="/color-wheel" className="text-white/90 hover:text-white py-1 transition-all duration-200 text-base font-medium hover:-translate-y-0.5">
-                  Color Wheel
+                <Link href="/level-wheel" className="text-white/90 hover:text-white py-1 transition-all duration-200 text-base font-medium hover:-translate-y-0.5">
+                  Hair Level System
                 </Link>
               </div>
 
@@ -97,6 +105,7 @@ function HomeNavigation() {
 }
 
 function Home() {
+  const { isMobile } = useDeviceDetection();
   const [progress, setProgress] = useState({
     beginner: 0,
     intermediate: 0,
@@ -123,6 +132,11 @@ function Home() {
 
     loadProgress();
   }, []);
+
+  // Return mobile version if on mobile device
+  if (isMobile) {
+    return <MobileHomePage />;
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-pink-50 to-white">

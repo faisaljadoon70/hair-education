@@ -1,0 +1,97 @@
+/* Mobile-specific CSS variables */
+:root {
+    --header-height: 60px;
+    --content-padding: 16px;
+}
+
+/* Base mobile layout */
+.mobile-layout {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    width: 100%;
+    background: #ffffff;
+    margin: 0;
+    padding: 0;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    overflow: hidden;
+}
+
+/* Mobile content area */
+.mobile-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: var(--content-padding);
+    width: 100%;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    margin-top: 0;
+    padding-top: 0;
+}
+
+/* Text alignment */
+.text-center {
+    text-align: center;
+    margin-top: 0;
+    padding-top: 0;
+}
+
+/* Typography */
+h1 {
+    margin-top: 0;
+    padding-top: 0;
+}
+
+/* Level sections container */
+.level-sections {
+    display: grid;
+    gap: 8px;
+    padding: 8px 0;
+}
+
+/* Individual level section */
+.level-section {
+    padding: 12px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+/* Ensure proper safe area insets */
+@supports (padding: env(safe-area-inset-top)) {
+    .mobile-layout {
+        padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+    }
+}
+
+/* Device-specific adjustments */
+@media screen and (max-width: 375px) {
+    .mobile-title {
+        font-size: 20px;
+    }
+    
+    .mobile-subtitle {
+        font-size: 14px;
+    }
+}
+
+/* Performance optimizations */
+.mobile-layout * {
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+}
+
+/* Ensure mobile styles don't affect web interface */
+@media screen and (min-width: 1024px) {
+    .mobile-layout,
+    .mobile-content {
+        display: none;
+    }
+}

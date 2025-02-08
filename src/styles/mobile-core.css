@@ -1,0 +1,17 @@
+/* Core Mobile Variables */
+:root {
+  --header-height: 60px;
+  --content-padding: 16px;
+}
+
+/* Core Mobile Layout */
+.mobile-layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.mobile-content {
+  flex: 1;
+  padding: var(--content-padding);
+}

@@ -1,0 +1,56 @@
+/* Mobile-only CSS Variables */
+:root {
+  --mobile-header-height: 60px;
+  --mobile-content-padding: 16px;
+}
+
+/* Mobile-only Layout Classes */
+.mobile-layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  min-height: -webkit-fill-available;
+  padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+}
+
+.mobile-content {
+  flex: 1;
+  padding: var(--mobile-content-padding);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Device-specific adjustments */
+@media screen and (max-width: 375px) {
+  /* iPhone SE */
+  :root {
+    --mobile-header-height: 50px;
+    --mobile-content-padding: 12px;
+  }
+}
+
+@media screen and (min-width: 376px) and (max-width: 390px) {
+  /* iPhone X */
+  .mobile-layout {
+    padding-top: max(env(safe-area-inset-top), 44px);
+  }
+}
+
+@media screen and (min-width: 391px) and (max-width: 411px) {
+  /* Pixel 2 */
+  :root {
+    --mobile-content-padding: 14px;
+  }
+}
+
+@media screen and (min-width: 768px) {
+  /* iPad */
+  :root {
+    --mobile-header-height: 70px;
+    --mobile-content-padding: 20px;
+  }
+  .mobile-content {
+    max-width: 600px;
+    margin: 0 auto;
+  }
+}

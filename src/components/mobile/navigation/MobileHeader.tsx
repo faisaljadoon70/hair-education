@@ -3,7 +3,7 @@
 import { useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
 import { IoMdMenu } from 'react-icons/io';
-import { FiUser, FiLogOut } from 'react-icons/fi';
+import { FiUser, FiLogOut, FiHome } from 'react-icons/fi';
 import { supabase } from '@/utils/supabase-client';
 import { 
   PiGraduationCap, 
@@ -61,13 +61,21 @@ export default function MobileHeader({ isHomePage = false }: MobileHeaderProps) 
         />
       )}
 
-      <header className="fixed top-0 left-0 right-0 bg-gradient-to-r from-pink-500 to-pink-400 h-12 flex items-center px-4 z-50 shadow-sm">
+      <header className="fixed top-0 left-0 right-0 bg-gradient-to-r from-pink-500 to-pink-400 h-12 flex items-center justify-between px-4 z-50 shadow-sm">
         <button
           onClick={toggleMenu}
           className="p-1.5 text-white/90 hover:text-white active:scale-95 transition-all duration-200"
           aria-label="Menu"
         >
           <IoMdMenu size={22} />
+        </button>
+
+        <button
+          onClick={() => navigateTo('/')}
+          className="p-1.5 text-white/90 hover:text-white active:scale-95 transition-all duration-200"
+          aria-label="Go to Home"
+        >
+          <FiHome size={20} />
         </button>
       </header>
 
@@ -110,6 +118,14 @@ export default function MobileHeader({ isHomePage = false }: MobileHeaderProps) 
                 >
                   <PiCertificate className="w-5 h-5 mr-3 text-pink-500" />
                   <span className="text-sm font-medium">Expert</span>
+                </button>
+
+                <button
+                  onClick={() => navigateTo('/level-wheel')}
+                  className="flex items-center w-full px-4 py-3 text-gray-700 hover:bg-pink-50 active:bg-pink-100 transition-colors duration-150"
+                >
+                  <span className="mr-2">🎨</span>
+                  Hair Level System
                 </button>
 
                 <button

@@ -1,0 +1,21 @@
+/* Mobile-specific CSS Variables */
+:root {
+  --header-height: 60px;
+  --content-padding: 16px;
+}
+
+/* Mobile Layout - Base Container */
+.mobile-layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+}
+
+/* Mobile Content - Main Content Area */
+.mobile-content {
+  flex: 1;
+  padding: var(--content-padding);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+}

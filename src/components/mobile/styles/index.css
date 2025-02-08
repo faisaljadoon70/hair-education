@@ -1,0 +1,13 @@
+/* Import all mobile-specific styles */
+@import './layout.css';
+
+/* Mobile-only performance optimizations */
+.mobile-layout * {
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  will-change: transform;
+}
+
+.mobile-content img {
+  content-visibility: auto;
+}

@@ -1,0 +1,50 @@
+-- Add Level 1 Theory
+INSERT INTO level_theory (level_id, title, content, key_points) VALUES
+(1, 'Understanding Level 1 Hair', 'Level 1 represents the darkest natural hair color, characterized by maximum melanin concentration. This level contains the highest amount of eumelanin, creating an intense black appearance.', 
+ARRAY[
+  'Contains maximum concentration of dark pigments',
+  'Minimal to no red undertones',
+  'Most resistant to lightening processes',
+  'Requires special consideration for color changes'
+]);
+
+-- Add Level 1 Chemical Process
+INSERT INTO chemical_processes (level_id, process_name, description, chemical_reactions, safety_notes) VALUES
+(1, 'High-Lift Process', 'The process of lifting Level 1 hair requires careful attention to achieve desired results while maintaining hair integrity.',
+ARRAY[
+  'Oxidation of melanin molecules',
+  'Breaking of disulfide bonds',
+  'Dispersion of color molecules'
+],
+'Always perform strand test. Monitor processing time closely. Use appropriate strength developer.');
+
+-- Add Level 1 Terminology
+INSERT INTO hair_terminology (term, definition, related_levels, category) VALUES
+('Eumelanin', 'The pigment responsible for dark hair colors, particularly abundant in Level 1 hair', ARRAY[1], 'Chemical'),
+('Maximum Pigmentation', 'The highest concentration of natural color molecules found in hair', ARRAY[1], 'Color Theory'),
+('Natural Black', 'The darkest natural hair color with maximum melanin content', ARRAY[1], 'Color Theory'),
+('Lifting Resistance', 'The difficulty in lightening very dark hair due to pigment density', ARRAY[1], 'Technical'),
+('Color Saturation', 'The intensity and depth of natural hair color', ARRAY[1], 'Color Theory');
+
+-- Add Level 1 Quizzes
+INSERT INTO level_quizzes (level_id, question, options, correct_answer) VALUES
+(1, 'What is the primary type of melanin present in Level 1 hair?', 
+ARRAY['Eumelanin', 'Pheomelanin', 'Both in equal amounts', 'Neither'], 
+'Eumelanin'),
+
+(1, 'Which developer strength is typically recommended for lifting Level 1 hair?',
+ARRAY['20 volume', '30 volume', '40 volume', 'Depends on desired result and hair condition'],
+'Depends on desired result and hair condition'),
+
+(1, 'What characterizes Level 1 hair?',
+ARRAY['Maximum pigmentation', 'Minimal pigmentation', 'Equal mix of warm and cool tones', 'No melanin'],
+'Maximum pigmentation'),
+
+(1, 'Why is Level 1 hair considered resistant to lightening?',
+ARRAY[
+  'High concentration of melanin',
+  'Lack of pigmentation',
+  'Presence of artificial color',
+  'Weak protein bonds'
+],
+'High concentration of melanin');
