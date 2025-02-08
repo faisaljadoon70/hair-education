@@ -6,7 +6,7 @@ import useDeviceDetection from '@/hooks/useDeviceDetection';
 import Link from 'next/link';
 import { useState } from 'react';
 import { supabase } from '@/utils/supabase-client';
-import MobileChapter1OverviewContainer from '@/components/mobile/containers/MobileChapter1OverviewContainer';
+import MobileChapter1OverviewContainer from '@/components/mobile/containers/MobileBeginnerChapter1OverviewContainer';
 
 export default function BeginnerChapter1Overview() {
   const { isMobile } = useDeviceDetection();
