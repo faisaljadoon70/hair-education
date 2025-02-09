@@ -4,6 +4,14 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/utils/supabase-client';
+import useDeviceDetection from '@/hooks/useDeviceDetection';
+import dynamic from 'next/dynamic';
+
+// Dynamically import mobile page
+const MobileChapter1Page = dynamic(
+  () => import('@/components/mobile/pages/MobileChapter1Page'),
+  { ssr: false }
+);
 
 interface ModuleItem {
   text: string;
@@ -81,6 +89,7 @@ export default function BeginnerChapter1Page() {
   const [progress, setProgress] = useState<{ [key: string]: boolean }>({});
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const router = useRouter();
+  const { isMobile } = useDeviceDetection();
 
   const calculateProgress = () => {
     const totalItems = modules.reduce((sum, module) => sum + module.items.length, 0);
@@ -97,6 +106,10 @@ export default function BeginnerChapter1Page() {
     setProgress({});
     setSelectedItem(null);
   };
+
+  if (isMobile) {
+    return <MobileChapter1Page />;
+  }
 
   return (
     <div className="min-h-screen bg-white">

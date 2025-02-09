@@ -1,7 +1,5 @@
 'use client';
 
-import { Auth } from '@supabase/auth-ui-react';
-import { ThemeSupa } from '@supabase/auth-ui-shared';
 import { createBrowserClient } from '@supabase/ssr';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
@@ -74,50 +72,63 @@ export default function MobileSignIn() {
               Sign in to continue your learning journey
             </motion.p>
           </div>
-          
-          <Auth
-            supabaseClient={supabase}
-            appearance={{
-              theme: ThemeSupa,
-              variables: {
-                default: {
-                  colors: {
-                    brand: '#ec4899',
-                    brandAccent: '#db2777',
-                    inputBackground: 'white',
-                    inputBorder: '#e5e7eb',
-                    inputText: '#374151',
-                    inputLabelText: '#6b7280'
-                  },
-                  radii: {
-                    borderRadiusButton: '0.75rem',
-                    buttonBorderRadius: '0.75rem',
-                    inputBorderRadius: '0.75rem'
-                  },
-                  space: {
-                    inputPadding: '0.75rem',
-                    buttonPadding: '0.75rem'
-                  },
-                  fonts: {
-                    bodyFontFamily: 'inherit',
-                    buttonFontFamily: 'inherit',
-                    inputFontFamily: 'inherit'
-                  }
-                }
-              },
-              className: {
-                container: 'w-full space-y-4',
-                button: 'w-full rounded-xl shadow-sm active:scale-[0.98] transition-transform duration-150',
-                input: 'w-full rounded-xl border-gray-200 bg-white shadow-sm focus:border-pink-500 focus:ring-pink-500',
-                label: 'text-sm font-medium text-gray-700',
-                loader: 'border-pink-500'
-              }
-            }}
-            providers={[]}
-            showLinks={false}
-            redirectTo={`${typeof window !== 'undefined' ? window.location.origin : ''}/auth/callback`}
-            view="sign_in"
-          />
+
+          <form onSubmit={async (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.currentTarget);
+            const email = formData.get('email') as string;
+            const password = formData.get('password') as string;
+            
+            try {
+              const { error } = await supabase.auth.signInWithPassword({
+                email,
+                password
+              });
+              
+              if (error) throw error;
+              router.push('/');
+            } catch (error) {
+              console.error('Error signing in:', error);
+              // Handle error (show message to user)
+            }
+          }}>
+            <div className="space-y-4">
+              <div>
+                <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+                  Email address
+                </label>
+                <input
+                  id="email"
+                  name="email"
+                  type="email"
+                  autoComplete="email"
+                  required
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-pink-500 focus:border-pink-500"
+                />
+              </div>
+
+              <div>
+                <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
+                  Your Password
+                </label>
+                <input
+                  id="password"
+                  name="password"
+                  type="password"
+                  autoComplete="current-password"
+                  required
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-pink-500 focus:border-pink-500"
+                />
+              </div>
+
+              <button
+                type="submit"
+                className="w-full bg-pink-500 text-white py-2 px-4 rounded-md text-sm font-medium hover:bg-pink-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500"
+              >
+                Sign in
+              </button>
+            </div>
+          </form>
         </motion.div>
       </main>
     </div>

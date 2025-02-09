@@ -6,7 +6,13 @@ import useDeviceDetection from '@/hooks/useDeviceDetection';
 import Link from 'next/link';
 import { useState } from 'react';
 import { supabase } from '@/utils/supabase-client';
-import MobileChapter1Container from '@/components/mobile/containers/MobileChapter1Container';
+import dynamic from 'next/dynamic';
+
+// Dynamically import mobile container
+const MobileChapterOverviewContainer = dynamic(
+  () => import('@/components/mobile/containers/MobileChapterOverviewContainer'),
+  { ssr: false }
+);
 
 export default function BeginnerChapter1Overview() {
   const { isMobile } = useDeviceDetection();
@@ -16,7 +22,7 @@ export default function BeginnerChapter1Overview() {
   return (
     <ProtectedRoute>
       {isMobile ? (
-        <MobileChapter1Container />
+        <MobileChapterOverviewContainer />
       ) : (
         <>
           {isLoading && (
