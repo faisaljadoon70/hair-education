@@ -1,4 +1,4 @@
-import { promises as fs } from 'fs';
+C:\Users\thatc\Desktop\Faisal\Hair project\hair-educationimport { promises as fs } from 'fs';
 import path from 'path';
 import chalk from 'chalk';
 

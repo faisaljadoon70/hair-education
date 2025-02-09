@@ -2,10 +2,16 @@
 
 import MobileWheelComponent from './MobileWheelComponent';
 
-export default function MobileLevelWheel() {
+interface Props {
+  onLevelSelect?: (level: number) => void;
+}
+
+export default function MobileLevelWheel({ onLevelSelect }: Props) {
+  console.log('MobileLevelWheel received props:', { onLevelSelect });
+  
   return (
-    <div style={{ transform: 'scale(0.7)', transformOrigin: 'top center' }}>
-      <MobileWheelComponent />
+    <div style={{ transform: 'scale(0.77)', transformOrigin: 'top center' }}>
+      <MobileWheelComponent onLevelSelect={onLevelSelect} />
     </div>
   );
 }
