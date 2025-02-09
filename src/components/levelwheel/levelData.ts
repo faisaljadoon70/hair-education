@@ -3,9 +3,9 @@ import type { HairLevel, Formula, PracticeResult } from './types';
 
 // Hair level data and configurations
 export const levelColors = {
-    1: "#010101", // Level 1 - Black
-    2: "#1C1410", // Level 2 - Darkest Brown
-    3: "#2A1810", // Level 3 - Dark Brown
+    1: "#000000", // Level 1 - Black (made darker)
+    2: "#231815", // Level 2 - Darkest Brown (made more distinct)
+    3: "#362318", // Level 3 - Dark Brown (made lighter and warmer)
     4: "#4A2D1C", // Level 4 - Medium Brown
     5: "#6B4435", // Level 5 - Light Brown
     6: "#8B6A4F", // Level 6 - Dark Blonde

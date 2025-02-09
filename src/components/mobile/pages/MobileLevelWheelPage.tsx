@@ -1,7 +1,6 @@
 'use client';
 
-import { useState } from 'react';
-import { Menu } from '@headlessui/react';
+import { useState, useEffect, useRef } from 'react';
 import { ChevronDownIcon, EllipsisVerticalIcon } from '@heroicons/react/24/outline';
 import MobileWheelComponent from '../components/MobileWheelComponent';
 import MobileBottomSheet from '../components/MobileBottomSheet';
@@ -15,6 +14,51 @@ export default function MobileLevelWheelPage() {
   const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
   const [viewMode, setViewMode] = useState<ViewMode>('wheel');
   const [selectedMixLevels, setSelectedMixLevels] = useState<number[]>([]);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isOptionsOpen, setIsOptionsOpen] = useState(false);
+
+  // Close menus when clicking outside
+  const handleClickOutside = (e: MouseEvent) => {
+    const target = e.target as HTMLElement;
+    if (!target.closest('.menu-button')) {
+      setIsMenuOpen(false);
+      setIsOptionsOpen(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener('click', handleClickOutside);
+    return () => document.removeEventListener('click', handleClickOutside);
+  }, []);
+
+  // Handle menu state changes
+  const handleMenuChange = (menu: 'view' | 'options' | null) => {
+    if (menu === 'view') {
+      setIsMenuOpen(true);
+      setIsOptionsOpen(false);
+    } else if (menu === 'options') {
+      setIsMenuOpen(false);
+      setIsOptionsOpen(true);
+    } else {
+      setIsMenuOpen(false);
+      setIsOptionsOpen(false);
+    }
+  };
+
+  // Handle opening view menu (Level Wheel dropdown)
+  const handleViewMenuOpen = () => {
+    handleMenuChange('view');
+  };
+
+  // Handle opening options menu (three dots)
+  const handleOptionsMenuOpen = () => {
+    handleMenuChange('options');
+  };
+
+  // Handle closing both menus
+  const handleCloseMenus = () => {
+    handleMenuChange(null);
+  };
 
   const handleLevelClick = (level: number) => {
     if (viewMode === 'wheel') {
@@ -56,73 +100,77 @@ export default function MobileLevelWheelPage() {
         {/* Top Controls */}
         <div className="flex items-center justify-between mb-4">
           {/* View Selector */}
-          <Menu as="div" className="relative flex-1 max-w-[200px]">
-            <Menu.Button className="flex items-center justify-between w-full text-sm px-3 py-2 border rounded-lg hover:bg-gray-50">
+          <div className="relative flex-1 max-w-[200px]">
+            <button 
+              className="menu-button flex items-center justify-between w-full text-sm px-3 py-2 border rounded-lg hover:bg-gray-50"
+              onClick={(e) => {
+                e.stopPropagation();
+                setIsMenuOpen(!isMenuOpen);
+                setIsOptionsOpen(false);
+              }}
+            >
               {viewMode === 'wheel' ? 'Level Wheel' : 'Mix Colors'}
-              <ChevronDownIcon className="h-4 w-4 ml-2" />
-            </Menu.Button>
-            <Menu.Items className="absolute z-10 mt-1 w-full bg-white border rounded-lg shadow-lg">
-              <div className="py-1">
-                <Menu.Item>
-                  {({ active }) => (
-                    <button
-                      onClick={() => handleViewChange('wheel')}
-                      className={`${
-                        active ? 'bg-gray-100' : ''
-                      } block w-full text-left px-4 py-2 text-sm`}
-                    >
-                      Level Wheel
-                    </button>
-                  )}
-                </Menu.Item>
-                <Menu.Item>
-                  {({ active }) => (
-                    <button
-                      onClick={() => handleViewChange('mix')}
-                      className={`${
-                        active ? 'bg-gray-100' : ''
-                      } block w-full text-left px-4 py-2 text-sm`}
-                    >
-                      Mix Colors
-                    </button>
-                  )}
-                </Menu.Item>
+              <ChevronDownIcon className="w-5 h-5 ml-2" />
+            </button>
+            {isMenuOpen && (
+              <div className="absolute left-0 mt-2 w-48 origin-top-left bg-white rounded-lg shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                <div className="py-1">
+                  <button
+                    className="w-full text-left px-4 py-2 text-sm hover:bg-gray-100"
+                    onClick={() => {
+                      handleViewChange('wheel');
+                      setIsMenuOpen(false);
+                    }}
+                  >
+                    Level Wheel
+                  </button>
+                  <button
+                    className="w-full text-left px-4 py-2 text-sm hover:bg-gray-100"
+                    onClick={() => {
+                      handleViewChange('mix');
+                      setIsMenuOpen(false);
+                    }}
+                  >
+                    Mix Colors
+                  </button>
+                </div>
               </div>
-            </Menu.Items>
-          </Menu>
+            )}
+          </div>
 
           {/* Options Menu */}
-          <Menu as="div" className="relative ml-2">
-            <Menu.Button className="p-2 rounded-lg hover:bg-gray-100 border">
-              <EllipsisVerticalIcon className="h-6 w-6" />
-            </Menu.Button>
-            <Menu.Items className="absolute right-0 z-10 mt-1 w-48 bg-white border rounded-lg shadow-lg">
-              <div className="py-1">
-                <Menu.Item>
-                  {({ active }) => (
-                    <button
-                      className={`${
-                        active ? 'bg-gray-100' : ''
-                      } block w-full text-left px-4 py-2 text-sm`}
-                    >
-                      Advanced Mode
-                    </button>
-                  )}
-                </Menu.Item>
-                <Menu.Item>
-                  {({ active }) => (
-                    <button
-                      className={`${
-                        active ? 'bg-gray-100' : ''
-                      } block w-full text-left px-4 py-2 text-sm`}
-                    >
-                      Shade Card
-                    </button>
-                  )}
-                </Menu.Item>
+          <div className="relative">
+            <button 
+              className="menu-button p-2 rounded-full hover:bg-gray-100"
+              onClick={(e) => {
+                e.stopPropagation();
+                setIsOptionsOpen(!isOptionsOpen);
+                setIsMenuOpen(false);
+              }}
+            >
+              <EllipsisVerticalIcon className="w-6 h-6" />
+            </button>
+            {isOptionsOpen && (
+              <div className="absolute right-0 mt-2 w-48 origin-top-right bg-white rounded-lg shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                <div className="py-1">
+                  <a
+                    href="/advanced-level-wheel"
+                    className="block px-4 py-2 text-sm hover:bg-gray-100"
+                    onClick={() => setIsOptionsOpen(false)}
+                  >
+                    Advanced Mode
+                  </a>
+                  <a
+                    href="/level-wheel/shade-card"
+                    className="block px-4 py-2 text-sm hover:bg-gray-100"
+                    onClick={() => setIsOptionsOpen(false)}
+                  >
+                    Shade Card
+                  </a>
+                </div>
               </div>
-            </Menu.Items>
-          </Menu>
+            )}
+          </div>
         </div>
 
         {/* Main Content */}
