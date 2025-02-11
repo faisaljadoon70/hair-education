@@ -3,17 +3,17 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { supabase } from '@/lib/supabaseClient';
-import { HAIR_TONES, ToneDefinition, HairTone } from '../../types/colorSystem';
-import { calculateFinalColor } from '../../utils/colorSpace';
-import { levelColors } from '../levelwheel/levelData';
-import type { HairLevel, LevelFormula, PracticeResult } from './types';
+import { HAIR_TONES, ToneDefinition, HairTone } from '@/types/colorSystem';
+import { calculateFinalColor } from '@/utils/colorSpace';
+import { levelColors } from '@/components/levelwheel/levelData';
+import type { HairLevel, LevelFormula, PracticeResult } from '@/components/advancedlevelwheel/types';
 import { Tab } from '@headlessui/react';
 import { useEducationalContent } from '@/hooks/useEducationalContent';
 import LevelEducation from './LevelEducation';
 import { ToneSelector } from './ToneSelector';
-import { HairHistory, HairProperties, ColorPrediction } from '../../types/colorSystem';
+import { HairHistory, HairProperties, ColorPrediction } from '@/types/colorSystem';
 import LiftingProcessTimeline from './LiftingProcessTimeline';
-import { calculateColorResult, calculateDeveloperVolume, ColorResult } from '../../utils/colorCalculations';
+import { calculateColorResult, calculateDeveloperVolume, ColorResult } from '@/utils/colorCalculations';
 
 // Floating Notification Component
 const FloatingNotification = ({ 
