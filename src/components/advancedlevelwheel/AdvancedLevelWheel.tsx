@@ -3,17 +3,18 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { supabase } from '@/lib/supabaseClient';
+import { HAIR_TONES, ToneDefinition, HairTone } from '../../types/colorSystem';
+import { calculateFinalColor } from '../../utils/colorSpace';
 import { levelColors } from '../levelwheel/levelData';
 import type { HairLevel, LevelFormula, PracticeResult } from './types';
 import { Tab } from '@headlessui/react';
 import { useEducationalContent } from '@/hooks/useEducationalContent';
 import LevelEducation from './LevelEducation';
 import { ToneSelector } from './ToneSelector';
-import { HairTone, calculateFinalColor } from '../../types/colorSystem';
-import { FloatingNotification } from './FloatingNotification';
-import LiftingProcessTimeline from './LiftingProcessTimeline';
-import { calculateColorResult, calculateDeveloperVolume, HairHistory, HairProperties, ColorPrediction } from '../../utils/colorCalculations';
+import { HairHistory, HairProperties, ColorPrediction } from '../../types/colorSystem';
 import { predictFinalColor } from '@/utils/colorSpace';
+import LiftingProcessTimeline from './LiftingProcessTimeline';
+import { calculateColorResult, calculateDeveloperVolume, ColorResult } from '../../utils/colorCalculations';
 
 interface ColorNode {
   id: string;
