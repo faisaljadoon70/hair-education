@@ -36,16 +36,16 @@ CREATE TABLE color_guidelines (
 
 -- Insert generic color levels
 INSERT INTO color_levels (level_number, description, underlying_pigment, lifting_capability, general_notes) VALUES
-(1, 'Black', 'Blue-black', 'Difficult to lift', 'Darkest level, requires strong developer for lifting'),
-(2, 'Darkest Brown', 'Blue', 'Very resistant', 'Deep brown with cool undertones'),
-(3, 'Dark Brown', 'Blue-red', 'Resistant', 'Rich brown with balanced undertones'),
-(4, 'Medium Brown', 'Red', 'Moderately resistant', 'Natural-looking medium brown'),
-(5, 'Light Brown', 'Red-orange', 'Moderate', 'Warm brown with golden undertones'),
-(6, 'Dark Blonde', 'Orange', 'Moderate to easy', 'Rich blonde with warm undertones'),
-(7, 'Medium Blonde', 'Orange-yellow', 'Easy', 'Natural blonde with golden tones'),
-(8, 'Light Blonde', 'Yellow', 'Very easy', 'Bright blonde with yellow undertones'),
-(9, 'Very Light Blonde', 'Pale yellow', 'Ultra easy', 'Pale blonde with minimal undertones'),
-(10, 'Lightest Blonde', 'Pale yellow-white', 'Extremely easy', 'Lightest natural level');
+(1, 'Black', 'Blue', 'Difficult to lift', 'Darkest level, requires strong developer for lifting'),
+(2, 'Brown/Black', 'Blue-Violet', 'Very resistant', 'Deep brown with cool undertones'),
+(3, 'Dark Brown', 'Violet', 'Resistant', 'Rich brown with balanced undertones'),
+(4, 'Medium Brown', 'Red-Violet', 'Moderately resistant', 'Natural-looking medium brown'),
+(5, 'Light Brown', 'Red-Orange', 'Moderate', 'Warm brown with golden undertones'),
+(6, 'Dark Blonde', 'Orange-Red', 'Moderate to easy', 'Rich blonde with warm undertones'),
+(7, 'Medium Blonde', 'Orange', 'Easy', 'Natural blonde with golden tones'),
+(8, 'Light Blonde', 'Yellow-Orange', 'Very easy', 'Bright blonde with yellow undertones'),
+(9, 'Very Light Blonde', 'Yellow', 'Ultra easy', 'Pale blonde with minimal undertones'),
+(10, 'Lightest Blonde', 'Pale Yellow', 'Extremely easy', 'Lightest natural level');
 
 -- Update example data for Level 9
 UPDATE color_levels

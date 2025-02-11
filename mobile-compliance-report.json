@@ -1,0 +1,401 @@
+{
+  "reports": [
+    {
+      "filePath": "src\\components\\mobile\\MobilePageLayout.tsx",
+      "forbiddenImports": [],
+      "styleViolations": [
+        "Line 3: Possible shared style usage: import '@/styles/mobile.css';"
+      ],
+      "directoryStructureIssues": [],
+      "crossComponentDependencies": []
+    },
+    {
+      "filePath": "src\\components\\mobile\\MobileHeader.tsx",
+      "forbiddenImports": [],
+      "styleViolations": [],
+      "directoryStructureIssues": [],
+      "crossComponentDependencies": []
+    },
+    {
+      "filePath": "src\\components\\mobile\\HomeNavigation.tsx",
+      "forbiddenImports": [],
+      "styleViolations": [
+        "Line 10: Possible shared style usage: import '@/styles/mobile.css';"
+      ],
+      "directoryStructureIssues": [],
+      "crossComponentDependencies": []
+    },
+    {
+      "filePath": "src\\components\\mobile\\templates\\MobileChapterPage.tsx",
+      "forbiddenImports": [],
+      "styleViolations": [],
+      "directoryStructureIssues": [],
+      "crossComponentDependencies": []
+    },
+    {
+      "filePath": "src\\components\\mobile\\shadecard\\MobileShadeCard.tsx",
+      "forbiddenImports": [],
+      "styleViolations": [],
+      "directoryStructureIssues": [],
+      "crossComponentDependencies": []
+    },
+    {
+      "filePath": "src\\components\\mobile\\navigation\\MobileHomeNavigation.tsx",
+      "forbiddenImports": [],
+      "styleViolations": [],
+      "directoryStructureIssues": [],
+      "crossComponentDependencies": []
+    },
+    {
+      "filePath": "src\\components\\mobile\\navigation\\MobileHeader.tsx",
+      "forbiddenImports": [],
+      "styleViolations": [],
+      "directoryStructureIssues": [],
+      "crossComponentDependencies": []
+    },
+    {
+      "filePath": "src\\components\\mobile\\pages\\MobileMixColorsPage.tsx",
+      "forbiddenImports": [],
+      "styleViolations": [],
+      "directoryStructureIssues": [],
+      "crossComponentDependencies": []
+    },
+    {
+      "filePath": "src\\components\\mobile\\pages\\MobileLevelWheelPage.tsx",
+      "forbiddenImports": [],
+      "styleViolations": [],
+      "directoryStructureIssues": [],
+      "crossComponentDependencies": []
+    },
+    {
+      "filePath": "src\\components\\mobile\\pages\\MobileIntermediatePage.tsx",
+      "forbiddenImports": [],
+      "styleViolations": [],
+      "directoryStructureIssues": [],
+      "crossComponentDependencies": []
+    },
+    {
+      "filePath": "src\\components\\mobile\\pages\\MobileHomePage.tsx",
+      "forbiddenImports": [],
+      "styleViolations": [],
+      "directoryStructureIssues": [],
+      "crossComponentDependencies": []
+    },
+    {
+      "filePath": "src\\components\\mobile\\pages\\MobileExpertPage.tsx",
+      "forbiddenImports": [],
+      "styleViolations": [],
+      "directoryStructureIssues": [],
+      "crossComponentDependencies": []
+    },
+    {
+      "filePath": "src\\components\\mobile\\pages\\MobileChapter1Page.tsx",
+      "forbiddenImports": [],
+      "styleViolations": [],
+      "directoryStructureIssues": [],
+      "crossComponentDependencies": []
+    },
+    {
+      "filePath": "src\\components\\mobile\\pages\\MobileBeginnerPage.tsx",
+      "forbiddenImports": [],
+      "styleViolations": [],
+      "directoryStructureIssues": [],
+      "crossComponentDependencies": []
+    },
+    {
+      "filePath": "src\\components\\mobile\\pages\\MobileBeginnerChapter4Overview.tsx",
+      "forbiddenImports": [],
+      "styleViolations": [],
+      "directoryStructureIssues": [],
+      "crossComponentDependencies": []
+    },
+    {
+      "filePath": "src\\components\\mobile\\pages\\MobileBeginnerChapter3Overview.tsx",
+      "forbiddenImports": [],
+      "styleViolations": [],
+      "directoryStructureIssues": [],
+      "crossComponentDependencies": []
+    },
+    {
+      "filePath": "src\\components\\mobile\\pages\\MobileBeginnerChapter2Overview.tsx",
+      "forbiddenImports": [],
+      "styleViolations": [],
+      "directoryStructureIssues": [],
+      "crossComponentDependencies": []
+    },
+    {
+      "filePath": "src\\components\\mobile\\pages\\MobileBeginnerChapter1Page.tsx",
+      "forbiddenImports": [],
+      "styleViolations": [],
+      "directoryStructureIssues": [],
+      "crossComponentDependencies": []
+    },
+    {
+      "filePath": "src\\components\\mobile\\pages\\MobileBeginnerChapter1Overview.tsx",
+      "forbiddenImports": [],
+      "styleViolations": [],
+      "directoryStructureIssues": [],
+      "crossComponentDependencies": []
+    },
+    {
+      "filePath": "src\\components\\mobile\\pages\\MobileAdvancedLevelWheelPage.tsx",
+      "forbiddenImports": [],
+      "styleViolations": [],
+      "directoryStructureIssues": [],
+      "crossComponentDependencies": []
+    },
+    {
+      "filePath": "src\\components\\mobile\\layouts\\ToolMobileLayout.tsx",
+      "forbiddenImports": [],
+      "styleViolations": [],
+      "directoryStructureIssues": [],
+      "crossComponentDependencies": []
+    },
+    {
+      "filePath": "src\\components\\mobile\\layouts\\MobileLayout.tsx",
+      "forbiddenImports": [],
+      "styleViolations": [],
+      "directoryStructureIssues": [],
+      "crossComponentDependencies": []
+    },
+    {
+      "filePath": "src\\components\\mobile\\layouts\\HomeMobileLayout.tsx",
+      "forbiddenImports": [],
+      "styleViolations": [],
+      "directoryStructureIssues": [],
+      "crossComponentDependencies": []
+    },
+    {
+      "filePath": "src\\components\\mobile\\layouts\\HomeContent.tsx",
+      "forbiddenImports": [],
+      "styleViolations": [],
+      "directoryStructureIssues": [],
+      "crossComponentDependencies": []
+    },
+    {
+      "filePath": "src\\components\\mobile\\layouts\\ChapterMobileLayout.tsx",
+      "forbiddenImports": [],
+      "styleViolations": [],
+      "directoryStructureIssues": [],
+      "crossComponentDependencies": []
+    },
+    {
+      "filePath": "src\\components\\mobile\\layouts\\BaseMobileLayout.tsx",
+      "forbiddenImports": [],
+      "styleViolations": [
+        "Line 5: Possible shared style usage: import '@/styles/mobile.css';"
+      ],
+      "directoryStructureIssues": [],
+      "crossComponentDependencies": []
+    },
+    {
+      "filePath": "src\\components\\mobile\\core\\MobilePresenter.tsx",
+      "forbiddenImports": [],
+      "styleViolations": [],
+      "directoryStructureIssues": [],
+      "crossComponentDependencies": []
+    },
+    {
+      "filePath": "src\\components\\mobile\\core\\MobileContainer.tsx",
+      "forbiddenImports": [],
+      "styleViolations": [],
+      "directoryStructureIssues": [],
+      "crossComponentDependencies": []
+    },
+    {
+      "filePath": "src\\components\\mobile\\containers\\ToolContainer.tsx",
+      "forbiddenImports": [],
+      "styleViolations": [],
+      "directoryStructureIssues": [],
+      "crossComponentDependencies": []
+    },
+    {
+      "filePath": "src\\components\\mobile\\containers\\MobileOfflineContainer.tsx",
+      "forbiddenImports": [],
+      "styleViolations": [],
+      "directoryStructureIssues": [],
+      "crossComponentDependencies": []
+    },
+    {
+      "filePath": "src\\components\\mobile\\containers\\MobileMixColorsContainer.tsx",
+      "forbiddenImports": [],
+      "styleViolations": [],
+      "directoryStructureIssues": [],
+      "crossComponentDependencies": []
+    },
+    {
+      "filePath": "src\\components\\mobile\\containers\\MobileLevelWheelContainer.tsx",
+      "forbiddenImports": [],
+      "styleViolations": [],
+      "directoryStructureIssues": [],
+      "crossComponentDependencies": []
+    },
+    {
+      "filePath": "src\\components\\mobile\\containers\\MobileIntermediateContainer.tsx",
+      "forbiddenImports": [],
+      "styleViolations": [],
+      "directoryStructureIssues": [],
+      "crossComponentDependencies": []
+    },
+    {
+      "filePath": "src\\components\\mobile\\containers\\MobileExpertContainer.tsx",
+      "forbiddenImports": [],
+      "styleViolations": [],
+      "directoryStructureIssues": [],
+      "crossComponentDependencies": []
+    },
+    {
+      "filePath": "src\\components\\mobile\\containers\\MobileChapterOverviewContainer.tsx",
+      "forbiddenImports": [],
+      "styleViolations": [],
+      "directoryStructureIssues": [],
+      "crossComponentDependencies": []
+    },
+    {
+      "filePath": "src\\components\\mobile\\containers\\MobileCallbackContainer.tsx",
+      "forbiddenImports": [],
+      "styleViolations": [],
+      "directoryStructureIssues": [],
+      "crossComponentDependencies": []
+    },
+    {
+      "filePath": "src\\components\\mobile\\containers\\MobileBeginnerContainer.tsx",
+      "forbiddenImports": [],
+      "styleViolations": [],
+      "directoryStructureIssues": [],
+      "crossComponentDependencies": []
+    },
+    {
+      "filePath": "src\\components\\mobile\\containers\\MobileBeginnerChapter4Container.tsx",
+      "forbiddenImports": [],
+      "styleViolations": [],
+      "directoryStructureIssues": [],
+      "crossComponentDependencies": []
+    },
+    {
+      "filePath": "src\\components\\mobile\\containers\\MobileBeginnerChapter3Container.tsx",
+      "forbiddenImports": [],
+      "styleViolations": [],
+      "directoryStructureIssues": [],
+      "crossComponentDependencies": []
+    },
+    {
+      "filePath": "src\\components\\mobile\\containers\\MobileBeginnerChapter2Container.tsx",
+      "forbiddenImports": [],
+      "styleViolations": [],
+      "directoryStructureIssues": [],
+      "crossComponentDependencies": []
+    },
+    {
+      "filePath": "src\\components\\mobile\\containers\\MobileBeginnerChapter1PageContainer.tsx",
+      "forbiddenImports": [],
+      "styleViolations": [],
+      "directoryStructureIssues": [],
+      "crossComponentDependencies": []
+    },
+    {
+      "filePath": "src\\components\\mobile\\containers\\MobileBeginnerChapter1Container.tsx",
+      "forbiddenImports": [],
+      "styleViolations": [],
+      "directoryStructureIssues": [],
+      "crossComponentDependencies": []
+    },
+    {
+      "filePath": "src\\components\\mobile\\containers\\MobileAuthContainer.tsx",
+      "forbiddenImports": [],
+      "styleViolations": [],
+      "directoryStructureIssues": [],
+      "crossComponentDependencies": []
+    },
+    {
+      "filePath": "src\\components\\mobile\\containers\\MobileAdvancedLevelWheelContainer.tsx",
+      "forbiddenImports": [],
+      "styleViolations": [],
+      "directoryStructureIssues": [],
+      "crossComponentDependencies": []
+    },
+    {
+      "filePath": "src\\components\\mobile\\containers\\MixColorsContainer.tsx",
+      "forbiddenImports": [],
+      "styleViolations": [],
+      "directoryStructureIssues": [],
+      "crossComponentDependencies": []
+    },
+    {
+      "filePath": "src\\components\\mobile\\containers\\HomeContainer.tsx",
+      "forbiddenImports": [],
+      "styleViolations": [],
+      "directoryStructureIssues": [],
+      "crossComponentDependencies": []
+    },
+    {
+      "filePath": "src\\components\\mobile\\containers\\ChapterContainer.tsx",
+      "forbiddenImports": [],
+      "styleViolations": [],
+      "directoryStructureIssues": [],
+      "crossComponentDependencies": []
+    },
+    {
+      "filePath": "src\\components\\mobile\\auth\\MobileSignIn.tsx",
+      "forbiddenImports": [],
+      "styleViolations": [],
+      "directoryStructureIssues": [],
+      "crossComponentDependencies": []
+    },
+    {
+      "filePath": "src\\components\\mobile\\auth\\MobileAuthCallback.tsx",
+      "forbiddenImports": [],
+      "styleViolations": [],
+      "directoryStructureIssues": [],
+      "crossComponentDependencies": []
+    },
+    {
+      "filePath": "src\\components\\mobile\\components\\MobileWheelComponent.tsx",
+      "forbiddenImports": [
+        "Line 5: Forbidden import from /levelwheel/: @/components/levelwheel/levelData"
+      ],
+      "styleViolations": [],
+      "directoryStructureIssues": [],
+      "crossComponentDependencies": []
+    },
+    {
+      "filePath": "src\\components\\mobile\\components\\MobileLevelWheel.tsx",
+      "forbiddenImports": [],
+      "styleViolations": [],
+      "directoryStructureIssues": [],
+      "crossComponentDependencies": []
+    },
+    {
+      "filePath": "src\\components\\mobile\\components\\MobileColorGrid.tsx",
+      "forbiddenImports": [
+        "Line 3: Forbidden import from /levelwheel/: @/components/levelwheel/levelData"
+      ],
+      "styleViolations": [],
+      "directoryStructureIssues": [],
+      "crossComponentDependencies": []
+    },
+    {
+      "filePath": "src\\components\\mobile\\components\\MobileBottomSheet.tsx",
+      "forbiddenImports": [
+        "Line 5: Forbidden import from /levelwheel/: @/components/levelwheel/levelData"
+      ],
+      "styleViolations": [],
+      "directoryStructureIssues": [],
+      "crossComponentDependencies": []
+    },
+    {
+      "filePath": "src\\components\\mobile\\components\\MobileAdvancedWheelComponent.tsx",
+      "forbiddenImports": [
+        "Line 6: Forbidden import from /levelwheel/: @/components/levelwheel/levelData"
+      ],
+      "styleViolations": [],
+      "directoryStructureIssues": [],
+      "crossComponentDependencies": []
+    }
+  ],
+  "summary": {
+    "totalFiles": 54,
+    "filesWithViolations": 7,
+    "totalViolations": 7
+  }
+}

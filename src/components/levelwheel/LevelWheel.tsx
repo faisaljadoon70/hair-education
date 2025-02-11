@@ -167,27 +167,16 @@ export const LevelWheel = () => {
   const mixSelectedColors = () => {
     if (selectedLevels.length !== 2) return;
     
-    const color1 = levelColors[selectedLevels[0].level as keyof typeof levelColors];
-    const color2 = levelColors[selectedLevels[1].level as keyof typeof levelColors];
-    
-    // Convert hex to RGB and mix
-    const rgb1 = hexToRgb(color1);
-    const rgb2 = hexToRgb(color2);
-    
-    if (!rgb1 || !rgb2) return;
-    
-    const mixedRgb = {
-      r: Math.round((rgb1.r + rgb2.r) / 2),
-      g: Math.round((rgb1.g + rgb2.g) / 2),
-      b: Math.round((rgb1.b + rgb2.b) / 2)
-    };
-    
     // Calculate the result level (average of the two levels)
     const level1 = parseInt(selectedLevels[0].level);
     const level2 = parseInt(selectedLevels[1].level);
-    setResultLevel(Math.round((level1 + level2) / 2));
+    const resultLevel = Math.round((level1 + level2) / 2);
     
-    setMixedResult(rgbToHex(mixedRgb));
+    // Use the predefined color for this level
+    const resultColor = levelColors[resultLevel as keyof typeof levelColors];
+    
+    setResultLevel(resultLevel);
+    setMixedResult(resultColor);
   };
 
   const hexToRgb = (hex: string) => {
@@ -225,7 +214,6 @@ export const LevelWheel = () => {
 
   return (
     <div className="max-w-7xl mx-auto px-4">
-      {/* Navigation Buttons */}
       <div className="flex justify-center gap-4 mb-8">
         <button
           onClick={() => {
@@ -273,7 +261,6 @@ export const LevelWheel = () => {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-12 gap-8">
-        {/* Quick Navigation */}
         <div className="md:col-span-3">
           <div className="bg-white p-6 rounded-lg shadow-sm">
             <h3 className="font-medium text-lg mb-6">Quick Navigation</h3>
@@ -303,7 +290,6 @@ export const LevelWheel = () => {
           </div>
         </div>
 
-        {/* Color Wheel */}
         <div className="md:col-span-6">
           {view === 'wheel' ? (
             <div className="relative flex flex-col items-center">
@@ -316,7 +302,6 @@ export const LevelWheel = () => {
                   className="relative"
                   style={{ width: '440px', height: '440px', marginLeft: '80px' }}
                 >
-                  {/* Outer circle */}
                   <div
                     className="absolute inset-0 rounded-full"
                     style={{
@@ -324,7 +309,6 @@ export const LevelWheel = () => {
                       background: 'radial-gradient(circle at center, rgba(243, 244, 246, 0.2), rgba(229, 231, 235, 0.4))'
                     }}
                   />
-                  {/* Inner circle */}
                   <div
                     className="absolute"
                     style={{
@@ -341,7 +325,6 @@ export const LevelWheel = () => {
                   <div className="absolute left-1/2 top-1/2 w-12 h-12 -ml-6 -mt-6 rounded-full bg-gradient-to-br from-gray-100 to-white border-4 border-gray-200 shadow-inner" />
                   <div className="absolute left-1/2 top-1/2 w-3 h-3 -ml-1.5 -mt-1.5 rounded-full bg-pink-500 shadow-md" />
                   
-                  {/* Level circles */}
                   {hairLevels.map((level, index) => {
                     const angle = (index * (360 / hairLevels.length) + currentRotation) * (Math.PI / 180);
                     const color = levelColors[level.level as keyof typeof levelColors];
@@ -385,7 +368,6 @@ export const LevelWheel = () => {
                 </motion.div>
               </div>
 
-              {/* Rotation Controls - Centered */}
               <div className="flex justify-center gap-3 mt-4" style={{ marginLeft: '80px' }}>
                 <button
                   onClick={() => rotateWheel('left')}
@@ -463,7 +445,6 @@ export const LevelWheel = () => {
           )}
         </div>
 
-        {/* Right Panel - Hair Level Details or Mix Colors */}
         <div className="md:col-span-3">
           {isMixingMode ? (
             <div className="bg-white p-6 rounded-lg shadow-sm">
@@ -589,7 +570,7 @@ export const LevelWheel = () => {
                           border: '1px solid rgba(0,0,0,0.1)'
                         }}
                       />
-                      <p className="text-sm text-gray-600">{selectedLevel.neutralizing_tone}</p>
+                      <span className="text-sm text-gray-600">{selectedLevel.neutralizing_tone}</span>
                     </div>
                   </div>
 
@@ -617,7 +598,6 @@ export const LevelWheel = () => {
           )}
         </div>
       </div>
-      {/* Tooltip */}
       {showTip && (
         <motion.div
           initial={{ opacity: 0 }}
@@ -632,7 +612,6 @@ export const LevelWheel = () => {
           {tipContent}
         </motion.div>
       )}
-      {/* Formula Builder Modal */}
       {showFormulaBuilder && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <motion.div
@@ -734,7 +713,6 @@ export const LevelWheel = () => {
   );
 };
 
-// Helper function to adjust color brightness
 function adjustBrightness(hex: string, percent: number) {
   const num = parseInt(hex.replace('#', ''), 16);
   const amt = Math.round(2.55 * percent);
@@ -749,7 +727,6 @@ function adjustBrightness(hex: string, percent: number) {
   ).toString(16).slice(1);
 }
 
-// Helper function to get brightness value from hex color
 function getBrightnessFromHex(hex: string) {
   const rgb = parseInt(hex.slice(1), 16);
   const r = (rgb >> 16) & 0xff;
@@ -758,7 +735,6 @@ function getBrightnessFromHex(hex: string) {
   return (r * 299 + g * 587 + b * 114) / 1000;
 }
 
-// Helper function to get pigment color
 function getPigmentColor(pigment: string): string {
   const pigmentColors: { [key: string]: string } = {
     'Red': '#FF0000',
@@ -777,7 +753,6 @@ function getPigmentColor(pigment: string): string {
   return key ? pigmentColors[key] : '#CCCCCC';
 }
 
-// Helper function to get neutralizer color
 function getNeutralizerColor(neutralizer: string): string {
   const neutralizerColors: { [key: string]: string } = {
     'Green': '#00FF00',

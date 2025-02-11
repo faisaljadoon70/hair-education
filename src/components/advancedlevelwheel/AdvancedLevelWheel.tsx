@@ -10,10 +10,14 @@ import type { HairLevel, LevelFormula, PracticeResult } from './types';
 import { Tab } from '@headlessui/react';
 import { useEducationalContent } from '@/hooks/useEducationalContent';
 import LevelEducation from './LevelEducation';
-import { ToneSelector } from './ToneSelector';
 import { HairHistory, HairProperties, ColorPrediction } from '@/types/colorSystem';
 import LiftingProcessTimeline from './LiftingProcessTimeline';
 import { calculateColorResult, calculateDeveloperVolume } from '@/utils/colorCalculations';
+import { calculateTransformationPaths } from '@/utils/hairTransformation';
+import type { TransformationPath, HairCondition, HairColor } from '@/types/hairTransformation';
+import { useShadeCard } from '@/hooks/useShadeCard';
+import { SHADE_CARD_SERIES } from '@/data/shadeCardData';
+import type { HairShade } from '@/types/shadeCard';
 
 // Floating Notification Component
 const FloatingNotification = ({ 
@@ -91,7 +95,7 @@ export const AdvancedLevelWheel = () => {
   const [colorGraph, setColorGraph] = useState<{ [key: string]: ColorNode }>({});
   const [selectedNode, setSelectedNode] = useState<ColorNode | null>(null);
   const [rotation, setRotation] = useState(0);
-  const [activeTab, setActiveTab] = useState<'levelWheel' | 'colorMixing' | 'formulaBuilder' | 'colorPrediction' | 'liftingProcess'>('levelWheel');
+  const [activeTab, setActiveTab] = useState<'levelWheel' | 'colorMixing' | 'formulaBuilder' | 'reverseFormula' | 'colorPrediction' | 'liftingProcess'>('levelWheel');
 
   // Color Mixing State
   const [firstColor, setFirstColor] = useState<number | null>(null);
@@ -500,6 +504,79 @@ export const AdvancedLevelWheel = () => {
     };
   };
 
+  const getShadesByLevel = (level: number): HairShade[] => {
+    // Get all shades from natural series
+    const naturalSeries = SHADE_CARD_SERIES.find(series => series.id === 'natural');
+    if (!naturalSeries) return [];
+    
+    // Filter shades by level
+    return naturalSeries.shades.filter(shade => shade.level === level);
+  };
+
+  const [currentLevelShades, setCurrentLevelShades] = useState<HairShade[]>([]);
+  const [targetLevelShades, setTargetLevelShades] = useState<HairShade[]>([]);
+  const [reverseCurrentLevel, setReverseCurrentLevel] = useState<number>(1);
+  const [reverseCurrentTone, setReverseCurrentTone] = useState<string>('');
+  const [reverseTargetLevel, setReverseTargetLevel] = useState<number>(1);
+  const [reverseTargetTone, setReverseTargetTone] = useState<string>('');
+  const [paths, setPaths] = useState<any[]>([]);
+  const [reverseHairCondition, setReverseHairCondition] = useState({
+    porosity: 'low',
+    health: 'healthy',
+    previousTreatments: []
+  });
+
+  useEffect(() => {
+    const shades = getShadesByLevel(reverseCurrentLevel);
+    console.log('Current level shades:', shades);
+    setCurrentLevelShades(shades);
+    // Set default tone if available
+    if (shades.length > 0) {
+      setReverseCurrentTone(shades[0].id);
+    }
+  }, [reverseCurrentLevel]);
+
+  useEffect(() => {
+    const shades = getShadesByLevel(reverseTargetLevel);
+    console.log('Target level shades:', shades);
+    setTargetLevelShades(shades);
+    // Set default tone if available
+    if (shades.length > 0) {
+      setReverseTargetTone(shades[0].id);
+    }
+  }, [reverseTargetLevel]);
+
+  const calculatePaths = () => {
+    const request = {
+      startingColor: { 
+        level: reverseCurrentLevel, 
+        tone: reverseCurrentTone 
+      },
+      targetColor: { 
+        level: reverseTargetLevel, 
+        tone: reverseTargetTone 
+      },
+      hairCondition: {
+        porosity: reverseHairCondition.porosity,
+        health: reverseHairCondition.health,
+        previousTreatments: reverseHairCondition.previousTreatments,
+        underlyingPigment: getUndertone(reverseCurrentLevel)
+      },
+      maxSessions: 3,
+      developerVolumes: [10, 20, 30, 40]
+    };
+
+    const paths = calculateTransformationPaths(
+      request.startingColor.level,
+      request.startingColor.tone,
+      request.targetColor.level,
+      request.targetColor.tone,
+      request.hairCondition
+    );
+
+    setPaths(paths);
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 p-6">
       <FloatingNotification
@@ -514,6 +591,7 @@ export const AdvancedLevelWheel = () => {
         onClose={() => setShowPredictionNotification(false)}
         offset={70}
       />
+
       {/* Navigation Tabs */}
       <div className="flex justify-center space-x-4 mb-8">
         <button
@@ -539,6 +617,14 @@ export const AdvancedLevelWheel = () => {
           }`}
         >
           Formula Builder
+        </button>
+        <button
+          onClick={() => setActiveTab('reverseFormula')}
+          className={`px-4 py-2 rounded ${
+            activeTab === 'reverseFormula' ? 'bg-pink-500 text-white' : 'bg-gray-200'
+          }`}
+        >
+          Reverse Formula
         </button>
         <button
           onClick={() => setActiveTab('colorPrediction')}
@@ -810,7 +896,9 @@ export const AdvancedLevelWheel = () => {
                     </div>
                   </div>
                 ) : (
-                  <p className="text-gray-600">Select two colors and adjust the ratio to see the result</p>
+                  <p className="text-gray-600">
+                    Select two colors and adjust the ratio to see the result
+                  </p>
                 )}
               </div>
             </div>
@@ -837,11 +925,30 @@ export const AdvancedLevelWheel = () => {
 
                   <div>
                     <label className="block text-sm font-medium text-gray-700">Starting Tone</label>
-                    <ToneSelector
-                      selectedTone={selectedStartingTone}
-                      onToneSelect={setSelectedStartingTone}
-                      level={startingLevel}
-                    />
+                    <div className="grid grid-cols-4 gap-2">
+                      {getShadesByLevel(startingLevel).map(shade => (
+                        <motion.div
+                          key={shade.id}
+                          whileHover={{ scale: 1.1 }}
+                          onClick={() => setSelectedStartingTone(shade)}
+                          className={`
+                            relative cursor-pointer rounded-lg p-4 
+                            ${selectedStartingTone?.id === shade.id ? 'ring-2 ring-pink-500' : ''}
+                          `}
+                          style={{
+                            backgroundColor: shade.hexColor,
+                            transition: 'transform 0.2s'
+                          }}
+                        >
+                          <div 
+                            className={`text-xs text-center whitespace-nowrap overflow-hidden 
+                            ${shade.level <= 5 ? 'text-white' : 'text-gray-800'}`}
+                          >
+                            {shade.name}
+                          </div>
+                        </motion.div>
+                      ))}
+                    </div>
                   </div>
 
                   <div>
@@ -859,11 +966,30 @@ export const AdvancedLevelWheel = () => {
 
                   <div>
                     <label className="block text-sm font-medium text-gray-700">Target Tone</label>
-                    <ToneSelector
-                      selectedTone={selectedTargetTone}
-                      onToneSelect={setSelectedTargetTone}
-                      level={targetLevel}
-                    />
+                    <div className="grid grid-cols-4 gap-2">
+                      {getShadesByLevel(targetLevel).map(shade => (
+                        <motion.div
+                          key={shade.id}
+                          whileHover={{ scale: 1.1 }}
+                          onClick={() => setSelectedTargetTone(shade)}
+                          className={`
+                            relative cursor-pointer rounded-lg p-4 
+                            ${selectedTargetTone?.id === shade.id ? 'ring-2 ring-pink-500' : ''}
+                          `}
+                          style={{
+                            backgroundColor: shade.hexColor,
+                            transition: 'transform 0.2s'
+                          }}
+                        >
+                          <div 
+                            className={`text-xs text-center whitespace-nowrap overflow-hidden 
+                            ${shade.level <= 5 ? 'text-white' : 'text-gray-800'}`}
+                          >
+                            {shade.name}
+                          </div>
+                        </motion.div>
+                      ))}
+                    </div>
                   </div>
 
                   <div>
@@ -959,6 +1085,333 @@ export const AdvancedLevelWheel = () => {
             </div>
           )}
 
+          {activeTab === 'reverseFormula' && (
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              {/* Input Section */}
+              <div className="bg-white rounded-lg shadow-lg p-6">
+                <h2 className="text-xl font-bold text-gray-900 mb-6 border-b pb-2">Current Hair Details</h2>
+                
+                {/* Level Selection */}
+                <div className="mb-4">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Level
+                  </label>
+                  <select 
+                    value={reverseCurrentLevel}
+                    onChange={(e) => setReverseCurrentLevel(Number(e.target.value))}
+                    className="w-full border rounded-md p-2"
+                  >
+                    {[1,2,3,4,5,6,7,8,9,10].map(level => (
+                      <option key={level} value={level}>Level {level}</option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* Current Tone */}
+                <div className="mb-8">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Tone
+                  </label>
+                  <div className="grid grid-cols-3 gap-3">
+                    {currentLevelShades.map(shade => (
+                      <motion.div
+                        key={shade.id}
+                        whileHover={{ scale: 1.05 }}
+                        onClick={() => setReverseCurrentTone(shade.id)}
+                        className={`
+                          relative cursor-pointer rounded-lg p-6 shadow-sm
+                          ${reverseCurrentTone === shade.id ? 'ring-2 ring-pink-500 shadow-lg' : 'hover:shadow-md'}
+                        `}
+                        style={{
+                          backgroundColor: shade.hexColor,
+                          transition: 'all 0.2s ease-in-out'
+                        }}
+                      >
+                        <div 
+                          className={`text-sm font-medium text-center whitespace-nowrap overflow-hidden 
+                          ${shade.level <= 5 ? 'text-white' : 'text-gray-800'}`}
+                        >
+                          {shade.name}
+                        </div>
+                      </motion.div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Target Hair Section */}
+                <h2 className="text-xl font-bold text-gray-900 mb-6 border-b pb-2">Target Hair Details</h2>
+
+                {/* Target Level */}
+                <div className="mb-4">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Level
+                  </label>
+                  <select 
+                    value={reverseTargetLevel}
+                    onChange={(e) => setReverseTargetLevel(Number(e.target.value))}
+                    className="w-full border rounded-md p-2"
+                  >
+                    {[1,2,3,4,5,6,7,8,9,10].map(level => (
+                      <option key={level} value={level}>Level {level}</option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* Target Tone */}
+                <div className="mb-8">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Tone
+                  </label>
+                  <div className="grid grid-cols-4 gap-2">
+                    {targetLevelShades.map(shade => (
+                      <motion.div
+                        key={shade.id}
+                        whileHover={{ scale: 1.1 }}
+                        onClick={() => setReverseTargetTone(shade.id)}
+                        className={`
+                          relative cursor-pointer rounded-lg p-4
+                          ${reverseTargetTone === shade.id ? 'ring-2 ring-pink-500' : ''}
+                        `}
+                        style={{
+                          backgroundColor: shade.hexColor,
+                          transition: 'transform 0.2s'
+                        }}
+                      >
+                        <div 
+                          className={`text-xs text-center whitespace-nowrap overflow-hidden 
+                          ${shade.level <= 5 ? 'text-white' : 'text-gray-800'}`}
+                        >
+                          {shade.name}
+                        </div>
+                      </motion.div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Hair Condition Section */}
+                <h2 className="text-xl font-bold text-gray-900 mb-6 border-b pb-2">Hair Condition</h2>
+                
+                {/* Hair Porosity */}
+                <div className="mb-4">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Porosity
+                  </label>
+                  <select 
+                    value={reverseHairCondition.porosity}
+                    onChange={(e) => setReverseHairCondition({...reverseHairCondition, porosity: e.target.value as 'low' | 'medium' | 'high'})}
+                    className="w-full border rounded-md p-2"
+                  >
+                    <option value="low">Low</option>
+                    <option value="medium">Medium</option>
+                    <option value="high">High</option>
+                  </select>
+                </div>
+
+                {/* Hair Health */}
+                <div className="mb-4">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Health
+                  </label>
+                  <select 
+                    value={reverseHairCondition.health}
+                    onChange={(e) => setReverseHairCondition({...reverseHairCondition, health: e.target.value as 'damaged' | 'healthy'})}
+                    className="w-full border rounded-md p-2"
+                  >
+                    <option value="healthy">Healthy</option>
+                    <option value="damaged">Damaged</option>
+                  </select>
+                </div>
+
+                {/* Previous Treatments */}
+                <div className="mb-4">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Previous Treatments
+                  </label>
+                  <div className="space-y-2">
+                    {['virgin', 'bleached', 'colored', 'permed'].map(treatment => (
+                      <label key={treatment} className="flex items-center">
+                        <input 
+                          type="checkbox"
+                          checked={reverseHairCondition.previousTreatments.includes(treatment as any)}
+                          onChange={(e) => {
+                            const treatments = e.target.checked
+                              ? [...reverseHairCondition.previousTreatments, treatment]
+                              : reverseHairCondition.previousTreatments.filter(t => t !== treatment);
+                            setReverseHairCondition({...reverseHairCondition, previousTreatments: treatments as any});
+                          }}
+                          className="form-checkbox"
+                        />
+                        <span className="ml-2 capitalize">{treatment}</span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+
+                <button 
+                  className="w-full bg-pink-600 text-white py-2 px-4 rounded-md hover:bg-pink-700 transition-colors"
+                  onClick={calculatePaths}
+                >
+                  Calculate Paths
+                </button>
+              </div>
+
+              {/* Results Section */}
+              <div className="bg-white rounded-lg shadow-lg p-6">
+                <div className="flex justify-between items-center mb-6">
+                  <h2 className="text-xl font-bold">Formula Paths</h2>
+                  {paths && paths.length > 0 && (
+                    <button
+                      onClick={() => setPaths([])}
+                      className="text-gray-600 hover:text-red-600 transition-colors flex items-center gap-2"
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                        <path fillRule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z" />
+                      </svg>
+                      Clear Results
+                    </button>
+                  )}
+                </div>
+                {paths && paths.length > 0 ? (
+                  <>
+                    {paths.map((path, index) => (
+                      <div key={index} className="mb-8 last:mb-0">
+                        {/* Path Header */}
+                        <div className="flex items-center justify-between mb-4">
+                          <div>
+                            <h3 className="text-lg font-semibold text-gray-800">{path.name}</h3>
+                            <p className="text-sm text-gray-600 mt-1">
+                              {path.sessions} session{path.sessions > 1 ? 's' : ''} • {path.time} minutes per session
+                            </p>
+                          </div>
+                          <div className="flex items-center space-x-3">
+                            <span className={`px-3 py-1 rounded-full text-sm font-medium ${
+                              path.difficulty === 'Beginner' ? 'bg-green-100 text-green-800' :
+                              path.difficulty === 'Intermediate' ? 'bg-yellow-100 text-yellow-800' :
+                              'bg-red-100 text-red-800'
+                            }`}>
+                              {path.difficulty}
+                            </span>
+                            <span className={`px-3 py-1 rounded-full text-sm font-medium ${
+                              path.successRate >= 80 ? 'bg-green-100 text-green-800' :
+                              path.successRate >= 60 ? 'bg-yellow-100 text-yellow-800' :
+                              'bg-red-100 text-red-800'
+                            }`}>
+                              {path.successRate}% Success Rate
+                            </span>
+                          </div>
+                        </div>
+
+                        {/* Path Description */}
+                        <p className="text-gray-700 mb-6">{path.description}</p>
+
+                        {/* Steps */}
+                        <div className="space-y-6">
+                          {path.steps.map((step, stepIndex) => (
+                            <div key={stepIndex} className="bg-gray-50 rounded-lg p-6">
+                              <div className="flex items-start">
+                                <div className="flex-shrink-0 w-8 h-8 bg-pink-500 text-white rounded-full flex items-center justify-center font-bold">
+                                  {stepIndex + 1}
+                                </div>
+                                <div className="ml-4 flex-grow">
+                                  <h4 className="text-lg font-medium text-gray-900 mb-2">{step.description}</h4>
+                                  
+                                  {/* Formula and Processing Time */}
+                                  <div className="grid grid-cols-2 gap-4 mb-4">
+                                    <div className="bg-white p-3 rounded-md border border-gray-200">
+                                      <span className="text-sm font-medium text-gray-500">Formula</span>
+                                      <p className="mt-1 text-gray-900">{step.formula}</p>
+                                    </div>
+                                    <div className="bg-white p-3 rounded-md border border-gray-200">
+                                      <span className="text-sm font-medium text-gray-500">Processing Time</span>
+                                      <p className="mt-1 text-gray-900">{step.processingTime}</p>
+                                    </div>
+                                  </div>
+
+                                  {/* Detailed Steps */}
+                                  {step.details && (
+                                    <div className="mb-4">
+                                      <h5 className="text-sm font-medium text-gray-700 mb-2">Detailed Steps:</h5>
+                                      <ul className="space-y-2">
+                                        {step.details.map((detail, i) => (
+                                          <li key={i} className="flex items-start">
+                                            <span className="flex-shrink-0 w-5 h-5 bg-pink-100 text-pink-500 rounded-full flex items-center justify-center text-xs mr-2 mt-0.5">
+                                              {i + 1}
+                                            </span>
+                                            <span className="text-gray-700">{detail}</span>
+                                          </li>
+                                        ))}
+                                      </ul>
+                                    </div>
+                                  )}
+
+                                  {/* Cautions and Tips */}
+                                  <div className="grid grid-cols-2 gap-4">
+                                    {step.cautions && (
+                                      <div className="bg-amber-50 p-3 rounded-md">
+                                        <div className="flex items-center text-amber-800 mb-1">
+                                          <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                                          </svg>
+                                          <span className="font-medium">Caution</span>
+                                        </div>
+                                        <p className="text-amber-700 text-sm">{step.cautions}</p>
+                                      </div>
+                                    )}
+                                    {step.tips && (
+                                      <div className="bg-blue-50 p-3 rounded-md">
+                                        <div className="flex items-center text-blue-800 mb-1">
+                                          <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                          </svg>
+                                          <span className="font-medium">Pro Tip</span>
+                                        </div>
+                                        <p className="text-blue-700 text-sm">{step.tips}</p>
+                                      </div>
+                                    )}
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+
+                        {/* Overall Considerations */}
+                        <div className="mt-6 bg-gray-50 rounded-lg p-6">
+                          <h4 className="font-medium text-gray-900 mb-4">Overall Considerations</h4>
+                          <ul className="grid grid-cols-2 gap-4">
+                            {path.considerations.map((consideration, i) => (
+                              <li key={i} className="flex items-start">
+                                <svg className="w-5 h-5 text-pink-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                                <span className="text-gray-700">{consideration}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      </div>
+                    ))}
+                    <div className="mt-8 flex justify-center">
+                      <button
+                        onClick={() => setPaths([])}
+                        className="text-gray-600 hover:text-red-600 transition-colors flex items-center gap-2"
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                          <path fillRule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z" />
+                        </svg>
+                        Reset All Results
+                      </button>
+                    </div>
+                  </>
+                ) : (
+                  <div className="text-center py-8 text-gray-500">
+                    Click Calculate Paths to see available options
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+
           {activeTab === 'colorPrediction' && (
             <div className="grid grid-cols-2 gap-8">
               {/* Prediction Controls */}
@@ -980,11 +1433,30 @@ export const AdvancedLevelWheel = () => {
 
                   <div>
                     <label className="block text-sm font-medium text-gray-700">Current Tone</label>
-                    <ToneSelector
-                      selectedTone={currentTone}
-                      onToneSelect={setCurrentTone}
-                      level={startingLevel}
-                    />
+                    <div className="grid grid-cols-4 gap-2">
+                      {getShadesByLevel(startingLevel).map(shade => (
+                        <motion.div
+                          key={shade.id}
+                          whileHover={{ scale: 1.1 }}
+                          onClick={() => setCurrentTone(shade)}
+                          className={`
+                            relative cursor-pointer rounded-lg p-4 
+                            ${currentTone?.id === shade.id ? 'ring-2 ring-pink-500' : ''}
+                          `}
+                          style={{
+                            backgroundColor: shade.hexColor,
+                            transition: 'transform 0.2s'
+                          }}
+                        >
+                          <div 
+                            className={`text-xs text-center whitespace-nowrap overflow-hidden 
+                            ${shade.level <= 5 ? 'text-white' : 'text-gray-800'}`}
+                          >
+                            {shade.name}
+                          </div>
+                        </motion.div>
+                      ))}
+                    </div>
                   </div>
 
                   <div>
@@ -1002,11 +1474,30 @@ export const AdvancedLevelWheel = () => {
 
                   <div>
                     <label className="block text-sm font-medium text-gray-700">Desired Tone</label>
-                    <ToneSelector
-                      selectedTone={desiredTone}
-                      onToneSelect={setDesiredTone}
-                      level={targetLevel}
-                    />
+                    <div className="grid grid-cols-4 gap-2">
+                      {getShadesByLevel(targetLevel).map(shade => (
+                        <motion.div
+                          key={shade.id}
+                          whileHover={{ scale: 1.1 }}
+                          onClick={() => setDesiredTone(shade)}
+                          className={`
+                            relative cursor-pointer rounded-lg p-4 
+                            ${desiredTone?.id === shade.id ? 'ring-2 ring-pink-500' : ''}
+                          `}
+                          style={{
+                            backgroundColor: shade.hexColor,
+                            transition: 'transform 0.2s'
+                          }}
+                        >
+                          <div 
+                            className={`text-xs text-center whitespace-nowrap overflow-hidden 
+                            ${shade.level <= 5 ? 'text-white' : 'text-gray-800'}`}
+                          >
+                            {shade.name}
+                          </div>
+                        </motion.div>
+                      ))}
+                    </div>
                   </div>
 
                   <div>
@@ -1264,7 +1755,7 @@ export const AdvancedLevelWheel = () => {
               initial={{ x: 100, opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}
               exit={{ x: 100, opacity: 0 }}
-              className="w-96 bg-white rounded-lg shadow-lg"
+              className="w-96 bg-white rounded-lg"
             >
               <Tab.Group>
                 <Tab.List className="flex space-x-1 rounded-t-lg bg-gray-50 p-2 border-b">

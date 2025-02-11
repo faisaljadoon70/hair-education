@@ -1,0 +1,57 @@
+{
+  "reports": [
+    {
+      "filePath": "src/app/page.tsx",
+      "forbiddenImports": [],
+      "styleViolations": [],
+      "directoryStructureIssues": [],
+      "crossComponentDependencies": []
+    },
+    {
+      "filePath": "src/app/level-wheel/page.tsx",
+      "forbiddenImports": [],
+      "styleViolations": [],
+      "directoryStructureIssues": [],
+      "crossComponentDependencies": []
+    },
+    {
+      "filePath": "src/app/advanced-level-wheel/page.tsx",
+      "forbiddenImports": [],
+      "styleViolations": [],
+      "directoryStructureIssues": [],
+      "crossComponentDependencies": []
+    },
+    {
+      "filePath": "src/components/mobile/pages/MobileHomePage.tsx",
+      "forbiddenImports": [],
+      "styleViolations": [],
+      "directoryStructureIssues": [],
+      "crossComponentDependencies": [
+        "Line 3: Non-mobile dependency: @/context/AuthContext",
+        "Line 9: Non-mobile dependency: @/hooks/useDeviceDetection"
+      ]
+    },
+    {
+      "filePath": "src/components/mobile/pages/MobileLevelWheelPage.tsx",
+      "forbiddenImports": [],
+      "styleViolations": [],
+      "directoryStructureIssues": [],
+      "crossComponentDependencies": []
+    },
+    {
+      "filePath": "src/components/mobile/pages/MobileAdvancedLevelWheelPage.tsx",
+      "forbiddenImports": [],
+      "styleViolations": [],
+      "directoryStructureIssues": [],
+      "crossComponentDependencies": []
+    }
+  ],
+  "summary": {
+    "totalWebPages": 3,
+    "webPagesWithViolations": 0,
+    "totalMobilePages": 3,
+    "mobilePagesWithViolations": 1,
+    "missingMobilePages": 0,
+    "totalViolations": 2
+  }
+}

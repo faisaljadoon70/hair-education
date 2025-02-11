@@ -1,0 +1,98 @@
+{
+  "reports": [
+    {
+      "filePath": "src/components/mobile/pages/MobileLevelWheelPage.tsx",
+      "forbiddenImports": [],
+      "styleViolations": [],
+      "directoryStructureIssues": [],
+      "crossComponentDependencies": []
+    },
+    {
+      "filePath": "src/components/mobile/pages/MobileAdvancedLevelWheelPage.tsx",
+      "forbiddenImports": [],
+      "styleViolations": [],
+      "directoryStructureIssues": [],
+      "crossComponentDependencies": []
+    },
+    {
+      "filePath": "src/app/level-wheel/page.tsx",
+      "forbiddenImports": [],
+      "styleViolations": [],
+      "directoryStructureIssues": [],
+      "crossComponentDependencies": []
+    },
+    {
+      "filePath": "src/app/advanced-level-wheel/page.tsx",
+      "forbiddenImports": [],
+      "styleViolations": [],
+      "directoryStructureIssues": [],
+      "crossComponentDependencies": []
+    },
+    {
+      "filePath": "src\\components\\levelwheel\\MixingRatioSlider.tsx",
+      "forbiddenImports": [],
+      "styleViolations": [],
+      "directoryStructureIssues": [],
+      "crossComponentDependencies": []
+    },
+    {
+      "filePath": "src\\components\\levelwheel\\MixingPanel.tsx",
+      "forbiddenImports": [],
+      "styleViolations": [],
+      "directoryStructureIssues": [],
+      "crossComponentDependencies": []
+    },
+    {
+      "filePath": "src\\components\\levelwheel\\LevelWheel.tsx",
+      "forbiddenImports": [],
+      "styleViolations": [],
+      "directoryStructureIssues": [],
+      "crossComponentDependencies": []
+    },
+    {
+      "filePath": "src\\components\\advancedlevelwheel\\ToneSelector.tsx",
+      "forbiddenImports": [],
+      "styleViolations": [],
+      "directoryStructureIssues": [],
+      "crossComponentDependencies": []
+    },
+    {
+      "filePath": "src\\components\\advancedlevelwheel\\LiftingProcessTimeline.tsx",
+      "forbiddenImports": [],
+      "styleViolations": [],
+      "directoryStructureIssues": [],
+      "crossComponentDependencies": []
+    },
+    {
+      "filePath": "src\\components\\advancedlevelwheel\\LevelEducation.tsx",
+      "forbiddenImports": [],
+      "styleViolations": [],
+      "directoryStructureIssues": [],
+      "crossComponentDependencies": []
+    },
+    {
+      "filePath": "src\\components\\advancedlevelwheel\\FloatingNotification.tsx",
+      "forbiddenImports": [],
+      "styleViolations": [],
+      "directoryStructureIssues": [],
+      "crossComponentDependencies": []
+    },
+    {
+      "filePath": "src\\components\\advancedlevelwheel\\AdvancedLevelWheel.tsx",
+      "forbiddenImports": [
+        "Line 6: Forbidden import from /levelwheel/: ../levelwheel/levelData"
+      ],
+      "styleViolations": [],
+      "directoryStructureIssues": [],
+      "crossComponentDependencies": []
+    }
+  ],
+  "summary": {
+    "totalFiles": 12,
+    "filesWithViolations": 1,
+    "totalViolations": 1,
+    "mobileComponents": 2,
+    "webComponents": 2,
+    "sharedComponents": 8
+  }
+}
