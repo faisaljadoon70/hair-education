@@ -55,7 +55,7 @@ export const ToneSelector: React.FC<ToneSelectorProps> = ({
         onClick={() => isSecondary ? handleSecondaryToneSelect(tone) : handlePrimaryToneSelect(tone)}
         onMouseEnter={() => setShowToneInfo(tone.code)}
         onMouseLeave={() => setShowToneInfo(null)}
-        className={`relative p-3 rounded-lg transition-all ${
+        className={`relative p-3 rounded-lg transition-all min-w-[80px] max-w-[80px] ${
           isSelected
             ? 'ring-2 ring-pink-500 shadow-lg'
             : 'hover:shadow-md'
@@ -70,10 +70,10 @@ export const ToneSelector: React.FC<ToneSelectorProps> = ({
           }}
         />
         <div className="relative z-10 text-center">
-          <div className="font-medium" style={{ color: parseInt(tone.hexColor.slice(1), 16) > 0xffffff / 2 ? '#000' : '#fff' }}>
+          <div className="font-medium text-xs truncate" style={{ color: parseInt(tone.hexColor.slice(1), 16) > 0xffffff / 2 ? '#000' : '#fff' }}>
             {tone.name}
           </div>
-          <div className="text-xs opacity-75" style={{ color: parseInt(tone.hexColor.slice(1), 16) > 0xffffff / 2 ? '#000' : '#fff' }}>
+          <div className="text-[10px] opacity-75" style={{ color: parseInt(tone.hexColor.slice(1), 16) > 0xffffff / 2 ? '#000' : '#fff' }}>
             {level}.{tone.code}
           </div>
         </div>

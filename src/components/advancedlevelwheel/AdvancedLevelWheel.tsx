@@ -13,6 +13,7 @@ import { HairTone, calculateFinalColor } from '../../types/colorSystem';
 import { FloatingNotification } from './FloatingNotification';
 import LiftingProcessTimeline from './LiftingProcessTimeline';
 import { calculateColorResult, calculateDeveloperVolume, HairHistory, HairProperties, ColorPrediction } from '../../utils/colorCalculations';
+import { predictFinalColor } from '@/utils/colorSpace';
 
 interface ColorNode {
   id: string;
@@ -58,7 +59,39 @@ export const AdvancedLevelWheel = () => {
   const [colorGraph, setColorGraph] = useState<{ [key: string]: ColorNode }>({});
   const [selectedNode, setSelectedNode] = useState<ColorNode | null>(null);
   const [rotation, setRotation] = useState(0);
-  const [activeTab, setActiveTab] = useState<'levelWheel' | 'formulaBuilder' | 'colorPrediction' | 'liftingProcess'>('levelWheel');
+  const [activeTab, setActiveTab] = useState<'levelWheel' | 'colorMixing' | 'formulaBuilder' | 'colorPrediction' | 'liftingProcess'>('levelWheel');
+
+  // Color Mixing State
+  const [firstColor, setFirstColor] = useState<number | null>(null);
+  const [secondColor, setSecondColor] = useState<number | null>(null);
+  const [mixingRatio, setMixingRatio] = useState<number>(50); // 50% default
+  const [mixedResult, setMixedResult] = useState<{level: number, color: string} | null>(null);
+
+  // Calculate mixed color result
+  const calculateMixedColor = () => {
+    if (!firstColor || !secondColor) return;
+
+    // Calculate the weighted average level based on the mixing ratio
+    const firstColorWeight = (100 - mixingRatio) / 100;
+    const secondColorWeight = mixingRatio / 100;
+    
+    const mixedLevel = (firstColor * firstColorWeight) + (secondColor * secondColorWeight);
+    
+    // Find the closest shade card color for this level
+    const roundedLevel = Math.round(mixedLevel * 10) / 10; // Round to nearest 0.1
+    
+    setMixedResult({
+      level: roundedLevel,
+      color: getLevelColor(Math.round(roundedLevel)) // For now, use the basic level color
+    });
+  };
+
+  // Watch for changes in colors or ratio to update result
+  useEffect(() => {
+    if (firstColor && secondColor) {
+      calculateMixedColor();
+    }
+  }, [firstColor, secondColor, mixingRatio]);
 
   // Formula Builder State
   const [currentFormula, setCurrentFormula] = useState<LevelFormula | null>(null);
@@ -101,12 +134,53 @@ export const AdvancedLevelWheel = () => {
     return Math.round(30 * levelDifference * porosityFactor);
   };
 
-  const calculateDeveloperStrength = () => {
-    if (!startingLevel || !targetLevel) return 0;
-    const levelDifference = Math.abs(targetLevel - startingLevel);
+  const calculateDeveloperStrength = (startLevel: number, targetLevel: number): number => {
+    const levelDifference = targetLevel - startLevel;
+    if (levelDifference <= 0) return 10; // Deposit only
     if (levelDifference <= 2) return 20;
     if (levelDifference <= 4) return 30;
-    return 40;
+    return 40; // Maximum lift
+  };
+
+  const calculateToneAdjustments = (undertone: string): string[] => {
+    const adjustments: string[] = [];
+    
+    switch (undertone.toLowerCase()) {
+      case 'ash':
+        adjustments.push('Add blue-violet base to neutralize warmth');
+        break;
+      case 'violet':
+        adjustments.push('Add violet base to neutralize yellow tones');
+        break;
+      case 'green':
+        adjustments.push('Add green base to neutralize red tones');
+        break;
+      case 'pearl':
+        adjustments.push('Add pearl base for iridescent finish');
+        break;
+      case 'silver':
+        adjustments.push('Add silver base for metallic cool tones');
+        break;
+      case 'natural':
+        adjustments.push('No additional tone adjustments needed');
+        break;
+      case 'gold':
+        adjustments.push('Add gold base for warm undertones');
+        break;
+      case 'copper':
+        adjustments.push('Add copper base for warm red-orange tones');
+        break;
+      case 'mahogany':
+        adjustments.push('Add mahogany base for rich red-violet tones');
+        break;
+      case 'red':
+        adjustments.push('Add red base for vibrant red tones');
+        break;
+      default:
+        adjustments.push('Standard tone application');
+    }
+    
+    return adjustments;
   };
 
   const calculateLiftingProcess = () => {
@@ -222,16 +296,16 @@ export const AdvancedLevelWheel = () => {
 
   const getLevelColor = (level: number): string => {
     const colors = {
-      1: '#090909', // True Black
-      2: '#1a1110', // Soft Black
-      3: '#2a1d1b', // Darkest Brown
-      4: '#3b2820', // Dark Brown
-      5: '#584039', // Medium Brown
-      6: '#8b6b5d', // Light Brown
-      7: '#b69b8f', // Dark Blonde
-      8: '#d4b9a9', // Medium Blonde
-      9: '#e8d5c7', // Light Blonde
-      10: '#f5e6db' // Lightest Blonde
+      1: "#000000", // Level 1 - Black
+      2: "#231815", // Level 2 - Darkest Brown
+      3: "#362318", // Level 3 - Dark Brown
+      4: "#4A2D1C", // Level 4 - Medium Brown
+      5: "#6B4435", // Level 5 - Light Brown
+      6: "#8B6A4F", // Level 6 - Dark Blonde
+      7: "#B68E68", // Level 7 - Medium Blonde
+      8: "#D4B190", // Level 8 - Light Blonde
+      9: "#E8C9A4", // Level 9 - Very Light Blonde
+      10: "#F2DFC4" // Level 10 - Lightest Blonde/Platinum
     };
     return colors[level as keyof typeof colors] || '#000000';
   };
@@ -250,14 +324,19 @@ export const AdvancedLevelWheel = () => {
   const [showNotification, setShowNotification] = useState(false);
   const [showPredictionNotification, setShowPredictionNotification] = useState(false);
 
-  const calculatePrediction = () => {
-    const newPrediction = {
-      processingTime: calculateProcessingTime(),
-      developerStrength: calculateDeveloperStrength(),
-      finalColor: { level: targetLevel, name: `Level ${targetLevel}` },
-      toneAdjustments: []
-    };
-    setPrediction(newPrediction);
+  const updateColorPrediction = () => {
+    if (!startingLevel || !targetLevel) return;
+
+    const undertone = selectedTargetTone?.type || 'natural';
+    const result = predictFinalColor(startingLevel, targetLevel, undertone, currentPorosity);
+
+    setPrediction({
+      finalColor: result.color,
+      processingTime: result.processingTime,
+      developerStrength: calculateDeveloperStrength(startingLevel, targetLevel),
+      toneAdjustments: calculateToneAdjustments(undertone)
+    });
+
     setShowPredictionNotification(true);
   };
 
@@ -267,7 +346,7 @@ export const AdvancedLevelWheel = () => {
       startingLevel,
       targetLevel,
       porosity: currentPorosity,
-      developer: calculateDeveloperStrength(),
+      developer: calculateDeveloperStrength(startingLevel, targetLevel),
       processingTime: calculateProcessingTime(),
       createdAt: new Date().toISOString()
     };
@@ -404,6 +483,14 @@ export const AdvancedLevelWheel = () => {
           Level Wheel
         </button>
         <button
+          onClick={() => setActiveTab('colorMixing')}
+          className={`px-4 py-2 rounded ${
+            activeTab === 'colorMixing' ? 'bg-pink-500 text-white' : 'bg-gray-200'
+          }`}
+        >
+          Color Mixing
+        </button>
+        <button
           onClick={() => setActiveTab('formulaBuilder')}
           className={`px-4 py-2 rounded ${
             activeTab === 'formulaBuilder' ? 'bg-pink-500 text-white' : 'bg-gray-200'
@@ -439,7 +526,22 @@ export const AdvancedLevelWheel = () => {
               key={key}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              onClick={() => setSelectedNode(node)}
+              onClick={() => {
+                if (activeTab === 'levelWheel') {
+                  setSelectedNode(node);
+                } else if (activeTab === 'colorMixing') {
+                  const level = (node.properties as HairLevel).level;
+                  if (!firstColor) {
+                    setFirstColor(level);
+                  } else if (!secondColor) {
+                    setSecondColor(level);
+                  } else {
+                    // If both colors are set, start over with this color
+                    setFirstColor(level);
+                    setSecondColor(null);
+                  }
+                }
+              }}
               className="flex items-center space-x-3 cursor-pointer"
             >
               <div
@@ -515,7 +617,22 @@ export const AdvancedLevelWheel = () => {
                             strokeWidth="2"
                             whileHover={{ scale: 1.1 }}
                             whileTap={{ scale: 0.9 }}
-                            onClick={() => setSelectedNode(node)}
+                            onClick={() => {
+                              if (activeTab === 'levelWheel') {
+                                setSelectedNode(node);
+                              } else if (activeTab === 'colorMixing') {
+                                const level = (node.properties as HairLevel).level;
+                                if (!firstColor) {
+                                  setFirstColor(level);
+                                } else if (!secondColor) {
+                                  setSecondColor(level);
+                                } else {
+                                  // If both colors are set, start over with this color
+                                  setFirstColor(level);
+                                  setSecondColor(null);
+                                }
+                              }
+                            }}
                             className="cursor-pointer"
                           />
                           <text
@@ -584,6 +701,77 @@ export const AdvancedLevelWheel = () => {
                 </div>
               )}
             </>
+          )}
+
+          {activeTab === 'colorMixing' && (
+            <div className="grid grid-cols-2 gap-8">
+              {/* Color Selection Panel */}
+              <div className="bg-white p-6 rounded-lg shadow-lg">
+                <h3 className="text-xl font-bold mb-6">Select Colors to Mix</h3>
+                
+                {/* First Color Selection */}
+                <div className="mb-6">
+                  <h4 className="text-lg font-semibold mb-2">Chosen Color Level 1</h4>
+                  <div className="flex items-center space-x-4">
+                    <div 
+                      className="w-12 h-12 rounded-full border-2"
+                      style={{ backgroundColor: firstColor ? getLevelColor(firstColor) : '#fff' }}
+                    />
+                    <span>Level {firstColor || '?'}</span>
+                  </div>
+                </div>
+
+                {/* Second Color Selection */}
+                <div className="mb-6">
+                  <h4 className="text-lg font-semibold mb-2">Chosen Color Level 2</h4>
+                  <div className="flex items-center space-x-4">
+                    <div 
+                      className="w-12 h-12 rounded-full border-2"
+                      style={{ backgroundColor: secondColor ? getLevelColor(secondColor) : '#fff' }}
+                    />
+                    <span>Level {secondColor || '?'}</span>
+                  </div>
+                </div>
+
+                {/* Mixing Ratio Slider */}
+                <div className="mb-6">
+                  <h4 className="text-lg font-semibold mb-2">Mixing Ratio</h4>
+                  <input 
+                    type="range" 
+                    min="0" 
+                    max="100" 
+                    value={mixingRatio}
+                    onChange={(e) => setMixingRatio(Number(e.target.value))}
+                    className="w-full"
+                  />
+                  <div className="flex justify-between text-sm text-gray-600">
+                    <span>{100 - mixingRatio}% Level {firstColor || '?'}</span>
+                    <span>{mixingRatio}% Level {secondColor || '?'}</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Result Panel */}
+              <div className="bg-white p-6 rounded-lg shadow-lg">
+                <h3 className="text-xl font-bold mb-6">Mixed Color Result</h3>
+                {mixedResult ? (
+                  <div>
+                    <div className="flex items-center space-x-4 mb-4">
+                      <div 
+                        className="w-24 h-24 rounded-full border-2"
+                        style={{ backgroundColor: mixedResult.color }}
+                      />
+                      <div>
+                        <h4 className="text-lg font-semibold">Level {mixedResult.level}</h4>
+                        <p className="text-gray-600">Based on {100 - mixingRatio}:{mixingRatio} ratio</p>
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  <p className="text-gray-600">Select two colors and adjust the ratio to see the result</p>
+                )}
+              </div>
+            </div>
           )}
 
           {activeTab === 'formulaBuilder' && (
@@ -736,11 +924,11 @@ export const AdvancedLevelWheel = () => {
                 <h3 className="text-xl font-bold mb-6">Color Prediction</h3>
                 <div className="space-y-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">Current Level</label>
+                    <h4 className="text-2xl font-bold mb-3 text-gray-800">Current Level</h4>
                     <select 
-                      value={startingLevel}
+                      value={startingLevel || 1}
                       onChange={(e) => setStartingLevel(Number(e.target.value))}
-                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-pink-500 focus:ring-pink-500"
+                      className="w-full p-2 border rounded-lg"
                     >
                       {Array.from({length: 10}, (_, i) => i + 1).map(level => (
                         <option key={level} value={level}>Level {level}</option>
@@ -758,11 +946,11 @@ export const AdvancedLevelWheel = () => {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">Desired Level</label>
+                    <h4 className="text-2xl font-bold mb-3 text-gray-800">Desired Level</h4>
                     <select 
-                      value={targetLevel}
+                      value={targetLevel || 1}
                       onChange={(e) => setTargetLevel(Number(e.target.value))}
-                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-pink-500 focus:ring-pink-500"
+                      className="w-full p-2 border rounded-lg"
                     >
                       {Array.from({length: 10}, (_, i) => i + 1).map(level => (
                         <option key={level} value={level}>Level {level}</option>
@@ -797,7 +985,7 @@ export const AdvancedLevelWheel = () => {
                   </div>
 
                   <button
-                    onClick={calculatePrediction}
+                    onClick={updateColorPrediction}
                     className="w-full bg-pink-600 text-white py-2 px-4 rounded-lg hover:bg-pink-700"
                   >
                     Calculate Result
