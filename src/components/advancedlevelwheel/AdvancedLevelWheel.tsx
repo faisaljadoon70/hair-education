@@ -12,9 +12,40 @@ import { useEducationalContent } from '@/hooks/useEducationalContent';
 import LevelEducation from './LevelEducation';
 import { ToneSelector } from './ToneSelector';
 import { HairHistory, HairProperties, ColorPrediction } from '../../types/colorSystem';
-import { predictFinalColor } from '@/utils/colorSpace';
 import LiftingProcessTimeline from './LiftingProcessTimeline';
 import { calculateColorResult, calculateDeveloperVolume, ColorResult } from '../../utils/colorCalculations';
+
+// Floating Notification Component
+const FloatingNotification = ({ 
+  message, 
+  isVisible, 
+  onClose,
+  offset = 0
+}: { 
+  message: string; 
+  isVisible: boolean; 
+  onClose: () => void;
+  offset?: number;
+}) => {
+  if (!isVisible) return null;
+
+  return (
+    <div 
+      className="fixed right-4 bg-green-500 text-white px-4 py-2 rounded-lg shadow-lg flex items-center justify-between"
+      style={{ bottom: `${offset + 16}px` }}
+    >
+      <span>{message}</span>
+      <button 
+        onClick={onClose}
+        className="ml-3 text-white hover:text-gray-200"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+          <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+        </svg>
+      </button>
+    </div>
+  );
+};
 
 interface ColorNode {
   id: string;
@@ -370,57 +401,65 @@ export const AdvancedLevelWheel = () => {
   }, [theory, chemicalProcess, terminology, quiz]);
 
   useEffect(() => {
+    const fetchColorSystem = async () => {
+      try {
+        if (!supabase) {
+          console.error('Supabase client not initialized');
+          return;
+        }
+
+        const { data: levels, error: levelsError } = await supabase
+          .from('hair_levels')
+          .select('*')
+          .order('level');
+
+        if (levelsError) {
+          console.error('Error fetching color system:', levelsError);
+          return;
+        }
+
+        // Build the graph structure with almost-circular layout (330 degrees)
+        const graph: { [key: string]: ColorNode } = {};
+        levels?.forEach((level: HairLevel, index: number) => {
+          const totalLevels = levels.length;
+          // Calculate angle for each level, spanning 330 degrees (leaving a 30-degree gap)
+          const startAngle = Math.PI / 6; // 30 degrees
+          const totalAngle = (Math.PI * 11) / 6; // 330 degrees
+          const angle = startAngle + (index / (totalLevels - 1)) * totalAngle;
+          
+          // Calculate position using the angle
+          const x = 220 + Math.cos(angle) * radius;
+          const y = 220 + Math.sin(angle) * radius;
+
+          graph[`level_${level.level}`] = {
+            id: `level_${level.level}`,
+            type: 'level',
+            properties: level,
+            edges: {},
+            x,
+            y
+          };
+        });
+
+        // Add relationships between adjacent levels only
+        levels?.forEach((level: HairLevel) => {
+          const node = graph[`level_${level.level}`];
+          if (level.level > 1) {
+            node.edges['darker'] = graph[`level_${level.level - 1}`];
+          }
+          if (level.level < 10) {
+            node.edges['lighter'] = graph[`level_${level.level + 1}`];
+          }
+        });
+
+        setColorGraph(graph);
+      } catch (err) {
+        console.error('Error fetching color system:', err);
+      }
+    };
+
     fetchColorSystem();
   }, []);
-
-  const fetchColorSystem = async () => {
-    try {
-      const { data: levels, error: levelsError } = await supabase
-        .from('hair_levels')
-        .select('*')
-        .order('level');
-
-      if (levelsError) throw levelsError;
-
-      // Build the graph structure with almost-circular layout (330 degrees)
-      const graph: { [key: string]: ColorNode } = {};
-      levels?.forEach((level: HairLevel, index: number) => {
-        const totalLevels = levels.length;
-        // Calculate angle for each level, spanning 330 degrees (leaving a 30-degree gap)
-        const startAngle = Math.PI / 6; // 30 degrees
-        const totalAngle = (Math.PI * 11) / 6; // 330 degrees
-        const angle = startAngle + (index / (totalLevels - 1)) * totalAngle;
-        
-        // Calculate position using the angle
-        const x = 220 + Math.cos(angle) * radius;
-        const y = 220 + Math.sin(angle) * radius;
-
-        graph[`level_${level.level}`] = {
-          id: `level_${level.level}`,
-          type: 'level',
-          properties: level,
-          edges: {},
-          x,
-          y
-        };
-      });
-
-      // Add relationships between adjacent levels only
-      levels?.forEach((level: HairLevel) => {
-        const node = graph[`level_${level.level}`];
-        if (level.level > 1) {
-          node.edges['darker'] = graph[`level_${level.level - 1}`];
-        }
-        if (level.level < 10) {
-          node.edges['lighter'] = graph[`level_${level.level + 1}`];
-        }
-      });
-
-      setColorGraph(graph);
-    } catch (err) {
-      console.error('Error fetching color system:', err);
-    }
-  };
 
   const rotateWheel = (direction: 'left' | 'right') => {
     const newRotation = rotation + (direction === 'left' ? -45 : 45);
@@ -467,11 +506,13 @@ export const AdvancedLevelWheel = () => {
         message="Formula saved successfully!"
         isVisible={showNotification}
         onClose={() => setShowNotification(false)}
+        offset={0}
       />
       <FloatingNotification
         message="Color prediction calculated!"
         isVisible={showPredictionNotification}
         onClose={() => setShowPredictionNotification(false)}
+        offset={70}
       />
       {/* Navigation Tabs */}
       <div className="flex justify-center space-x-4 mb-8">
