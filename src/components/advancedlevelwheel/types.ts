@@ -1,3 +1,5 @@
+import { HairShade } from '@/types/shadeCard';
+
 export interface HairLevel {
   id: number;
   level: number;
@@ -9,12 +11,13 @@ export interface HairLevel {
 }
 
 export interface LevelFormula {
-  id: number;
-  target_level: number;
-  developer_volume: string;
-  mixing_ratio: string;
-  processing_time: number;
-  notes: string;
+  id: string;
+  startingLevel: number;
+  targetLevel: number;
+  startingTone: HairShade;
+  targetTone: HairShade;
+  porosity: number;
+  createdAt: string;
 }
 
 export interface PracticeResult {

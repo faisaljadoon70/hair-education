@@ -1,56 +1,45 @@
 import { useState, useEffect } from 'react';
-import { supabase } from '@/lib/supabaseClient';
+import { supabase } from '../lib/supabaseClient';
 
 interface Theory {
-  title: string;
-  content: string;
-  key_points: string[];
+  concepts: Array<{
+    title: string;
+    description: string;
+  }>;
 }
 
 interface ChemicalProcess {
   process_name: string;
   description: string;
-  chemical_reactions: string[];
-  safety_notes: string;
+  steps: string[];
+  precautions: string[];
 }
 
-interface Terminology {
+interface Term {
   term: string;
   definition: string;
-  category: string;
 }
 
 interface Quiz {
-  question: string;
-  options: string[];
-  correct_answer: string;
+  questions: Array<{
+    text: string;
+    options: string[];
+    correct_answer: number;
+  }>;
 }
 
 export const useEducationalContent = (levelId: number) => {
   const [theory, setTheory] = useState<Theory | null>(null);
   const [chemicalProcess, setChemicalProcess] = useState<ChemicalProcess | null>(null);
-  const [terminology, setTerminology] = useState<Terminology[]>([]);
-  const [quiz, setQuiz] = useState<Quiz[]>([]);
+  const [terminology, setTerminology] = useState<Term[] | null>(null);
+  const [quiz, setQuiz] = useState<Quiz | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    let isMounted = true;
-
-    async function fetchEducationalContent() {
+    const fetchContent = async () => {
       try {
-        if (!levelId || !isMounted) return;
         setLoading(true);
-        
-        // Check if we have a valid Supabase connection
-        if (!supabase) {
-          console.error('Supabase client is not initialized');
-          setError('Database connection error');
-          return;
-        }
-
-        // Log the request details
-        console.log('Fetching educational content for level:', levelId);
         
         // Fetch theory content
         const { data: theoryData, error: theoryError } = await supabase
@@ -58,35 +47,17 @@ export const useEducationalContent = (levelId: number) => {
           .select('*')
           .eq('level_id', levelId)
           .single();
-        
-        console.log('Theory query result:', {
-          data: theoryData,
-          error: theoryError,
-          query: {
-            table: 'level_theory',
-            condition: `level_id = ${levelId}`,
-            sql: `SELECT * FROM level_theory WHERE level_id = ${levelId}`
-          }
-        });
-        
-        if (theoryError) {
-          console.error('Theory fetch error:', {
-            error: theoryError,
-            code: theoryError.code,
-            details: theoryError.details,
-            hint: theoryError.hint,
-            message: theoryError.message
-          });
-          if (theoryError.code === 'PGRST116') {
-            console.log(`No theory content found for level ${levelId}`);
-            if (isMounted) setTheory(null);
-          } else {
-            throw theoryError;
-          }
-        } else if (isMounted) {
-          console.log('Setting theory data:', theoryData);
-          setTheory(theoryData);
-        }
+
+        if (theoryError) throw theoryError;
+        const formattedTheory = {
+          concepts: [
+            {
+              title: theoryData.title,
+              description: theoryData.content,
+            },
+          ],
+        };
+        setTheory(formattedTheory);
 
         // Fetch chemical process
         const { data: processData, error: processError } = await supabase
@@ -94,108 +65,78 @@ export const useEducationalContent = (levelId: number) => {
           .select('*')
           .eq('level_id', levelId)
           .single();
-        
-        console.log('Chemical process query result:', {
-          data: processData,
-          error: processError,
-          query: {
-            table: 'chemical_processes',
-            condition: `level_id = ${levelId}`,
-            sql: `SELECT * FROM chemical_processes WHERE level_id = ${levelId}`
-          }
-        });
-        
-        if (processError) {
-          console.error('Chemical process fetch error:', {
-            error: processError,
-            code: processError.code,
-            details: processError.details,
-            hint: processError.hint,
-            message: processError.message
-          });
-          throw processError;
-        } else if (isMounted) {
-          console.log('Setting chemical process data:', processData);
-          setChemicalProcess(processData);
-        }
+
+        if (processError) throw processError;
+        const formattedProcess = {
+          process_name: processData.process_name,
+          description: processData.description,
+          steps: processData.chemical_reactions,
+          precautions: [processData.safety_notes],
+        };
+        setChemicalProcess(formattedProcess);
 
         // Fetch terminology
-        const { data: termData, error: termError } = await supabase
+        const { data: termsData, error: termsError } = await supabase
           .from('hair_terminology')
           .select('*')
           .filter('related_levels', 'cs', `{${levelId}}`);
-        
-        console.log('Terminology query result:', {
-          data: termData,
-          error: termError,
-          query: {
-            table: 'hair_terminology',
-            condition: `related_levels @> [${levelId}]`,
-            sql: `SELECT * FROM hair_terminology WHERE related_levels @> [${levelId}]`
-          }
-        });
-        
-        if (termError) {
-          console.error('Terminology fetch error:', {
-            error: termError,
-            code: termError.code,
-            details: termError.details,
-            hint: termError.hint,
-            message: termError.message
-          });
-          throw termError;
-        } else if (isMounted) {
-          console.log('Setting terminology data:', termData);
-          setTerminology(termData || []);
-        }
 
-        // Fetch quizzes
+        if (termsError) throw termsError;
+        const formattedTerms = termsData.map((term) => ({
+          term: term.term,
+          definition: term.definition,
+        }));
+        setTerminology(formattedTerms);
+
+        // Fetch quiz
         const { data: quizData, error: quizError } = await supabase
           .from('level_quizzes')
           .select('*')
           .eq('level_id', levelId);
+
+        if (quizError) throw quizError;
         
-        console.log('Quiz query result:', {
-          data: quizData,
-          error: quizError,
-          query: {
-            table: 'level_quizzes',
-            condition: `level_id = ${levelId}`,
-            sql: `SELECT * FROM level_quizzes WHERE level_id = ${levelId}`
+        // Helper function to shuffle array
+        const shuffleArray = <T>(array: T[]): T[] => {
+          const newArray = [...array];
+          for (let i = newArray.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
           }
-        });
-        
-        if (quizError) {
-          console.error('Quiz fetch error:', {
-            error: quizError,
-            code: quizError.code,
-            details: quizError.details,
-            hint: quizError.hint,
-            message: quizError.message
-          });
-          throw quizError;
-        } else if (isMounted) {
-          console.log('Setting quiz data:', quizData);
-          setQuiz(quizData || []);
-        }
+          return newArray;
+        };
+
+        const formattedQuiz = {
+          questions: quizData.map((question) => {
+            // Create array of all options including correct answer
+            const allOptions = [...question.options];
+            
+            // Shuffle the options
+            const shuffledOptions = shuffleArray(allOptions);
+            
+            // Find the new index of the correct answer after shuffling
+            const correctAnswerIndex = shuffledOptions.indexOf(question.correct_answer);
+            
+            return {
+              text: question.question,
+              options: shuffledOptions,
+              correct_answer: correctAnswerIndex
+            };
+          }),
+        };
+        setQuiz(formattedQuiz);
 
       } catch (err) {
-        if (isMounted) {
-          setError(err instanceof Error ? err.message : 'An error occurred');
-        }
+        setError(err instanceof Error ? err.message : 'An error occurred');
       } finally {
-        if (isMounted) {
-          setLoading(false);
-        }
+        setLoading(false);
       }
-    }
-
-    fetchEducationalContent();
-
-    return () => {
-      isMounted = false;
     };
+
+    if (levelId) {
+      fetchContent();
+    }
   }, [levelId]);
 
   return { theory, chemicalProcess, terminology, quiz, loading, error };
-}
+};

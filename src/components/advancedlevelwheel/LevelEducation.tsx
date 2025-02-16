@@ -12,8 +12,8 @@ interface Theory {
 interface ChemicalProcess {
   process_name: string;
   description: string;
-  chemical_reactions: string[];
-  safety_notes: string;
+  steps: string[];
+  precautions: string[];
 }
 
 interface Terminology {
@@ -152,40 +152,28 @@ export default function LevelEducation({ levelId, theory, chemicalProcess, termi
               className="space-y-6"
             >
               {chemicalProcess ? (
-                <>
-                  <div className="border-b border-pink-100 pb-4">
-                    <h3 className="text-2xl font-bold text-gray-900 mb-4">{chemicalProcess.process_name}</h3>
-                    <p className="text-gray-700 leading-relaxed">{chemicalProcess.description}</p>
+                <div>
+                  <h2 className="text-xl font-bold mb-4">{chemicalProcess.process_name}</h2>
+                  <p className="text-gray-700 mb-4">{chemicalProcess.description}</p>
+                  
+                  <h3 className="text-lg font-semibold mb-2">Chemical Reactions:</h3>
+                  <ol className="list-decimal pl-5 space-y-2 mb-4">
+                    {chemicalProcess.steps && chemicalProcess.steps.map((step, index) => (
+                      <li key={index} className="text-gray-700">{step}</li>
+                    ))}
+                  </ol>
+
+                  <div className="bg-yellow-50 p-4 rounded-lg">
+                    <h3 className="text-lg font-semibold text-yellow-800 mb-2">
+                      ⚠️ Safety Notes:
+                    </h3>
+                    <ul className="list-disc pl-5 space-y-2">
+                      {chemicalProcess.precautions && chemicalProcess.precautions.map((note, index) => (
+                        <li key={index} className="text-yellow-700">{note}</li>
+                      ))}
+                    </ul>
                   </div>
-                  {chemicalProcess.chemical_reactions && chemicalProcess.chemical_reactions.length > 0 && (
-                    <div className="pt-4">
-                      <h4 className="text-lg font-semibold text-gray-800 mb-4">Chemical Reactions:</h4>
-                      <div className="bg-gray-50 rounded-lg p-4">
-                        <ul className="space-y-3">
-                          {chemicalProcess.chemical_reactions.map((reaction, index) => (
-                            <li key={index} className="flex items-start">
-                              <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-pink-100 text-pink-600 text-sm font-semibold mr-3 flex-shrink-0 mt-0.5">
-                                {index + 1}
-                              </span>
-                              <span className="text-gray-700">{reaction}</span>
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    </div>
-                  )}
-                  {chemicalProcess.safety_notes && (
-                    <div className="mt-6 bg-yellow-50 border border-yellow-100 rounded-lg p-4">
-                      <div className="flex items-center mb-2">
-                        <svg className="w-5 h-5 text-yellow-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                        </svg>
-                        <h4 className="text-lg font-semibold text-yellow-800">Safety Notes:</h4>
-                      </div>
-                      <p className="text-yellow-700">{chemicalProcess.safety_notes}</p>
-                    </div>
-                  )}
-                </>
+                </div>
               ) : (
                 <div className="text-center py-8">
                   <p className="text-gray-500">No chemical process information available for this level.</p>
