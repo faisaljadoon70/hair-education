@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { FormulaBuilderContainer } from '@/components/formula/FormulaBuilderContainer';
+import { FormulaBuilder } from '../../components/advancedlevelwheel/FormulaBuilder';
 import { useUser } from '@/hooks/useUser';
 import Link from 'next/link';
 
@@ -82,10 +82,9 @@ export default function FormulaBuilderPage() {
             </nav>
           </div>
 
-          <FormulaBuilderContainer
-            userId={user.id}
-            subscriptionTier={user.subscription_tier || 'basic'}
-          />
+          <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <FormulaBuilder />
+          </main>
         </div>
       </main>
     </div>
