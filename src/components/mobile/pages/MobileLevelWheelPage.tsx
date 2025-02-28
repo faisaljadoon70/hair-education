@@ -161,7 +161,7 @@ export default function MobileLevelWheelPage() {
                     Advanced Mode
                   </a>
                   <a
-                    href="/level-wheel/shade-card"
+                    href="/mobile/level-wheel/shade-card"
                     className="block px-4 py-2 text-sm hover:bg-gray-100"
                     onClick={() => setIsOptionsOpen(false)}
                   >
