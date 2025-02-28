@@ -1,75 +1,77 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import MobileToneDetailsSheet from './MobileToneDetailsSheet';
+import { getOptimalColorValue, ColorSpaces, useColorCalibration } from '../../../utils/colorManagement';
 
 interface ToneCardProps {
   toneNumber: string;
   name: string;
   hexColor: string;
+  rgbR?: number;
+  rgbG?: number;
+  rgbB?: number;
+  displayP3R?: number;
+  displayP3G?: number;
+  displayP3B?: number;
 }
 
-// Mapping of tone names to their underlying tone colors
-const TONE_COLORS = {
-  // Level 1 Tones
-  'Blue Black': '#0000FF',
-  'Violet Black': '#800080',
-  'Ash Black': '#808080',
-  'Neutral Black': '#404040',
-  'Warm Black': '#8B4513',
-  'Red Black': '#FF0000',
-  'Mahogany Black': '#800000',
-  'Gold Black': '#FFD700',
-  'Beige Black': '#F5F5DC',
-  'Copper Black': '#B87333',
-  'Chocolate Black': '#D2691E',
-  'Mocha Black': '#8B4513',
-  'Darkest Brown': '#654321',
-  'Natural Black': '#000000',
-  
-  // Level 2 Tones
-  'Natural Darkest Brown': '#000000',
-  'Blue Darkest Brown': '#0000FF',
-  'Violet Darkest Brown': '#800080',
-  'Ash Darkest Brown': '#808080',
-  'Neutral Darkest Brown': '#404040',
-  'Warm Darkest Brown': '#8B4513',
-  'Red Darkest Brown': '#FF0000',
-  'Mahogany Darkest Brown': '#800000',
-  'Gold Darkest Brown': '#FFD700',
-  'Beige Darkest Brown': '#F5F5DC',
-  'Copper Darkest Brown': '#B87333',
-  'Chocolate Darkest Brown': '#D2691E',
-  'Mocha Darkest Brown': '#8B4513',
-  'Dark Brown': '#654321'
-};
-
-export default function MobileToneCard({ toneNumber, name, hexColor }: ToneCardProps) {
+export default function MobileToneCard({ 
+  toneNumber, 
+  name, 
+  hexColor,
+  rgbR,
+  rgbG,
+  rgbB,
+  displayP3R,
+  displayP3G,
+  displayP3B
+}: ToneCardProps) {
   const [showDetails, setShowDetails] = useState(false);
-  // Get the underlying tone color based on the name
-  const toneColor = TONE_COLORS[name] || '#FFFFFF';
+  const { adjustments } = useColorCalibration();
+  const [optimizedColor, setOptimizedColor] = useState(hexColor);
+
+  useEffect(() => {
+    const colorSpaces: ColorSpaces = {
+      hex: hexColor,
+      rgb: {
+        r: rgbR || parseInt(hexColor.substr(1, 2), 16),
+        g: rgbG || parseInt(hexColor.substr(3, 2), 16),
+        b: rgbB || parseInt(hexColor.substr(5, 2), 16)
+      }
+    };
+
+    // Add Display-P3 values if available
+    if (displayP3R !== undefined && displayP3G !== undefined && displayP3B !== undefined) {
+      colorSpaces.displayP3 = {
+        r: displayP3R,
+        g: displayP3G,
+        b: displayP3B
+      };
+    }
+
+    const optimalColor = getOptimalColorValue(colorSpaces, adjustments);
+    setOptimizedColor(optimalColor);
+  }, [hexColor, rgbR, rgbG, rgbB, displayP3R, displayP3G, displayP3B, adjustments]);
 
   return (
     <>
       <motion.div
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.2 }}
-        className="flex-shrink-0 rounded-lg p-2.5 shadow-lg cursor-pointer active:scale-95 transition-transform"
-        style={{ backgroundColor: hexColor }}
+        whileTap={{ scale: 0.95 }}
         onClick={() => setShowDetails(true)}
+        className="relative aspect-square rounded-lg shadow-sm overflow-hidden"
+        style={{
+          backgroundColor: optimizedColor,
+          transform: 'translateZ(0)',
+          WebkitFontSmoothing: 'antialiased',
+          backfaceVisibility: 'hidden'
+        }}
       >
-        <div className="flex items-center justify-between mb-1.5">
-          <div className="flex items-center gap-1.5">
-            <div 
-              className="w-3 h-3 rounded-full"
-              style={{ backgroundColor: toneColor }}
-            />
-            <span className="text-white text-xs font-medium">{toneNumber}</span>
-          </div>
+        <div className="absolute inset-0 flex flex-col items-center justify-center p-2 text-white text-center">
+          <span className="text-xs font-medium drop-shadow-md">{toneNumber}</span>
+          <span className="text-[10px] opacity-80 drop-shadow-md">{name}</span>
         </div>
-        <div className="text-white text-xs opacity-80 truncate">{name}</div>
       </motion.div>
 
       <MobileToneDetailsSheet
@@ -77,7 +79,7 @@ export default function MobileToneCard({ toneNumber, name, hexColor }: ToneCardP
         onClose={() => setShowDetails(false)}
         toneNumber={toneNumber}
         name={name}
-        hexColor={hexColor}
+        hexColor={optimizedColor}
       />
     </>
   );

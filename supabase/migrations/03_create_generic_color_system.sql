@@ -97,3 +97,21 @@ CREATE POLICY "Authenticated users can modify color levels" ON color_levels
     FOR ALL USING (auth.role() = 'authenticated');
 CREATE POLICY "Authenticated users can modify color guidelines" ON color_guidelines
     FOR ALL USING (auth.role() = 'authenticated');
+
+-- Add Display-P3 color space support
+ALTER TABLE mobile_shade_card
+ADD COLUMN IF NOT EXISTS display_p3_r NUMERIC,
+ADD COLUMN IF NOT EXISTS display_p3_g NUMERIC,
+ADD COLUMN IF NOT EXISTS display_p3_b NUMERIC,
+ADD COLUMN IF NOT EXISTS color_space VARCHAR DEFAULT 'srgb',
+ADD COLUMN IF NOT EXISTS color_profile JSONB;
+
+-- Add color calibration metadata
+ALTER TABLE mobile_shade_card
+ADD COLUMN IF NOT EXISTS color_calibration_data JSONB,
+ADD COLUMN IF NOT EXISTS device_specific_adjustments JSONB;
+
+-- Add comment explaining the color space columns
+COMMENT ON COLUMN mobile_shade_card.display_p3_r IS 'Display-P3 red channel value (0-1)';
+COMMENT ON COLUMN mobile_shade_card.display_p3_g IS 'Display-P3 green channel value (0-1)';
+COMMENT ON COLUMN mobile_shade_card.display_p3_b IS 'Display-P3 blue channel value (0-1)';

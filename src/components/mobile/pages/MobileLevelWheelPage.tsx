@@ -169,7 +169,7 @@ export default function MobileLevelWheelPage() {
                     className="block w-full text-left px-4 py-2 text-sm hover:bg-gray-100"
                     onClick={() => {
                       setIsOptionsOpen(false);
-                      router.push('/level-wheel/shade-card');
+                      router.push('/level-wheel');
                     }}
                   >
                     Shade Card

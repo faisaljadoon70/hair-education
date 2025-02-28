@@ -1,7 +1,7 @@
 'use client';
 
 import { ReactNode } from 'react';
-import { useDeviceDetection } from '@/hooks/useDeviceDetection';
+import useDeviceDetection from '@/hooks/useDeviceDetection';
 import './mobile.css';
 
 interface MobileContainerProps {

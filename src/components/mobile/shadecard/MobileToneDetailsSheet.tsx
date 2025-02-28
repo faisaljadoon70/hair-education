@@ -47,7 +47,7 @@ export default function MobileToneDetailsSheet({
             initial={{ opacity: 0 }}
             animate={{ opacity: 0.5 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black"
+            className="fixed inset-0 bg-black z-50"
             onClick={onClose}
           />
           
@@ -57,8 +57,14 @@ export default function MobileToneDetailsSheet({
             animate={{ y: 0 }}
             exit={{ y: '100%' }}
             transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-            className="fixed bottom-0 left-0 right-0 bg-white rounded-t-xl shadow-xl"
-            style={{ maxHeight: '80vh' }}
+            className="fixed bottom-0 left-0 right-0 bg-white rounded-t-xl p-4 z-50"
+            style={{
+              maxHeight: '90vh',
+              overflowY: 'auto',
+              transform: 'translateZ(0)',
+              backfaceVisibility: 'hidden',
+              WebkitFontSmoothing: 'antialiased'
+            }}
           >
             {/* Header */}
             <div className="flex items-center justify-between p-4 border-b">
@@ -82,7 +88,7 @@ export default function MobileToneDetailsSheet({
             </div>
 
             {/* Content */}
-            <div className="p-4 overflow-y-auto" style={{ maxHeight: 'calc(80vh - 76px)' }}>
+            <div className="p-4 overflow-y-auto" style={{ maxHeight: 'calc(90vh - 76px)' }}>
               {/* Characteristics */}
               <div className="mb-6">
                 <h3 className="text-sm font-medium text-gray-900 mb-3">Characteristics</h3>
