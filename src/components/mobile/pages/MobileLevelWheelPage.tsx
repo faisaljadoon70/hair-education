@@ -6,6 +6,7 @@ import MobileWheelComponent from '../components/MobileWheelComponent';
 import MobileBottomSheet from '../components/MobileBottomSheet';
 import MobileColorGrid from '../components/MobileColorGrid';
 import MobileHeader from '../navigation/MobileHeader';
+import { useRouter } from 'next/navigation';
 
 type ViewMode = 'wheel' | 'mix';
 
@@ -16,6 +17,8 @@ export default function MobileLevelWheelPage() {
   const [selectedMixLevels, setSelectedMixLevels] = useState<number[]>([]);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isOptionsOpen, setIsOptionsOpen] = useState(false);
+
+  const router = useRouter();
 
   // Close menus when clicking outside
   const handleClickOutside = (e: MouseEvent) => {
@@ -153,20 +156,24 @@ export default function MobileLevelWheelPage() {
             {isOptionsOpen && (
               <div className="absolute right-0 mt-2 w-48 origin-top-right bg-white rounded-lg shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
                 <div className="py-1">
-                  <a
-                    href="/advanced-level-wheel"
-                    className="block px-4 py-2 text-sm hover:bg-gray-100"
-                    onClick={() => setIsOptionsOpen(false)}
+                  <button
+                    className="block w-full text-left px-4 py-2 text-sm hover:bg-gray-100"
+                    onClick={() => {
+                      setIsOptionsOpen(false);
+                      router.push('/advanced-level-wheel');
+                    }}
                   >
                     Advanced Mode
-                  </a>
-                  <a
-                    href="/mobile/level-wheel/shade-card"
-                    className="block px-4 py-2 text-sm hover:bg-gray-100"
-                    onClick={() => setIsOptionsOpen(false)}
+                  </button>
+                  <button
+                    className="block w-full text-left px-4 py-2 text-sm hover:bg-gray-100"
+                    onClick={() => {
+                      setIsOptionsOpen(false);
+                      router.push('/mobile/level-wheel/shade-card');
+                    }}
                   >
                     Shade Card
-                  </a>
+                  </button>
                 </div>
               </div>
             )}
