@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import MobileLevelGrid from '../shadecard/MobileLevelGrid';
+import MobileHeader from '../navigation/MobileHeader';
 
 interface MobileShadeCardPageProps {
   selectedLevel?: number | null;
@@ -22,11 +23,18 @@ export default function MobileShadeCardPage({
   };
 
   return (
-    <div className="h-full bg-white">
-      <MobileLevelGrid 
-        selectedLevel={selectedLevel}
-        onLevelSelect={handleLevelSelect}
-      />
+    <div className="relative min-h-screen bg-white">
+      <MobileHeader isHomePage={false} />
+      
+      <main className="px-4 pt-16">
+        {/* Main Content */}
+        <div className="h-full bg-white">
+          <MobileLevelGrid 
+            selectedLevel={selectedLevel}
+            onLevelSelect={handleLevelSelect}
+          />
+        </div>
+      </main>
     </div>
   );
 }

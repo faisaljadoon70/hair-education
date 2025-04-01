@@ -104,41 +104,19 @@ export default function MobileLevelWheelPage() {
         <div className="flex items-center justify-between mb-4">
           {/* View Selector */}
           <div className="relative flex-1 max-w-[200px]">
-            <button 
-              className="menu-button flex items-center justify-between w-full text-sm px-3 py-2 border rounded-lg hover:bg-gray-50"
-              onClick={(e) => {
-                e.stopPropagation();
-                setIsMenuOpen(!isMenuOpen);
-                setIsOptionsOpen(false);
+            <select
+              className="w-full px-3 py-2 border rounded-lg bg-white text-gray-900"
+              value={viewMode}
+              onChange={(e) => {
+                const newMode = e.target.value as ViewMode;
+                setViewMode(newMode);
+                setSelectedMixLevels([]); // Clear selections when changing views
+                setIsMenuOpen(false);
               }}
             >
-              {viewMode === 'wheel' ? 'Level Wheel' : 'Mix Colors'}
-              <ChevronDownIcon className="w-5 h-5 ml-2" />
-            </button>
-            {isMenuOpen && (
-              <div className="absolute left-0 mt-2 w-48 origin-top-left bg-white rounded-lg shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-                <div className="py-1">
-                  <button
-                    className="w-full text-left px-4 py-2 text-sm hover:bg-gray-100"
-                    onClick={() => {
-                      handleViewChange('wheel');
-                      setIsMenuOpen(false);
-                    }}
-                  >
-                    Level Wheel
-                  </button>
-                  <button
-                    className="w-full text-left px-4 py-2 text-sm hover:bg-gray-100"
-                    onClick={() => {
-                      handleViewChange('mix');
-                      setIsMenuOpen(false);
-                    }}
-                  >
-                    Mix Colors
-                  </button>
-                </div>
-              </div>
-            )}
+              <option value="wheel">Level Wheel</option>
+              <option value="mix">Mix Colors</option>
+            </select>
           </div>
 
           {/* Options Menu */}
@@ -146,6 +124,7 @@ export default function MobileLevelWheelPage() {
             <button 
               className="menu-button p-2 rounded-full hover:bg-gray-100"
               onClick={(e) => {
+                e.preventDefault();
                 e.stopPropagation();
                 setIsOptionsOpen(!isOptionsOpen);
                 setIsMenuOpen(false);
@@ -154,11 +133,15 @@ export default function MobileLevelWheelPage() {
               <EllipsisVerticalIcon className="w-6 h-6" />
             </button>
             {isOptionsOpen && (
-              <div className="absolute right-0 mt-2 w-48 origin-top-right bg-white rounded-lg shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+              <div 
+                className="absolute right-0 mt-2 w-48 origin-top-right bg-white rounded-lg shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-50"
+                onClick={(e) => e.stopPropagation()}
+              >
                 <div className="py-1">
                   <button
                     className="block w-full text-left px-4 py-2 text-sm hover:bg-gray-100"
-                    onClick={() => {
+                    onClick={(e) => {
+                      e.stopPropagation();
                       setIsOptionsOpen(false);
                       router.push('/advanced-level-wheel');
                     }}
@@ -167,9 +150,10 @@ export default function MobileLevelWheelPage() {
                   </button>
                   <button
                     className="block w-full text-left px-4 py-2 text-sm hover:bg-gray-100"
-                    onClick={() => {
+                    onClick={(e) => {
+                      e.stopPropagation();
                       setIsOptionsOpen(false);
-                      router.push('/level-wheel/shade-card');
+                      router.push('/mobile/level-wheel/shade-card');
                     }}
                   >
                     Shade Card
@@ -185,15 +169,24 @@ export default function MobileLevelWheelPage() {
           {viewMode === 'wheel' ? (
             <div className="min-h-[600px] flex flex-col items-center">
               <MobileWheelComponent onLevelClick={(level) => {
-                handleLevelClick(level);
+                setSelectedLevel(level);
                 setIsBottomSheetOpen(true);
               }} />
             </div>
           ) : (
             <MobileColorGrid
-              onLevelSelect={handleLevelClick}
+              onLevelSelect={(level) => {
+                if (selectedMixLevels.length < 2 && !selectedMixLevels.includes(level)) {
+                  setSelectedMixLevels([...selectedMixLevels, level]);
+                }
+              }}
               selectedLevels={selectedMixLevels}
-              onMixColors={handleMixColors}
+              onMixColors={() => {
+                if (selectedMixLevels.length === 2) {
+                  setSelectedLevel(selectedMixLevels[0]);
+                  setIsBottomSheetOpen(true);
+                }
+              }}
             />
           )}
         </div>
@@ -201,7 +194,12 @@ export default function MobileLevelWheelPage() {
         {/* Bottom Sheet */}
         <MobileBottomSheet
           isOpen={isBottomSheetOpen}
-          onClose={handleCloseSheet}
+          onClose={() => {
+            setIsBottomSheetOpen(false);
+            if (viewMode === 'mix') {
+              setSelectedMixLevels([]); // Clear selected colors after mixing
+            }
+          }}
           selectedLevel={selectedLevel}
           mixedWithLevel={viewMode === 'mix' ? selectedMixLevels[1] : undefined}
         />
