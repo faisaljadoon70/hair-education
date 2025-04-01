@@ -181,12 +181,14 @@ export default function MobileLevelWheelPage() {
         </div>
 
         {/* Main Content */}
-        <div className="flex flex-col items-center mt-8">
+        <div className="flex flex-col items-center mt-4">
           {viewMode === 'wheel' ? (
-            <MobileWheelComponent onLevelClick={(level) => {
-              handleLevelClick(level);
-              setIsBottomSheetOpen(true);
-            }} />
+            <div className="min-h-[600px] flex flex-col items-center">
+              <MobileWheelComponent onLevelClick={(level) => {
+                handleLevelClick(level);
+                setIsBottomSheetOpen(true);
+              }} />
+            </div>
           ) : (
             <MobileColorGrid
               onLevelSelect={handleLevelClick}
